@@ -1,0 +1,17 @@
+%PDF-1.7
+HOMEIQ SYNTHETIC EVALUATION DOCUMENT [eval_0001]
+CATEGORY: RECEIPT (Grocery POS Receipt)
+MERCHANT: Sahyadri Fresh Mart, Kothrud, Pune
+RECEIPT NO: SFM-2026-09-1042
+DATE: 2026-09-18
+PAYMENT: UPI
+CURRENCY: INR
+------------------------------------------------------------
+ITEM                               QTY    UNIT    LINE TOTAL
+1. Indrayani Organic Rice          5.0    kg      Rs. 420.00
+2. Cold-Pressed Groundnut Oil      2.0    L       Rs. 560.00
+3. Organic Arhar Tur Dal           2.0    kg      Rs. 340.00
+------------------------------------------------------------
+CGST + SGSTIncluded: Rs. 66.00
+GRAND TOTAL PAID: Rs. 1,320.00 (132000 paise)
+%%EOF

@@ -1,0 +1,89 @@
+# ==============================================================================
+# HomeIQ — Local Development & Demonstration Stack (Docker Compose v2)
+# Honest, Coherent Architecture:
+#  1. postgres  — PostgreSQL 16 + pgvector (20 normalized domain tables)
+#  2. backend   — FastAPI Modular Monolith & Multi-Agent Intelligence Plane
+#  3. worker    — Async Outbox & Proactive Intelligence Background Worker
+#  4. frontend  — React 19 + TypeScript + Express API Gateway Console
+# ==============================================================================
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: homeiq-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-homeiq}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-homeiq_local_dev_pw}
+      POSTGRES_DB: ${POSTGRES_DB:-homeiq_core}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-homeiq} -d ${POSTGRES_DB:-homeiq_core}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: homeiq-backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-homeiq}:${POSTGRES_PASSWORD:-homeiq_local_dev_pw}@postgres:5432/${POSTGRES_DB:-homeiq_core}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-dev-only-jwt-secret-replace-Via-secret-manager-in-prod-32b}
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: homeiq-worker
+    restart: unless-stopped
+    command: ["python", "-m", "app.worker"]
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-homeiq}:${POSTGRES_PASSWORD:-homeiq_local_dev_pw}@postgres:5432/${POSTGRES_DB:-homeiq_core}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+
+  frontend:
+    image: node:22-alpine
+    container_name: homeiq-frontend
+    working_dir: /app
+    restart: unless-stopped
+    volumes:
+      - ./:/app
+    environment:
+      NODE_ENV: development
+      FASTAPI_UPSTREAM_URL: http://backend:8000
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+    command: ["sh", "-c", "npm install && npm run dev"]
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

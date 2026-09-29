@@ -1,0 +1,68 @@
+name: HomeIQ Pull Request CI (Lint, Typecheck, Tests, Evaluation & Build)
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [develop]
+
+permissions:
+  contents: read
+
+jobs:
+  backend-quality-and-tests:
+    name: Backend Lint, Typecheck, Integration, Security, Reliability & Evaluation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Backend & Dev Dependencies
+        working-directory: ./backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Ruff Format & Lint Check
+        working-directory: ./backend
+        run: ruff check app tests
+
+      - name: Execute Pytest Suite (Database, Document Pipeline, Agents, Security, Reliability & Load)
+        working-directory: ./backend
+        env:
+          APP_ENV: test
+          SECRET_KEY: ci-ephemeral-test-signing-key-not-used-in-prod
+        run: pytest -v
+
+      - name: Execute Dataset & Document Evaluation Framework
+        env:
+          PYTHONPATH: backend
+        run: python -m evaluation.run
+
+      - name: Secret Leak Verification
+        run: |
+          if grep -rn "AIzaSy" backend/ src/ infra/ docs/; then
+            echo "Detected hardcoded Google API key!"
+            exit 1
+          fi
+
+  frontend-build-validation:
+    name: Frontend TypeScript & Production Bundle Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Dependencies & Run Typecheck + Build
+        run: |
+          npm install
+          npm run lint
+          npm run build

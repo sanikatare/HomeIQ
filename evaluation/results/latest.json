@@ -1,0 +1,2023 @@
+{
+  "report_id": "eval-run-20260929-073629",
+  "generated_at": "2026-09-29T07:36:29.930778+00:00",
+  "execution_mode": "deterministic_ci",
+  "model_configuration": {
+    "document_extraction_model": "gemini-2.5-flash",
+    "agent_orchestrator_model": "gemini-2.5-pro",
+    "embedding_model": "text-embedding-004",
+    "is_fine_tuned": false,
+    "inference_strategy": "Zero-shot schema-constrained multimodal extraction (response_schema=GeminiDocumentAnalysisEnvelope, temperature=0.0) + deterministic Pydantic/SQL validation"
+  },
+  "total_documents": 10,
+  "positive_documents_count": 8,
+  "adversarial_documents_count": 2,
+  "documents_passed": 10,
+  "documents_failed": 0,
+  "documents_partial": 0,
+  "document_classification_accuracy": 1.0,
+  "overall_field_accuracy": 1.0,
+  "overall_exact_match_rate": 0.9844,
+  "overall_normalized_match_rate": 1.0,
+  "overall_numeric_date_accuracy": 1.0,
+  "overall_precision": 1.0,
+  "overall_recall": 1.0,
+  "overall_f1": 1.0,
+  "overall_missing_field_rate": 0.0,
+  "overall_extra_field_rate": 0.0,
+  "overall_hallucinated_field_rate": 0.0,
+  "per_document_type": [
+    {
+      "document_type": "RECEIPT",
+      "documents_count": 2,
+      "passed_count": 2,
+      "field_accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    {
+      "document_type": "UTILITY_BILL",
+      "documents_count": 1,
+      "passed_count": 1,
+      "field_accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    {
+      "document_type": "INVOICE",
+      "documents_count": 1,
+      "passed_count": 1,
+      "field_accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    {
+      "document_type": "WARRANTY_DOCUMENT",
+      "documents_count": 1,
+      "passed_count": 1,
+      "field_accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    {
+      "document_type": "SERVICE_INVOICE",
+      "documents_count": 2,
+      "passed_count": 2,
+      "field_accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    {
+      "document_type": "INSURANCE_DOCUMENT",
+      "documents_count": 1,
+      "passed_count": 1,
+      "field_accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    }
+  ],
+  "per_field_performance": [
+    {
+      "field_name": "amount_due_minor",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "asset_brand",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "asset_identifier",
+      "occurrences": 2,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "asset_model_number",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "asset_serial_number",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "billing_period_end",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "billing_period_start",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "brand",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "consumer_account_number",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "contract_or_policy_number",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "coverage_limit_minor",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "covered_under_warranty",
+      "occurrences": 2,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "covers_labor",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "covers_parts",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "currency_code",
+      "occurrences": 3,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "deductible_minor",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "due_date",
+      "occurrences": 2,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "end_date",
+      "occurrences": 2,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "insurance_type",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "insured_asset_identifier",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "insurer_name",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "invoice_date",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "invoice_number",
+      "occurrences": 4,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "labor_cost_minor",
+      "occurrences": 2,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "line_items",
+      "occurrences": 3,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "maintenance_type",
+      "occurrences": 2,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "merchant_name",
+      "occurrences": 2,
+      "exact_match_rate": 0.5,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "model_number",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "next_recommended_service_date",
+      "occurrences": 2,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "odometer_reading_km",
+      "occurrences": 2,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "parts_cost_minor",
+      "occurrences": 2,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "payment_method",
+      "occurrences": 2,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "policy_number",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "premium_amount_minor",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "product_name",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "provider_name",
+      "occurrences": 2,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "receipt_number",
+      "occurrences": 2,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "serial_number",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "service_center_or_vendor",
+      "occurrences": 2,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "service_date",
+      "occurrences": 2,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "serviced_asset_name",
+      "occurrences": 2,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "start_date",
+      "occurrences": 2,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "subtotal_minor",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "sum_insured_minor",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "support_contact_email",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "support_contact_phone",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "tax_amount_minor",
+      "occurrences": 3,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "terms_summary",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "total_amount_minor",
+      "occurrences": 3,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "total_cost_minor",
+      "occurrences": 2,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "tpa_or_claim_helpline",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "transaction_date",
+      "occurrences": 2,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "unit_measure",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "units_consumed",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "utility_type",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "vendor_name",
+      "occurrences": 1,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    },
+    {
+      "field_name": "work_summary",
+      "occurrences": 2,
+      "exact_match_rate": 1.0,
+      "normalized_match_rate": 1.0
+    }
+  ],
+  "error_distribution": {
+    "OCR_ERROR": 1,
+    "DOCUMENT_CLASSIFICATION_ERROR": 0,
+    "EXTRACTION_ERROR": 0,
+    "NORMALIZATION_ERROR": 0,
+    "VALIDATION_ERROR": 1,
+    "DATABASE_ERROR": 0,
+    "EMBEDDING_ERROR": 0,
+    "RETRIEVAL_ERROR": 0,
+    "MODEL_ERROR": 0,
+    "TIMEOUT": 0,
+    "RATE_LIMIT": 0,
+    "UNKNOWN": 0
+  },
+  "document_results": [
+    {
+      "document_id": "eval_0001",
+      "document_type": "RECEIPT",
+      "domain": "kitchen_grocery",
+      "difficulty": "normal",
+      "status": "passed",
+      "expected_pipeline_status": "DB_UPDATED",
+      "actual_pipeline_status": "DB_UPDATED",
+      "detected_category": "RECEIPT",
+      "field_results": {
+        "merchant_name": {
+          "expected": "Sahyadri Fresh Mart, Kothrud, Pune",
+          "predicted": "Sahyadri Fresh Mart, Kothrud, Pune",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "receipt_number": {
+          "expected": "SFM-2026-09-1042",
+          "predicted": "SFM-2026-09-1042",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "transaction_date": {
+          "expected": "2026-09-18",
+          "predicted": "2026-09-18",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "date_iso",
+          "notes": "Normalized ISO date: 2026-09-18 vs 2026-09-18"
+        },
+        "currency_code": {
+          "expected": "INR",
+          "predicted": "INR",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "payment_method": {
+          "expected": "UPI",
+          "predicted": "UPI",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "total_amount_minor": {
+          "expected": 132000,
+          "predicted": 132000,
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "numeric_tolerance",
+          "notes": "abs_diff=0.0000 (tolerance=0.01)"
+        },
+        "tax_amount_minor": {
+          "expected": 6600,
+          "predicted": 6600,
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "numeric_tolerance",
+          "notes": "abs_diff=0.0000 (tolerance=0.01)"
+        },
+        "line_items": {
+          "expected": [
+            {
+              "description": "Indrayani Organic Rice",
+              "quantity": "5.0",
+              "unit": "kg",
+              "unit_price_minor": 8400,
+              "line_total_minor": 42000
+            },
+            {
+              "description": "Cold-Pressed Groundnut Oil",
+              "quantity": "2.0",
+              "unit": "L",
+              "unit_price_minor": 28000,
+              "line_total_minor": 56000
+            },
+            {
+              "description": "Organic Arhar Tur Dal",
+              "quantity": "2.0",
+              "unit": "kg",
+              "unit_price_minor": 17000,
+              "line_total_minor": 34000
+            }
+          ],
+          "predicted": [
+            {
+              "description": "Indrayani Organic Rice",
+              "quantity": "5.0",
+              "unit": "kg",
+              "unit_price_minor": 8400,
+              "line_total_minor": 42000
+            },
+            {
+              "description": "Cold-Pressed Groundnut Oil",
+              "quantity": "2.0",
+              "unit": "L",
+              "unit_price_minor": 28000,
+              "line_total_minor": 56000
+            },
+            {
+              "description": "Organic Arhar Tur Dal",
+              "quantity": "2.0",
+              "unit": "kg",
+              "unit_price_minor": 17000,
+              "line_total_minor": 34000
+            }
+          ],
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "line_items",
+          "notes": "Matched all 3 line items (order-invariant)"
+        }
+      },
+      "metrics": {
+        "field_accuracy": 1.0,
+        "exact_match_rate": 1.0,
+        "normalized_match_rate": 1.0,
+        "numeric_date_accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "missing_field_rate": 0.0,
+        "extra_field_rate": 0.0,
+        "hallucinated_field_rate": 0.0,
+        "category_correct": true,
+        "database_tables_matched": true
+      },
+      "created_domain_records": [
+        {
+          "table": "expenses",
+          "id": "8c4b4dee-47f0-4d76-87ec-b60960eced37"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "document_id": "eval_0002",
+      "document_type": "UTILITY_BILL",
+      "domain": "bills_utilities",
+      "difficulty": "normal",
+      "status": "passed",
+      "expected_pipeline_status": "DB_UPDATED",
+      "actual_pipeline_status": "DB_UPDATED",
+      "detected_category": "UTILITY_BILL",
+      "field_results": {
+        "provider_name": {
+          "expected": "MSEDCL Mahavitaran",
+          "predicted": "MSEDCL Mahavitaran",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "utility_type": {
+          "expected": "ELECTRICITY",
+          "predicted": "ELECTRICITY",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "consumer_account_number": {
+          "expected": "170099887766",
+          "predicted": "170099887766",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "invoice_number": {
+          "expected": "MSEDCL-2026-09-4410",
+          "predicted": "MSEDCL-2026-09-4410",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "billing_period_start": {
+          "expected": "2026-08-16",
+          "predicted": "2026-08-16",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "date_iso",
+          "notes": "Normalized ISO date: 2026-08-16 vs 2026-08-16"
+        },
+        "billing_period_end": {
+          "expected": "2026-09-15",
+          "predicted": "2026-09-15",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "date_iso",
+          "notes": "Normalized ISO date: 2026-09-15 vs 2026-09-15"
+        },
+        "due_date": {
+          "expected": "2026-10-08",
+          "predicted": "2026-10-08",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "date_iso",
+          "notes": "Normalized ISO date: 2026-10-08 vs 2026-10-08"
+        },
+        "amount_due_minor": {
+          "expected": 418000,
+          "predicted": 418000,
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "numeric_tolerance",
+          "notes": "abs_diff=0.0000 (tolerance=0.01)"
+        },
+        "units_consumed": {
+          "expected": "362.500",
+          "predicted": "362.500",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "numeric_tolerance",
+          "notes": "abs_diff=0.0000 (tolerance=0.01)"
+        },
+        "unit_measure": {
+          "expected": "kWh",
+          "predicted": "kWh",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        }
+      },
+      "metrics": {
+        "field_accuracy": 1.0,
+        "exact_match_rate": 1.0,
+        "normalized_match_rate": 1.0,
+        "numeric_date_accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "missing_field_rate": 0.0,
+        "extra_field_rate": 0.0,
+        "hallucinated_field_rate": 0.0,
+        "category_correct": true,
+        "database_tables_matched": true
+      },
+      "created_domain_records": [
+        {
+          "table": "bills",
+          "id": "5acb82e0-1e44-4123-a7ab-438d9e4f4880"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "document_id": "eval_0003",
+      "document_type": "INVOICE",
+      "domain": "home_maintenance",
+      "difficulty": "normal",
+      "status": "passed",
+      "expected_pipeline_status": "DB_UPDATED",
+      "actual_pipeline_status": "DB_UPDATED",
+      "detected_category": "INVOICE",
+      "field_results": {
+        "vendor_name": {
+          "expected": "Pragati ElectroWorld Pvt Ltd",
+          "predicted": "Pragati ElectroWorld Pvt Ltd",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "invoice_number": {
+          "expected": "PEW-INV-2025-8821",
+          "predicted": "PEW-INV-2025-8821",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "invoice_date": {
+          "expected": "2025-04-15",
+          "predicted": "2025-04-15",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "date_iso",
+          "notes": "Normalized ISO date: 2025-04-15 vs 2025-04-15"
+        },
+        "due_date": {
+          "expected": null,
+          "predicted": null,
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "null_check",
+          "notes": "Both expected and predicted are null (no hallucination of missing optional field)"
+        },
+        "currency_code": {
+          "expected": "INR",
+          "predicted": "INR",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "subtotal_minor": {
+          "expected": 4830508,
+          "predicted": 4830508,
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "numeric_tolerance",
+          "notes": "abs_diff=0.0000 (tolerance=0.01)"
+        },
+        "tax_amount_minor": {
+          "expected": 869492,
+          "predicted": 869492,
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "numeric_tolerance",
+          "notes": "abs_diff=0.0000 (tolerance=0.01)"
+        },
+        "total_amount_minor": {
+          "expected": 5700000,
+          "predicted": 5700000,
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "numeric_tolerance",
+          "notes": "abs_diff=0.0000 (tolerance=0.01)"
+        },
+        "asset_brand": {
+          "expected": "Bosch",
+          "predicted": "Bosch",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "asset_model_number": {
+          "expected": "SMS66GI01I",
+          "predicted": "SMS66GI01I",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "asset_serial_number": {
+          "expected": "BSH-PUN-2025-99412",
+          "predicted": "BSH-PUN-2025-99412",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "line_items": {
+          "expected": [
+            {
+              "description": "Bosch Series 6 Freestanding Dishwasher",
+              "quantity": "1.0",
+              "unit": "unit",
+              "unit_price_minor": 4830508,
+              "line_total_minor": 4830508
+            }
+          ],
+          "predicted": [
+            {
+              "description": "Bosch Series 6 Freestanding Dishwasher",
+              "quantity": "1.0",
+              "unit": "unit",
+              "unit_price_minor": 4830508,
+              "line_total_minor": 4830508
+            }
+          ],
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "line_items",
+          "notes": "Matched all 1 line items (order-invariant)"
+        }
+      },
+      "metrics": {
+        "field_accuracy": 1.0,
+        "exact_match_rate": 1.0,
+        "normalized_match_rate": 1.0,
+        "numeric_date_accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "missing_field_rate": 0.0,
+        "extra_field_rate": 0.0,
+        "hallucinated_field_rate": 0.0,
+        "category_correct": true,
+        "database_tables_matched": true
+      },
+      "created_domain_records": [
+        {
+          "table": "expenses",
+          "id": "d9687f24-d7e5-4ea1-8d15-3abcf06741c5"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "document_id": "eval_0004",
+      "document_type": "WARRANTY_DOCUMENT",
+      "domain": "documents_warranty",
+      "difficulty": "normal",
+      "status": "passed",
+      "expected_pipeline_status": "DB_UPDATED",
+      "actual_pipeline_status": "DB_UPDATED",
+      "detected_category": "WARRANTY_DOCUMENT",
+      "field_results": {
+        "provider_name": {
+          "expected": "BSH Household Appliances Manufacturing Pvt Ltd",
+          "predicted": "BSH Household Appliances Manufacturing Pvt Ltd",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "product_name": {
+          "expected": "Bosch Series 6 Dishwasher",
+          "predicted": "Bosch Series 6 Dishwasher",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "brand": {
+          "expected": "Bosch",
+          "predicted": "Bosch",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "model_number": {
+          "expected": "SMS66GI01I",
+          "predicted": "SMS66GI01I",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "serial_number": {
+          "expected": "BSH-PUN-2025-99412",
+          "predicted": "BSH-PUN-2025-99412",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "contract_or_policy_number": {
+          "expected": "BSH-WR-2025-88412",
+          "predicted": "BSH-WR-2025-88412",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "start_date": {
+          "expected": "2025-04-15",
+          "predicted": "2025-04-15",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "date_iso",
+          "notes": "Normalized ISO date: 2025-04-15 vs 2025-04-15"
+        },
+        "end_date": {
+          "expected": "2027-04-14",
+          "predicted": "2027-04-14",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "date_iso",
+          "notes": "Normalized ISO date: 2027-04-14 vs 2027-04-14"
+        },
+        "covers_parts": {
+          "expected": true,
+          "predicted": true,
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "exact",
+          "notes": null
+        },
+        "covers_labor": {
+          "expected": true,
+          "predicted": true,
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "exact",
+          "notes": null
+        },
+        "coverage_limit_minor": {
+          "expected": 5700000,
+          "predicted": 5700000,
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "numeric_tolerance",
+          "notes": "abs_diff=0.0000 (tolerance=0.01)"
+        },
+        "support_contact_phone": {
+          "expected": "1800-266-1880",
+          "predicted": "1800-266-1880",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "support_contact_email": {
+          "expected": "service.in@bosch-home.example.com",
+          "predicted": "service.in@bosch-home.example.com",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "terms_summary": {
+          "expected": "24-month comprehensive manufacturer warranty covering electrical, motor, and control board defects.",
+          "predicted": "24-month comprehensive manufacturer warranty covering electrical, motor, and control board defects.",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        }
+      },
+      "metrics": {
+        "field_accuracy": 1.0,
+        "exact_match_rate": 1.0,
+        "normalized_match_rate": 1.0,
+        "numeric_date_accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "missing_field_rate": 0.0,
+        "extra_field_rate": 0.0,
+        "hallucinated_field_rate": 0.0,
+        "category_correct": true,
+        "database_tables_matched": true
+      },
+      "created_domain_records": [
+        {
+          "table": "warranties",
+          "id": "a44e0bdb-3367-4a2e-a072-3cdb5f15460c"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "document_id": "eval_0005",
+      "document_type": "SERVICE_INVOICE",
+      "domain": "vehicle_mobility",
+      "difficulty": "normal",
+      "status": "passed",
+      "expected_pipeline_status": "DB_UPDATED",
+      "actual_pipeline_status": "DB_UPDATED",
+      "detected_category": "SERVICE_INVOICE",
+      "field_results": {
+        "service_center_or_vendor": {
+          "expected": "Deccan AutoWorks Service Hub",
+          "predicted": "Deccan AutoWorks Service Hub",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "invoice_number": {
+          "expected": "DAW-SRV-2026-3319",
+          "predicted": "DAW-SRV-2026-3319",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "service_date": {
+          "expected": "2026-07-12",
+          "predicted": "2026-07-12",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "date_iso",
+          "notes": "Normalized ISO date: 2026-07-12 vs 2026-07-12"
+        },
+        "serviced_asset_name": {
+          "expected": "Honda City e:HEV ZX",
+          "predicted": "Honda City e:HEV ZX",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "asset_identifier": {
+          "expected": "MH-12-AB-9090",
+          "predicted": "MH-12-AB-9090",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "maintenance_type": {
+          "expected": "PREVENTIVE_SERVICE",
+          "predicted": "PREVENTIVE_SERVICE",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "work_summary": {
+          "expected": "15,000 km Periodic Synthetic Oil, Hybrid Transaxle Fluid & Cabin Filter Replacement",
+          "predicted": "15,000 km Periodic Synthetic Oil, Hybrid Transaxle Fluid & Cabin Filter Replacement",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "odometer_reading_km": {
+          "expected": 16650,
+          "predicted": 16650,
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "numeric_tolerance",
+          "notes": "abs_diff=0.0000 (tolerance=0.01)"
+        },
+        "labor_cost_minor": {
+          "expected": 240000,
+          "predicted": 240000,
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "numeric_tolerance",
+          "notes": "abs_diff=0.0000 (tolerance=0.01)"
+        },
+        "parts_cost_minor": {
+          "expected": 485000,
+          "predicted": 485000,
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "numeric_tolerance",
+          "notes": "abs_diff=0.0000 (tolerance=0.01)"
+        },
+        "total_cost_minor": {
+          "expected": 725000,
+          "predicted": 725000,
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "numeric_tolerance",
+          "notes": "abs_diff=0.0000 (tolerance=0.01)"
+        },
+        "covered_under_warranty": {
+          "expected": false,
+          "predicted": false,
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "exact",
+          "notes": null
+        },
+        "next_recommended_service_date": {
+          "expected": "2027-01-12",
+          "predicted": "2027-01-12",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "date_iso",
+          "notes": "Normalized ISO date: 2027-01-12 vs 2027-01-12"
+        }
+      },
+      "metrics": {
+        "field_accuracy": 1.0,
+        "exact_match_rate": 1.0,
+        "normalized_match_rate": 1.0,
+        "numeric_date_accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "missing_field_rate": 0.0,
+        "extra_field_rate": 0.0,
+        "hallucinated_field_rate": 0.0,
+        "category_correct": true,
+        "database_tables_matched": true
+      },
+      "created_domain_records": [
+        {
+          "table": "maintenance_records",
+          "id": "9091026c-71f2-45e7-844c-7dafe9980c03"
+        },
+        {
+          "table": "expenses",
+          "id": "fad84ac2-adfd-4b67-9b90-b2065d35630a"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "document_id": "eval_0006",
+      "document_type": "INSURANCE_DOCUMENT",
+      "domain": "documents_warranty",
+      "difficulty": "normal",
+      "status": "passed",
+      "expected_pipeline_status": "DB_UPDATED",
+      "actual_pipeline_status": "DB_UPDATED",
+      "detected_category": "INSURANCE_DOCUMENT",
+      "field_results": {
+        "insurer_name": {
+          "expected": "BharatShield General Insurance Co. Ltd.",
+          "predicted": "BharatShield General Insurance Co. Ltd.",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "policy_number": {
+          "expected": "BSGI/MOT/2025/9001882",
+          "predicted": "BSGI/MOT/2025/9001882",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "insurance_type": {
+          "expected": "MOTOR_COMPREHENSIVE",
+          "predicted": "MOTOR_COMPREHENSIVE",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "insured_asset_identifier": {
+          "expected": "MH-12-AB-9090",
+          "predicted": "MH-12-AB-9090",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "start_date": {
+          "expected": "2025-11-10",
+          "predicted": "2025-11-10",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "date_iso",
+          "notes": "Normalized ISO date: 2025-11-10 vs 2025-11-10"
+        },
+        "end_date": {
+          "expected": "2026-11-09",
+          "predicted": "2026-11-09",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "date_iso",
+          "notes": "Normalized ISO date: 2026-11-09 vs 2026-11-09"
+        },
+        "sum_insured_minor": {
+          "expected": 165000000,
+          "predicted": 165000000,
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "numeric_tolerance",
+          "notes": "abs_diff=0.0000 (tolerance=0.01)"
+        },
+        "premium_amount_minor": {
+          "expected": 2480000,
+          "predicted": 2480000,
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "numeric_tolerance",
+          "notes": "abs_diff=0.0000 (tolerance=0.01)"
+        },
+        "deductible_minor": {
+          "expected": 100000,
+          "predicted": 100000,
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "numeric_tolerance",
+          "notes": "abs_diff=0.0000 (tolerance=0.01)"
+        },
+        "tpa_or_claim_helpline": {
+          "expected": "1800-102-9090",
+          "predicted": "1800-102-9090",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        }
+      },
+      "metrics": {
+        "field_accuracy": 1.0,
+        "exact_match_rate": 1.0,
+        "normalized_match_rate": 1.0,
+        "numeric_date_accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "missing_field_rate": 0.0,
+        "extra_field_rate": 0.0,
+        "hallucinated_field_rate": 0.0,
+        "category_correct": true,
+        "database_tables_matched": true
+      },
+      "created_domain_records": [
+        {
+          "table": "insurance_policies",
+          "id": "83bc0aee-fcf0-4883-be98-3c34e6ce9fcd"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "document_id": "eval_0007",
+      "document_type": "RECEIPT",
+      "domain": "kitchen_grocery",
+      "difficulty": "hard",
+      "status": "passed",
+      "expected_pipeline_status": "DB_UPDATED",
+      "actual_pipeline_status": "DB_UPDATED",
+      "detected_category": "RECEIPT",
+      "field_results": {
+        "merchant_name": {
+          "expected": "Deccan Organic Provision Store",
+          "predicted": "Deccan   Organic  Provision Store.",
+          "exact_match": false,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "receipt_number": {
+          "expected": "DOPS/26/771",
+          "predicted": "DOPS/26/771",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "transaction_date": {
+          "expected": "2026-09-15",
+          "predicted": "2026-09-15",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "date_iso",
+          "notes": "Normalized ISO date: 2026-09-15 vs 2026-09-15"
+        },
+        "currency_code": {
+          "expected": "INR",
+          "predicted": "INR",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "payment_method": {
+          "expected": "CARD",
+          "predicted": "CARD",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "total_amount_minor": {
+          "expected": 135000,
+          "predicted": 135000,
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "numeric_tolerance",
+          "notes": "abs_diff=0.0000 (tolerance=0.01)"
+        },
+        "tax_amount_minor": {
+          "expected": null,
+          "predicted": null,
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "null_check",
+          "notes": "Both expected and predicted are null (no hallucination of missing optional field)"
+        },
+        "line_items": {
+          "expected": [
+            {
+              "description": "A2 Gir Cow Ghee",
+              "quantity": "1.0",
+              "unit": "L",
+              "unit_price_minor": 89000,
+              "line_total_minor": 89000
+            },
+            {
+              "description": "Organic Jaggery Powder",
+              "quantity": "2.0",
+              "unit": "kg",
+              "unit_price_minor": 11000,
+              "line_total_minor": 22000
+            },
+            {
+              "description": "Roasted Foxnuts (Makhana)",
+              "quantity": "1.0",
+              "unit": "pack",
+              "unit_price_minor": 24000,
+              "line_total_minor": 24000
+            }
+          ],
+          "predicted": [
+            {
+              "description": "Roasted Foxnuts (Makhana)",
+              "quantity": "1.0",
+              "unit": "pack",
+              "unit_price_minor": 24000,
+              "line_total_minor": 24000
+            },
+            {
+              "description": "A2 Gir Cow Ghee",
+              "quantity": "1.0",
+              "unit": "L",
+              "unit_price_minor": 89000,
+              "line_total_minor": 89000
+            },
+            {
+              "description": "Organic Jaggery Powder",
+              "quantity": "2.0",
+              "unit": "kg",
+              "unit_price_minor": 11000,
+              "line_total_minor": 22000
+            }
+          ],
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "line_items",
+          "notes": "Matched all 3 line items (order-invariant)"
+        }
+      },
+      "metrics": {
+        "field_accuracy": 1.0,
+        "exact_match_rate": 0.875,
+        "normalized_match_rate": 1.0,
+        "numeric_date_accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "missing_field_rate": 0.0,
+        "extra_field_rate": 0.0,
+        "hallucinated_field_rate": 0.0,
+        "category_correct": true,
+        "database_tables_matched": true
+      },
+      "created_domain_records": [
+        {
+          "table": "expenses",
+          "id": "683288ea-2f54-4e7b-9093-0f18f9e0da9f"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "document_id": "eval_0008",
+      "document_type": "SERVICE_INVOICE",
+      "domain": "home_maintenance",
+      "difficulty": "hard",
+      "status": "passed",
+      "expected_pipeline_status": "DB_UPDATED",
+      "actual_pipeline_status": "DB_UPDATED",
+      "detected_category": "SERVICE_INVOICE",
+      "field_results": {
+        "service_center_or_vendor": {
+          "expected": "CoolBreeze HVAC Authorized Care",
+          "predicted": "CoolBreeze HVAC Authorized Care",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "invoice_number": {
+          "expected": null,
+          "predicted": null,
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "null_check",
+          "notes": "Both expected and predicted are null (no hallucination of missing optional field)"
+        },
+        "service_date": {
+          "expected": "2026-08-20",
+          "predicted": "2026-08-20",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "date_iso",
+          "notes": "Normalized ISO date: 2026-08-20 vs 2026-08-20"
+        },
+        "serviced_asset_name": {
+          "expected": "Daikin 1.5 Ton 5-Star Inverter Split AC",
+          "predicted": "Daikin 1.5 Ton 5-Star Inverter Split AC",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "asset_identifier": {
+          "expected": null,
+          "predicted": null,
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "null_check",
+          "notes": "Both expected and predicted are null (no hallucination of missing optional field)"
+        },
+        "maintenance_type": {
+          "expected": "PREVENTIVE_SERVICE",
+          "predicted": "PREVENTIVE_SERVICE",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "work_summary": {
+          "expected": "Wet Jet Coil Cleaning, Drain Line Flush & Refrigerant Pressure Check",
+          "predicted": "Wet Jet Coil Cleaning, Drain Line Flush & Refrigerant Pressure Check",
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "normalized_text",
+          "notes": null
+        },
+        "odometer_reading_km": {
+          "expected": null,
+          "predicted": null,
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "null_check",
+          "notes": "Both expected and predicted are null (no hallucination of missing optional field)"
+        },
+        "labor_cost_minor": {
+          "expected": 69900,
+          "predicted": 69900,
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "numeric_tolerance",
+          "notes": "abs_diff=0.0000 (tolerance=0.01)"
+        },
+        "parts_cost_minor": {
+          "expected": 0,
+          "predicted": 0,
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "numeric_tolerance",
+          "notes": "abs_diff=0.0000 (tolerance=0.01)"
+        },
+        "total_cost_minor": {
+          "expected": 69900,
+          "predicted": 69900,
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "numeric_tolerance",
+          "notes": "abs_diff=0.0000 (tolerance=0.01)"
+        },
+        "covered_under_warranty": {
+          "expected": false,
+          "predicted": false,
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "exact",
+          "notes": null
+        },
+        "next_recommended_service_date": {
+          "expected": null,
+          "predicted": null,
+          "exact_match": true,
+          "normalized_match": true,
+          "match": true,
+          "comparison_mode": "null_check",
+          "notes": "Both expected and predicted are null (no hallucination of missing optional field)"
+        }
+      },
+      "metrics": {
+        "field_accuracy": 1.0,
+        "exact_match_rate": 1.0,
+        "normalized_match_rate": 1.0,
+        "numeric_date_accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "missing_field_rate": 0.0,
+        "extra_field_rate": 0.0,
+        "hallucinated_field_rate": 0.0,
+        "category_correct": true,
+        "database_tables_matched": true
+      },
+      "created_domain_records": [
+        {
+          "table": "maintenance_records",
+          "id": "aeb6a282-cad7-46bb-9683-082f8c04b9d8"
+        },
+        {
+          "table": "expenses",
+          "id": "accb4004-1fc5-4edf-b435-ad4c0d18b6c0"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "document_id": "eval_0009",
+      "document_type": "INVOICE",
+      "domain": "expense_budget",
+      "difficulty": "adversarial",
+      "status": "passed",
+      "expected_pipeline_status": "FAILED",
+      "actual_pipeline_status": "FAILED",
+      "detected_category": "INVOICE",
+      "field_results": {},
+      "metrics": {
+        "field_accuracy": 1.0,
+        "exact_match_rate": 1.0,
+        "normalized_match_rate": 1.0,
+        "numeric_date_accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "missing_field_rate": 0.0,
+        "extra_field_rate": 0.0,
+        "hallucinated_field_rate": 0.0,
+        "category_correct": true,
+        "database_tables_matched": true
+      },
+      "created_domain_records": [],
+      "errors": [
+        {
+          "category": "VALIDATION_ERROR",
+          "stage": "validation",
+          "message": "Line item totals grossly exceed extracted invoice total.",
+          "expected_failure": true
+        }
+      ]
+    },
+    {
+      "document_id": "eval_0010",
+      "document_type": "INSURANCE_DOCUMENT",
+      "domain": "documents_warranty",
+      "difficulty": "adversarial",
+      "status": "passed",
+      "expected_pipeline_status": "FAILED",
+      "actual_pipeline_status": "FAILED",
+      "detected_category": "INSURANCE_DOCUMENT",
+      "field_results": {},
+      "metrics": {
+        "field_accuracy": 1.0,
+        "exact_match_rate": 1.0,
+        "normalized_match_rate": 1.0,
+        "numeric_date_accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "missing_field_rate": 0.0,
+        "extra_field_rate": 0.0,
+        "hallucinated_field_rate": 0.0,
+        "category_correct": true,
+        "database_tables_matched": true
+      },
+      "created_domain_records": [],
+      "errors": [
+        {
+          "category": "OCR_ERROR",
+          "stage": "validation",
+          "message": "Extraction confidence 0.48 is below minimum threshold 0.70.",
+          "expected_failure": true
+        }
+      ]
+    }
+  ],
+  "rag_evaluation_summary": {
+    "total_queries": 6.0,
+    "retrieval_relevance": 1.0,
+    "source_citation_correctness": 1.0,
+    "factual_correctness": 1.0,
+    "groundedness": 1.0,
+    "hallucination_rate": 0.0
+  },
+  "rag_results": [
+    {
+      "case_id": "rag_01",
+      "question": "When does my Bosch dishwasher warranty expire?",
+      "domain": "documents_warranty",
+      "expected_answer_facts": [
+        "2027-04-14",
+        "BSH-WR-2025-88412"
+      ],
+      "expected_source_documents": [
+        "Bosch Series 6 Dishwasher Tax Invoice & Warranty Card"
+      ],
+      "expected_database_entities": [
+        "warranties",
+        "documents"
+      ],
+      "retrieved_document_ids": [
+        "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaa01"
+      ],
+      "cited_record_ids": [
+        "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbb01"
+      ],
+      "retrieval_relevance": 1.0,
+      "source_citation_correctness": 1.0,
+      "factual_correctness": 1.0,
+      "groundedness": 1.0,
+      "hallucination_or_unsupported_rate": 0.0,
+      "status": "passed"
+    },
+    {
+      "case_id": "rag_02",
+      "question": "How much did we spend on groceries and what is our monthly budget?",
+      "domain": "expense_budget",
+      "expected_answer_facts": [
+        "8500000"
+      ],
+      "expected_source_documents": [],
+      "expected_database_entities": [
+        "households",
+        "expenses"
+      ],
+      "retrieved_document_ids": [
+        "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaa01"
+      ],
+      "cited_record_ids": [
+        "22222222-2222-4222-8222-222222222201"
+      ],
+      "retrieval_relevance": 1.0,
+      "source_citation_correctness": 1.0,
+      "factual_correctness": 1.0,
+      "groundedness": 1.0,
+      "hallucination_or_unsupported_rate": 0.0,
+      "status": "passed"
+    },
+    {
+      "case_id": "rag_03",
+      "question": "When is our Bosch dishwasher appliance maintenance due?",
+      "domain": "home_maintenance",
+      "expected_answer_facts": [
+        "2026-10-10"
+      ],
+      "expected_source_documents": [],
+      "expected_database_entities": [
+        "appliances",
+        "maintenance_records"
+      ],
+      "retrieved_document_ids": [
+        "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaa01"
+      ],
+      "cited_record_ids": [
+        "55555555-5555-4555-8555-555555555501"
+      ],
+      "retrieval_relevance": 1.0,
+      "source_citation_correctness": 1.0,
+      "factual_correctness": 1.0,
+      "groundedness": 1.0,
+      "hallucination_or_unsupported_rate": 0.0,
+      "status": "passed"
+    },
+    {
+      "case_id": "rag_04",
+      "question": "When is the MSEDCL electricity bill due?",
+      "domain": "bills_utilities",
+      "expected_answer_facts": [
+        "2026-10-08",
+        "418000"
+      ],
+      "expected_source_documents": [],
+      "expected_database_entities": [
+        "bills"
+      ],
+      "retrieved_document_ids": [
+        "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaa01"
+      ],
+      "cited_record_ids": [
+        "dddddddd-dddd-4ddd-8ddd-dddddddddd01"
+      ],
+      "retrieval_relevance": 1.0,
+      "source_citation_correctness": 1.0,
+      "factual_correctness": 1.0,
+      "groundedness": 1.0,
+      "hallucination_or_unsupported_rate": 0.0,
+      "status": "passed"
+    },
+    {
+      "case_id": "rag_05",
+      "question": "What is our Honda City vehicle odometer and service status?",
+      "domain": "vehicle_mobility",
+      "expected_answer_facts": [
+        "18420",
+        "MH-12-UW-4491"
+      ],
+      "expected_source_documents": [],
+      "expected_database_entities": [
+        "vehicles"
+      ],
+      "retrieved_document_ids": [
+        "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaa02"
+      ],
+      "cited_record_ids": [
+        "66666666-6666-4666-8666-666666666601"
+      ],
+      "retrieval_relevance": 1.0,
+      "source_citation_correctness": 1.0,
+      "factual_correctness": 1.0,
+      "groundedness": 1.0,
+      "hallucination_or_unsupported_rate": 0.0,
+      "status": "passed"
+    },
+    {
+      "case_id": "rag_06",
+      "question": "Which recurring household subscription or utility expense is active?",
+      "domain": "bills_utilities",
+      "expected_answer_facts": [
+        "418000"
+      ],
+      "expected_source_documents": [],
+      "expected_database_entities": [
+        "bills"
+      ],
+      "retrieved_document_ids": [
+        "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaa01"
+      ],
+      "cited_record_ids": [
+        "dddddddd-dddd-4ddd-8ddd-dddddddddd01"
+      ],
+      "retrieval_relevance": 1.0,
+      "source_citation_correctness": 1.0,
+      "factual_correctness": 1.0,
+      "groundedness": 1.0,
+      "hallucination_or_unsupported_rate": 0.0,
+      "status": "passed"
+    }
+  ],
+  "agent_results": [
+    {
+      "domain": "kitchen_grocery",
+      "agent_name": "Kitchen & Grocery Agent",
+      "test_query": "Check our pantry stock and grocery shopping list.",
+      "correct_routing": true,
+      "correct_tool_selection": true,
+      "correct_database_updates_or_reads": true,
+      "correct_event_generation": true,
+      "refusal_of_unsupported_operations": true,
+      "correct_household_isolation": true,
+      "error_handling_verified": true,
+      "status": "passed"
+    },
+    {
+      "domain": "laundry_clothing",
+      "agent_name": "Laundry & Clothing Agent",
+      "test_query": "How should we wash the silk kurta in our wardrobe?",
+      "correct_routing": true,
+      "correct_tool_selection": true,
+      "correct_database_updates_or_reads": true,
+      "correct_event_generation": true,
+      "refusal_of_unsupported_operations": true,
+      "correct_household_isolation": true,
+      "error_handling_verified": true,
+      "status": "passed"
+    },
+    {
+      "domain": "home_maintenance",
+      "agent_name": "Home Maintenance Agent",
+      "test_query": "When is our Bosch dishwasher appliance maintenance due?",
+      "correct_routing": true,
+      "correct_tool_selection": true,
+      "correct_database_updates_or_reads": true,
+      "correct_event_generation": true,
+      "refusal_of_unsupported_operations": true,
+      "correct_household_isolation": true,
+      "error_handling_verified": true,
+      "status": "passed"
+    },
+    {
+      "domain": "bills_utilities",
+      "agent_name": "Bills & Utilities Agent",
+      "test_query": "Audit our pending MSEDCL electricity utility bill.",
+      "correct_routing": true,
+      "correct_tool_selection": true,
+      "correct_database_updates_or_reads": true,
+      "correct_event_generation": true,
+      "refusal_of_unsupported_operations": true,
+      "correct_household_isolation": true,
+      "error_handling_verified": true,
+      "status": "passed"
+    },
+    {
+      "domain": "expense_budget",
+      "agent_name": "Expense & Budget Agent",
+      "test_query": "What is our monthly household budget and expense ledger spend?",
+      "correct_routing": true,
+      "correct_tool_selection": true,
+      "correct_database_updates_or_reads": true,
+      "correct_event_generation": true,
+      "refusal_of_unsupported_operations": true,
+      "correct_household_isolation": true,
+      "error_handling_verified": true,
+      "status": "passed"
+    },
+    {
+      "domain": "vehicle_mobility",
+      "agent_name": "Vehicle & Mobility Agent",
+      "test_query": "Check our Honda car odometer and PUC compliance status.",
+      "correct_routing": true,
+      "correct_tool_selection": true,
+      "correct_database_updates_or_reads": true,
+      "correct_event_generation": true,
+      "refusal_of_unsupported_operations": true,
+      "correct_household_isolation": true,
+      "error_handling_verified": true,
+      "status": "passed"
+    },
+    {
+      "domain": "documents_warranty",
+      "agent_name": "Documents, Warranty & Insurance Agent",
+      "test_query": "Verify our active warranty certificates and insurance policy coverage.",
+      "correct_routing": true,
+      "correct_tool_selection": true,
+      "correct_database_updates_or_reads": true,
+      "correct_event_generation": true,
+      "refusal_of_unsupported_operations": true,
+      "correct_household_isolation": true,
+      "error_handling_verified": true,
+      "status": "passed"
+    }
+  ],
+  "end_to_end_results": [
+    {
+      "scenario_id": "Scenario_A",
+      "title": "Grocery Receipt \u2192 Extraction \u2192 Validation \u2192 Expense DB \u2192 Event \u2192 Kitchen Agent \u2192 RAG",
+      "stages_verified": [
+        "document_upload",
+        "gemini_structured_extraction",
+        "pydantic_validation",
+        "expenses_db_insert",
+        "event_bus_GROCERY_PURCHASED",
+        "kitchen_grocery_agent_execution"
+      ],
+      "created_entities": {
+        "document_id": "eval_0001",
+        "expense_id": "8c4b4dee-47f0-4d76-87ec-b60960eced37"
+      },
+      "emitted_events": [
+        "document.intelligence.completed",
+        "GROCERY_PURCHASED"
+      ],
+      "status": "passed",
+      "details": "Extracted \u20b91,320.00 across 3 grocery line items and verified grounded pantry facts."
+    },
+    {
+      "scenario_id": "Scenario_B",
+      "title": "Appliance Invoice & Warranty \u2192 Asset Link \u2192 Warranty & Expense DB \u2192 Event \u2192 Proactive Warranty Reminder",
+      "stages_verified": [
+        "appliance_invoice_extraction",
+        "warranty_certificate_extraction",
+        "asset_foreign_key_linking",
+        "proactive_warranty_expiry_reminder"
+      ],
+      "created_entities": {
+        "invoice_document_id": "eval_0003",
+        "warranty_document_id": "eval_0004",
+        "warranty_id": "a44e0bdb-3367-4a2e-a072-3cdb5f15460c"
+      },
+      "emitted_events": [
+        "document.intelligence.completed",
+        "proactive.evaluation.completed"
+      ],
+      "status": "passed",
+      "details": "Linked Bosch Series 6 invoice (\u20b957,000) and 24-month warranty to ASSET_DISHWASHER_ID and verified proactive expiry reminder."
+    },
+    {
+      "scenario_id": "Scenario_C",
+      "title": "Utility Bill \u2192 Bill DB Record \u2192 Due-Date Window \u2192 Event \u2192 Proactive Reminder",
+      "stages_verified": [
+        "utility_bill_extraction",
+        "bills_db_insert",
+        "due_date_countdown_rule",
+        "proactive_reminder_creation"
+      ],
+      "created_entities": {
+        "document_id": "eval_0002",
+        "bill_id": "5acb82e0-1e44-4123-a7ab-438d9e4f4880"
+      },
+      "emitted_events": [
+        "document.intelligence.completed",
+        "BILL_DUE"
+      ],
+      "status": "passed",
+      "details": "Persisted MSEDCL bill (\u20b94,180.00 due 2026-10-08) and verified proactive reminder generation."
+    },
+    {
+      "scenario_id": "Scenario_D",
+      "title": "Vehicle Service Invoice \u2192 Vehicle Asset \u2192 MaintenanceRecord & Expense DB \u2192 SERVICE_COMPLETED Event",
+      "stages_verified": [
+        "service_invoice_extraction",
+        "maintenance_records_db_insert",
+        "expenses_db_insert",
+        "asset_tco_sql_rollup",
+        "event_bus_SERVICE_COMPLETED"
+      ],
+      "created_entities": {
+        "document_id": "eval_0005",
+        "maintenance_record_id": "9091026c-71f2-45e7-844c-7dafe9980c03",
+        "expense_id": "fad84ac2-adfd-4b67-9b90-b2065d35630a"
+      },
+      "emitted_events": [
+        "document.intelligence.completed",
+        "SERVICE_COMPLETED"
+      ],
+      "status": "passed",
+      "details": "Created MaintenanceRecord + Expense (\u20b97,250.00) for Honda City e:HEV and verified deterministic vehicle TCO rollup."
+    }
+  ]
+}

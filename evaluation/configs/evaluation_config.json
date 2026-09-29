@@ -1,0 +1,21 @@
+{
+  "framework_version": "1.0.0",
+  "manifest_path": "datasets/evaluation/manifests/evaluation_manifest.json",
+  "ground_truth_dir": "datasets/evaluation/ground_truth",
+  "documents_dir": "datasets/evaluation/documents",
+  "results_dir": "evaluation/results",
+  "reports_dir": "evaluation/reports",
+  "pipeline_settings": {
+    "min_confidence_threshold": 0.70,
+    "max_retries": 3,
+    "numeric_tolerance": 0.01,
+    "supported_categories": [
+      "RECEIPT",
+      "INVOICE",
+      "UTILITY_BILL",
+      "WARRANTY_DOCUMENT",
+      "INSURANCE_DOCUMENT",
+      "SERVICE_INVOICE"
+    ]
+  }
+}

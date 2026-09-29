@@ -1,0 +1,14 @@
+{
+  "document_id": "eval_0009",
+  "expected_category": "INVOICE",
+  "expected_status": "FAILED",
+  "expected_error_category": "VALIDATION_ERROR",
+  "expected_domain_tables": [],
+  "fields": {
+    "vendor_name": "GlitchTronics Retail",
+    "invoice_number": "GT-ERR-909",
+    "invoice_date": "2026-09-01",
+    "currency_code": "INR",
+    "total_amount_minor": 1000000
+  }
+}

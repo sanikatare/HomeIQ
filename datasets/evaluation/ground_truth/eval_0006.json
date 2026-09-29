@@ -1,0 +1,19 @@
+{
+  "document_id": "eval_0006",
+  "expected_category": "INSURANCE_DOCUMENT",
+  "expected_status": "DB_UPDATED",
+  "expected_error_category": null,
+  "expected_domain_tables": ["insurance_policies"],
+  "fields": {
+    "insurer_name": "BharatShield General Insurance Co. Ltd.",
+    "policy_number": "BSGI/MOT/2025/9001882",
+    "insurance_type": "MOTOR_COMPREHENSIVE",
+    "insured_asset_identifier": "MH-12-AB-9090",
+    "start_date": "2025-11-10",
+    "end_date": "2026-11-09",
+    "sum_insured_minor": 165000000,
+    "premium_amount_minor": 2480000,
+    "deductible_minor": 100000,
+    "tpa_or_claim_helpline": "1800-102-9090"
+  }
+}

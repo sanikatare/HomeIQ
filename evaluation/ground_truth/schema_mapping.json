@@ -1,0 +1,114 @@
+{
+  "schema_source": "backend/app/schemas/document_extraction.py",
+  "category_mappings": {
+    "grocery_receipt": {
+      "homeiq_enum": "RECEIPT",
+      "pydantic_schema": "ReceiptExtractionSchema",
+      "target_tables": ["expenses"],
+      "evaluated_fields": [
+        "merchant_name",
+        "receipt_number",
+        "transaction_date",
+        "currency_code",
+        "payment_method",
+        "total_amount_minor",
+        "tax_amount_minor",
+        "line_items"
+      ]
+    },
+    "appliance_invoice": {
+      "homeiq_enum": "INVOICE",
+      "pydantic_schema": "InvoiceExtractionSchema",
+      "target_tables": ["expenses"],
+      "evaluated_fields": [
+        "vendor_name",
+        "invoice_number",
+        "invoice_date",
+        "due_date",
+        "currency_code",
+        "subtotal_minor",
+        "tax_amount_minor",
+        "total_amount_minor",
+        "asset_brand",
+        "asset_model_number",
+        "asset_serial_number",
+        "line_items"
+      ]
+    },
+    "utility_bill": {
+      "homeiq_enum": "UTILITY_BILL",
+      "pydantic_schema": "UtilityBillExtractionSchema",
+      "target_tables": ["bills"],
+      "evaluated_fields": [
+        "provider_name",
+        "utility_type",
+        "consumer_account_number",
+        "invoice_number",
+        "billing_period_start",
+        "billing_period_end",
+        "due_date",
+        "amount_due_minor",
+        "units_consumed",
+        "unit_measure"
+      ]
+    },
+    "warranty_document": {
+      "homeiq_enum": "WARRANTY_DOCUMENT",
+      "pydantic_schema": "WarrantyExtractionSchema",
+      "target_tables": ["warranties"],
+      "evaluated_fields": [
+        "provider_name",
+        "product_name",
+        "brand",
+        "model_number",
+        "serial_number",
+        "contract_or_policy_number",
+        "start_date",
+        "end_date",
+        "covers_parts",
+        "covers_labor",
+        "coverage_limit_minor",
+        "support_contact_phone",
+        "support_contact_email",
+        "terms_summary"
+      ]
+    },
+    "insurance_document": {
+      "homeiq_enum": "INSURANCE_DOCUMENT",
+      "pydantic_schema": "InsuranceExtractionSchema",
+      "target_tables": ["insurance_policies"],
+      "evaluated_fields": [
+        "insurer_name",
+        "policy_number",
+        "insurance_type",
+        "insured_asset_identifier",
+        "start_date",
+        "end_date",
+        "sum_insured_minor",
+        "premium_amount_minor",
+        "deductible_minor",
+        "tpa_or_claim_helpline"
+      ]
+    },
+    "vehicle_or_maintenance_service_invoice": {
+      "homeiq_enum": "SERVICE_INVOICE",
+      "pydantic_schema": "ServiceInvoiceExtractionSchema",
+      "target_tables": ["maintenance_records", "expenses"],
+      "evaluated_fields": [
+        "service_center_or_vendor",
+        "invoice_number",
+        "service_date",
+        "serviced_asset_name",
+        "asset_identifier",
+        "maintenance_type",
+        "work_summary",
+        "odometer_reading_km",
+        "labor_cost_minor",
+        "parts_cost_minor",
+        "total_cost_minor",
+        "covered_under_warranty",
+        "next_recommended_service_date"
+      ]
+    }
+  }
+}

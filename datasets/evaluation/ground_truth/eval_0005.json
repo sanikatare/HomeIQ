@@ -1,0 +1,22 @@
+{
+  "document_id": "eval_0005",
+  "expected_category": "SERVICE_INVOICE",
+  "expected_status": "DB_UPDATED",
+  "expected_error_category": null,
+  "expected_domain_tables": ["maintenance_records", "expenses"],
+  "fields": {
+    "service_center_or_vendor": "Deccan AutoWorks Service Hub",
+    "invoice_number": "DAW-SRV-2026-3319",
+    "service_date": "2026-07-12",
+    "serviced_asset_name": "Honda City e:HEV ZX",
+    "asset_identifier": "MH-12-AB-9090",
+    "maintenance_type": "PREVENTIVE_SERVICE",
+    "work_summary": "15,000 km Periodic Synthetic Oil, Hybrid Transaxle Fluid & Cabin Filter Replacement",
+    "odometer_reading_km": 16650,
+    "labor_cost_minor": 240000,
+    "parts_cost_minor": 485000,
+    "total_cost_minor": 725000,
+    "covered_under_warranty": false,
+    "next_recommended_service_date": "2027-01-12"
+  }
+}

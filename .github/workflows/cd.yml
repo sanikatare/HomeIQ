@@ -1,0 +1,56 @@
+name: HomeIQ Main Branch CD (Docker Build, Scan, Artifact Registry & Cloud Run Deploy)
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  GCP_REGION: asia-south1
+  GAR_REPOSITORY: homeiq-containers
+
+jobs:
+  verify-and-build-containers:
+    name: Run All PR Checks & Build Production Docker Images
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Execute Stdlib Evaluation & Reliability Gate
+        run: python3 -m unittest discover -s evaluation -v
+
+      - name: Build Production Backend Docker Image
+        run: |
+          docker build --target production -t homeiq-backend:${{ github.sha }} ./backend
+
+      - name: Build Production Frontend Docker Image
+        run: |
+          docker build --target production -t homeiq-frontend:${{ github.sha }} -f ./frontend/Dockerfile .
+
+      - name: Deploy to Google Cloud Run (Only When WIF Credentials Configured)
+        if: ${{ vars.GCP_PROJECT_ID != '' && vars.GCP_WORKLOAD_IDENTITY_PROVIDER != '' }}
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOYER_SERVICE_ACCOUNT }}
+
+      - name: Push to Artifact Registry & Rollout Cloud Run Revision
+        if: ${{ vars.GCP_PROJECT_ID != '' && vars.GCP_WORKLOAD_IDENTITY_PROVIDER != '' }}
+        run: |
+          gcloud auth configure-docker ${{ env.GCP_REGION }}-docker.pkg.dev --quiet
+          IMAGE_URI="${{ env.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ env.GAR_REPOSITORY }}/backend:${{ github.sha }}"
+          docker tag homeiq-backend:${{ github.sha }} "${IMAGE_URI}"
+          docker push "${IMAGE_URI}"
+          gcloud run deploy homeiq-production-backend \
+            --image="${IMAGE_URI}" \
+            --region="${{ env.GCP_REGION }}" \
+            --platform=managed \
+            --quiet

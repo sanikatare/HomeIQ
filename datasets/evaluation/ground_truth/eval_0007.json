@@ -1,0 +1,39 @@
+{
+  "document_id": "eval_0007",
+  "expected_category": "RECEIPT",
+  "expected_status": "DB_UPDATED",
+  "expected_error_category": null,
+  "expected_domain_tables": ["expenses"],
+  "fields": {
+    "merchant_name": "Deccan Organic Provision Store",
+    "receipt_number": "DOPS/26/771",
+    "transaction_date": "2026-09-15",
+    "currency_code": "INR",
+    "payment_method": "CARD",
+    "total_amount_minor": 135000,
+    "tax_amount_minor": null,
+    "line_items": [
+      {
+        "description": "A2 Gir Cow Ghee",
+        "quantity": "1.0",
+        "unit": "L",
+        "unit_price_minor": 89000,
+        "line_total_minor": 89000
+      },
+      {
+        "description": "Organic Jaggery Powder",
+        "quantity": "2.0",
+        "unit": "kg",
+        "unit_price_minor": 11000,
+        "line_total_minor": 22000
+      },
+      {
+        "description": "Roasted Foxnuts (Makhana)",
+        "quantity": "1.0",
+        "unit": "pack",
+        "unit_price_minor": 24000,
+        "line_total_minor": 24000
+      }
+    ]
+  }
+}

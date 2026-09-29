@@ -1,0 +1,23 @@
+{
+  "document_id": "eval_0004",
+  "expected_category": "WARRANTY_DOCUMENT",
+  "expected_status": "DB_UPDATED",
+  "expected_error_category": null,
+  "expected_domain_tables": ["warranties"],
+  "fields": {
+    "provider_name": "BSH Household Appliances Manufacturing Pvt Ltd",
+    "product_name": "Bosch Series 6 Dishwasher",
+    "brand": "Bosch",
+    "model_number": "SMS66GI01I",
+    "serial_number": "BSH-PUN-2025-99412",
+    "contract_or_policy_number": "BSH-WR-2025-88412",
+    "start_date": "2025-04-15",
+    "end_date": "2027-04-14",
+    "covers_parts": true,
+    "covers_labor": true,
+    "coverage_limit_minor": 5700000,
+    "support_contact_phone": "1800-266-1880",
+    "support_contact_email": "service.in@bosch-home.example.com",
+    "terms_summary": "24-month comprehensive manufacturer warranty covering electrical, motor, and control board defects."
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "document_id": "eval_0002",
+  "expected_category": "UTILITY_BILL",
+  "expected_status": "DB_UPDATED",
+  "expected_error_category": null,
+  "expected_domain_tables": ["bills"],
+  "fields": {
+    "provider_name": "MSEDCL Mahavitaran",
+    "utility_type": "ELECTRICITY",
+    "consumer_account_number": "170099887766",
+    "invoice_number": "MSEDCL-2026-09-4410",
+    "billing_period_start": "2026-08-16",
+    "billing_period_end": "2026-09-15",
+    "due_date": "2026-10-08",
+    "amount_due_minor": 418000,
+    "units_consumed": "362.500",
+    "unit_measure": "kWh"
+  }
+}

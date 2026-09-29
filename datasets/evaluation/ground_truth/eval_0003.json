@@ -1,0 +1,29 @@
+{
+  "document_id": "eval_0003",
+  "expected_category": "INVOICE",
+  "expected_status": "DB_UPDATED",
+  "expected_error_category": null,
+  "expected_domain_tables": ["expenses"],
+  "fields": {
+    "vendor_name": "Pragati ElectroWorld Pvt Ltd",
+    "invoice_number": "PEW-INV-2025-8821",
+    "invoice_date": "2025-04-15",
+    "due_date": null,
+    "currency_code": "INR",
+    "subtotal_minor": 4830508,
+    "tax_amount_minor": 869492,
+    "total_amount_minor": 5700000,
+    "asset_brand": "Bosch",
+    "asset_model_number": "SMS66GI01I",
+    "asset_serial_number": "BSH-PUN-2025-99412",
+    "line_items": [
+      {
+        "description": "Bosch Series 6 Freestanding Dishwasher",
+        "quantity": "1.0",
+        "unit": "unit",
+        "unit_price_minor": 4830508,
+        "line_total_minor": 4830508
+      }
+    ]
+  }
+}

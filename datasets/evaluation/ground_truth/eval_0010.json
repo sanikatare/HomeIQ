@@ -1,0 +1,11 @@
+{
+  "document_id": "eval_0010",
+  "expected_category": "INSURANCE_DOCUMENT",
+  "expected_status": "FAILED",
+  "expected_error_category": "OCR_ERROR",
+  "expected_domain_tables": [],
+  "fields": {
+    "insurer_name": "Unreadable Insurance Co",
+    "policy_number": "???-BLUR-000"
+  }
+}

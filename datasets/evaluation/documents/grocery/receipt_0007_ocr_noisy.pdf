@@ -1,0 +1,16 @@
+%PDF-1.7
+HOMEIQ SYNTHETIC EVALUATION DOCUMENT [eval_0007]
+CATEGORY: RECEIPT (OCR-Noisy Multi-Line Grocery Receipt)
+MERCHANT:   Deccan   Organic  Provision Store. 
+RECEIPT NO: DOPS/26/771
+DATE: 15-Sep-2026
+PAYMENT: CARD
+CURRENCY: INR
+------------------------------------------------------------
+ITEM                               QTY    UNIT    LINE TOTAL
+1. A2 Gir Cow Ghee                 1.0    L       Rs. 890.00
+2. Organic Jaggery Powder          2.0    kg      Rs. 220.00
+3. Roasted Foxnuts (Makhana)       1.0    pack    Rs. 240.00
+------------------------------------------------------------
+TOTAL PAID: Rs. 1,350.00/- (135000 paise)
+%%EOF

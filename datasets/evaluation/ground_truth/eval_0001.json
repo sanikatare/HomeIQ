@@ -1,0 +1,39 @@
+{
+  "document_id": "eval_0001",
+  "expected_category": "RECEIPT",
+  "expected_status": "DB_UPDATED",
+  "expected_error_category": null,
+  "expected_domain_tables": ["expenses"],
+  "fields": {
+    "merchant_name": "Sahyadri Fresh Mart, Kothrud, Pune",
+    "receipt_number": "SFM-2026-09-1042",
+    "transaction_date": "2026-09-18",
+    "currency_code": "INR",
+    "payment_method": "UPI",
+    "total_amount_minor": 132000,
+    "tax_amount_minor": 6600,
+    "line_items": [
+      {
+        "description": "Indrayani Organic Rice",
+        "quantity": "5.0",
+        "unit": "kg",
+        "unit_price_minor": 8400,
+        "line_total_minor": 42000
+      },
+      {
+        "description": "Cold-Pressed Groundnut Oil",
+        "quantity": "2.0",
+        "unit": "L",
+        "unit_price_minor": 28000,
+        "line_total_minor": 56000
+      },
+      {
+        "description": "Organic Arhar Tur Dal",
+        "quantity": "2.0",
+        "unit": "kg",
+        "unit_price_minor": 17000,
+        "line_total_minor": 34000
+      }
+    ]
+  }
+}

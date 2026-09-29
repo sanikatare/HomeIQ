@@ -1,0 +1,40 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch:
+    timeout: 5s
+    send_batch_size: 512
+
+  # Redact any accidental sensitive attributes from spans
+  attributes/redact:
+    actions:
+      - key: db.statement.parameters
+        action: delete
+      - key: document.extracted_text
+        action: delete
+      - key: gemini.api_key
+        action: delete
+
+exporters:
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+    namespace: homeiq_otel
+  debug:
+    verbosity: basic
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [attributes/redact, batch]
+      exporters: [debug]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [prometheus]

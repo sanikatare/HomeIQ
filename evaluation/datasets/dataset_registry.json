@@ -1,0 +1,46 @@
+{
+  "available_in_repository": [
+    {
+      "dataset_id": "homeiq_synthetic_eval_v1",
+      "name": "HomeIQ Synthetic Household Document Evaluation Corpus (eval_0001 to eval_0010)",
+      "manifest": "datasets/evaluation/manifests/evaluation_manifest.json",
+      "license": "Apache-2.0",
+      "source": "synthetic",
+      "document_count": 10,
+      "categories_covered": [
+        "grocery_receipts (RECEIPT)",
+        "invoices / appliance_documents (INVOICE)",
+        "electricity_water_gas_bills (UTILITY_BILL)",
+        "warranty_documents (WARRANTY_DOCUMENT)",
+        "insurance_documents (INSURANCE_DOCUMENT)",
+        "vehicle_service_documents (SERVICE_INVOICE)",
+        "maintenance_receipts (SERVICE_INVOICE)"
+      ]
+    },
+    {
+      "dataset_id": "homeiq_relational_seed_v1",
+      "name": "HomeIQ 20-Table Normalized Relational & Vault Seed (Sharma-Tare Residence, Pune)",
+      "module": "backend/app/db/seed.py",
+      "license": "Apache-2.0",
+      "source": "synthetic"
+    }
+  ],
+  "external_public_dataset_adapters": [
+    {
+      "dataset_id": "cord_v2",
+      "name": "CORD (Consolidated Receipt Dataset v2)",
+      "official_url": "https://github.com/clovaai/cord",
+      "huggingface_url": "https://huggingface.co/datasets/naver-clova-ix/cord-v2",
+      "license": "CC BY 4.0",
+      "adapter": "app.evaluation.runner.PublicDatasetAdapter.convert_cord_v2_to_homeiq_ground_truth"
+    },
+    {
+      "dataset_id": "icdar_2019_sroie",
+      "name": "ICDAR 2019 SROIE (Scanned Receipts OCR and Information Extraction)",
+      "official_url": "https://rrc.cvc.uab.es/?ch=13",
+      "huggingface_url": "https://huggingface.co/datasets/darentang/sroie",
+      "license": "MIT / Competition Research Terms",
+      "adapter": "app.evaluation.runner.PublicDatasetAdapter.convert_sroie_to_homeiq_ground_truth"
+    }
+  ]
+}

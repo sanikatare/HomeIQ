@@ -1,0 +1,6 @@
+{
+  "name": "HomeIQ — Household Intelligence Platform",
+  "description": "Production-grade AI Household Intelligence & Management Platform architecture, repository foundation, and modular monolith specification across seven household domains.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,84 @@
+{
+  "dashboards": [
+    {
+      "uid": "homeiq-01-system-health",
+      "title": "01. HomeIQ — System & Infrastructure Health",
+      "panels": [
+        {
+          "title": "PostgreSQL Connection Pool Utilization",
+          "expr": "sqlalchemy_pool_checkedout / sqlalchemy_pool_size"
+        },
+        {
+          "title": "Service Uptime & Container Health",
+          "expr": "up{job=~\"homeiq-.*\"}"
+        },
+        {
+          "title": "Redis Cache Hit Ratio",
+          "expr": "redis_keyspace_hits_total / (redis_keyspace_hits_total + redis_keyspace_misses_total)"
+        }
+      ]
+    },
+    {
+      "uid": "homeiq-02-app-performance",
+      "title": "02. HomeIQ — API & Application Performance",
+      "panels": [
+        {
+          "title": "HTTP Request Rate (RPS by Route)",
+          "expr": "sum(rate(homeiq_http_requests_total[5m])) by (route, method)"
+        },
+        {
+          "title": "API Latency p50 / p95 / p99 (Seconds)",
+          "expr": "histogram_quantile(0.95, sum(rate(homeiq_http_request_duration_seconds_bucket[5m])) by (le, route))"
+        },
+        {
+          "title": "HTTP 4xx & 5xx Error Rate",
+          "expr": "sum(rate(homeiq_http_errors_total[5m])) by (status_code, error_class)"
+        }
+      ]
+    },
+    {
+      "uid": "homeiq-03-event-processing",
+      "title": "03. HomeIQ — RabbitMQ Event Processing & Document Pipeline",
+      "panels": [
+        {
+          "title": "Event Queue Depth & Dead-Letter Queue (DLQ) Count",
+          "expr": "homeiq_event_queue_depth"
+        },
+        {
+          "title": "Worker Consumer Failures by Event Type",
+          "expr": "sum(rate(homeiq_worker_failures_total[5m])) by (event_type, stage)"
+        },
+        {
+          "title": "Document Intelligence Pipeline Latency p95",
+          "expr": "histogram_quantile(0.95, sum(rate(homeiq_document_processing_duration_seconds_bucket[5m])) by (le, category))"
+        }
+      ]
+    },
+    {
+      "uid": "homeiq-04-ai-agent-telemetry",
+      "title": "04. HomeIQ — Multi-Agent, RAG & Gemini Telemetry",
+      "panels": [
+        {
+          "title": "Domain Agent Execution Latency p95 by Domain",
+          "expr": "histogram_quantile(0.95, sum(rate(homeiq_agent_execution_duration_seconds_bucket[5m])) by (le, domain))"
+        },
+        {
+          "title": "Application Tool Calls by Risk Level",
+          "expr": "sum(increase(homeiq_agent_tool_calls_total[1h])) by (domain, tool_name, risk_level)"
+        },
+        {
+          "title": "Hybrid RAG Retrieval Latency p95",
+          "expr": "histogram_quantile(0.95, sum(rate(homeiq_rag_retrieval_duration_seconds_bucket[5m])) by (le, domain))"
+        },
+        {
+          "title": "Gemini API Request Latency & Token Throughput",
+          "expr": "sum(rate(homeiq_gemini_tokens_total[5m])) by (model, token_type)"
+        },
+        {
+          "title": "Cumulative Estimated Gemini API Spend (USD)",
+          "expr": "sum(homeiq_gemini_estimated_cost_usd_total) by (model)"
+        }
+      ]
+    }
+  ]
+}

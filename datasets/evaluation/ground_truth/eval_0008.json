@@ -1,0 +1,22 @@
+{
+  "document_id": "eval_0008",
+  "expected_category": "SERVICE_INVOICE",
+  "expected_status": "DB_UPDATED",
+  "expected_error_category": null,
+  "expected_domain_tables": ["maintenance_records", "expenses"],
+  "fields": {
+    "service_center_or_vendor": "CoolBreeze HVAC Authorized Care",
+    "invoice_number": null,
+    "service_date": "2026-08-20",
+    "serviced_asset_name": "Daikin 1.5 Ton 5-Star Inverter Split AC",
+    "asset_identifier": null,
+    "maintenance_type": "PREVENTIVE_SERVICE",
+    "work_summary": "Wet Jet Coil Cleaning, Drain Line Flush & Refrigerant Pressure Check",
+    "odometer_reading_km": null,
+    "labor_cost_minor": 69900,
+    "parts_cost_minor": 0,
+    "total_cost_minor": 69900,
+    "covered_under_warranty": false,
+    "next_recommended_service_date": null
+  }
+}
