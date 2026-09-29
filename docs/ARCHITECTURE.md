@@ -36,7 +36,7 @@ Asynchronous, compute-heavy workflows (document OCR, chunking, `pgvector` embedd
 | 4. Finance & Household Exp.   |   |                      |                        |
 | 5. Vehicle & Mobility         |   |  [4. Hybrid RAG Layer (SQL + pgvector HNSW)]  |
 | 6. Documents & Warranty       |   |                      |                        |
-|                               |   |  [5. Policy & Validation Engine (Pydantic)]   |
+| 7. Parents' Health Monitoring |   |  [5. Policy & Validation Engine (Pydantic)]   |
 |                               |<--|                      |                        |
 | (Typed Domain Service APIs)   |   |  [6. Human Approval Gate (Interrupt/Resume)]  |
 +---------------+---------------+   +-----------------------+-----------------------+
@@ -112,6 +112,7 @@ Each domain inside `backend/app/domains/` follows a uniform internal structure (
 | **4** | `finance_expenses` | `bills`, `subscriptions`, `expenses`, `households`, `reminders` | Utility bill verification, due dates, recurring bills, household expenses & expenditure, budget management, payment history, spending summaries, financial reminders | Utility bill & receipt extraction, spending summary & budget Q&A via deterministic SQL tools |
 | **5** | `vehicle_mobility` | `vehicles`, `fuel_logs`, `service_records`, `compliance_docs` | Fuel efficiency (`km/L` or `Wh/km`), cost-per-km, odometer-based service interval triggers | Service invoice parsing, PUC/insurance renewal orchestration |
 | **6** | `documents_warranty` | `documents`, `document_chunks` (`vector(768)`), `warranties`, `insurance_policies` | Coverage expiration alerts, claim eligibility date window checks, cryptographic SHA-256 deduplication | Hybrid semantic + keyword RAG over policies, warranties, and manuals with page citations |
+| **7** | `parents_health` | `parent_health_records`, `documents`, `reminders` | Monthly/periodic checkup schedules, doctor visit follow-up countdowns, medication schedule tracking, vaccination/screening intervals, and explicitly recorded measurements | Grounded retrieval over lab-test reports, medical documents, medication schedules, and recorded health measurements (strictly monitoring & record management only; no diagnosis or treatment recommendations) |
 
 ---
 

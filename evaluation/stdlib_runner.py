@@ -1047,6 +1047,7 @@ def run_stdlib_evaluation(repo_root: Path) -> dict[str, Any]:
             ("vehicle_mobility", "Vehicle & Mobility Agent", "Check our Honda car odometer and PUC compliance status."),
             ("documents_warranty", "Documents, Warranty & Insurance Agent", "Verify our active warranty certificates and insurance policy coverage."),
             ("parents_health", "Parents' Health Monitoring Agent", "Check our parents' monthly checkups, doctor appointments, lab-test records, medication schedules, vaccination records, recorded health measurements, and health reminders."),
+            ("travel_records", "Travel Records Agent", "Retrieve our past and upcoming household trips, flight and hotel bookings, travel documents, and travel expenses."),
         ]
     ]
 

@@ -1,7 +1,7 @@
 # HomeIQ — Dataset & Document Intelligence Evaluation Report
 
-- **Report ID**: `eval-run-20260929-173845`
-- **Generated At**: `2026-09-29T17:38:45.969343+00:00`
+- **Report ID**: `eval-run-20260929-194032`
+- **Generated At**: `2026-09-29T19:40:32.268720+00:00`
 - **Execution Mode**: `deterministic_ci`
 - **Extraction Model Configured**: `gemini-2.5-flash`
 - **Model Fine-Tuned?**: `False` (Zero-shot schema-constrained multimodal extraction (response_schema=GeminiDocumentAnalysisEnvelope, temperature=0.0) + deterministic Pydantic/SQL validation)

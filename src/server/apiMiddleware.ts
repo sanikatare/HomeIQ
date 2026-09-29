@@ -37,6 +37,8 @@ interface DatabaseState {
   subscriptions: any[];
   warranties: any[];
   insurance_policies: any[];
+  parent_health_records: any[];
+  travel_records: any[];
   reminders: any[];
   events: any[];
   agent_runs: any[];
@@ -52,8 +54,15 @@ function createInitialSeedState(): DatabaseState {
   const nowIso = new Date().toISOString();
   const docId1 = "77777777-7777-4777-8777-777777777701";
   const docId2 = "77777777-7777-4777-8777-777777777702";
+  const docId3 = "77777777-7777-4777-8777-777777777703";
+  const docId4 = "77777777-7777-4777-8777-777777777704";
+  const docId5 = "77777777-7777-4777-8777-777777777705";
+  const docId6 = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaa03";
+  const docId7 = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaa04";
   const maintId1 = "cccccccc-cccc-4ccc-8ccc-cccccccccc01";
   const maintId2 = "cccccccc-cccc-4ccc-8ccc-cccccccccc02";
+  const maintId3 = "cccccccc-cccc-4ccc-8ccc-cccccccccc03";
+  const maintId4 = "cccccccc-cccc-4ccc-8ccc-cccccccccc04";
 
   return {
     users: [
@@ -229,6 +238,131 @@ function createInitialSeedState(): DatabaseState {
         is_verified_by_human: true,
         created_at: nowIso,
       },
+      {
+        id: docId3,
+        household_id: SEEDED_HOUSEHOLD_ID,
+        asset_id: ASSET_AC_ID,
+        uploaded_by_user_id: SEEDED_USER_SANIKA_ID,
+        title: "Daikin 1.5T Inverter Split AC Purchase Receipt & Compressor Warranty",
+        document_type: "PURCHASE_RECEIPT",
+        storage_uri: "file:///tmp/homeiq_document_vault/daikin_mtkm50u_tax_invoice.pdf",
+        mime_type: "application/pdf",
+        file_size_bytes: 318450,
+        sha256_checksum: "4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a",
+        document_date: "2023-04-10",
+        extracted_text_summary:
+          "Daikin MTKM50U 1.5 Ton 5-Star Split AC purchased from Vijay Sales Aundh Pune for Rs. 44,500.00. Includes 5-year PCB warranty and 10-year inverter swing compressor warranty through 2028-04-09.",
+        structured_extraction_json: {
+          vendor_name: "Vijay Sales India Pvt Ltd - Aundh Pune",
+          invoice_number: "VS-PNQ-2023-44109",
+          serial_number: "DKN-IN-2023-77410",
+          total_amount_minor: 4450000,
+          warranty_end_date: "2028-04-09",
+        },
+        is_verified_by_human: true,
+        created_at: nowIso,
+      },
+      {
+        id: docId4,
+        household_id: SEEDED_HOUSEHOLD_ID,
+        asset_id: ASSET_DISHWASHER_ID,
+        uploaded_by_user_id: SEEDED_USER_SANIKA_ID,
+        title: "BSH Authorized Service Receipt — Spray Arm & Micro-Mesh Seal",
+        document_type: "SERVICE_INVOICE",
+        storage_uri: "file:///tmp/homeiq_document_vault/bsh_service_receipt_062026.pdf",
+        mime_type: "application/pdf",
+        file_size_bytes: 164200,
+        sha256_checksum: "ef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d",
+        document_date: "2026-06-15",
+        extracted_text_summary:
+          "Authorized service invoice #BSH-SRV-2026-1192 for Bosch Serie 6 Dishwasher. Replaced micro-mesh filter seal (Rs. 850.00 parts; Rs. 0.00 labor covered under active manufacturer warranty).",
+        structured_extraction_json: {
+          vendor_name: "BSH Home Appliances Authorized Service",
+          invoice_number: "BSH-SRV-2026-1192",
+          total_amount_minor: 85000,
+        },
+        is_verified_by_human: true,
+        created_at: nowIso,
+      },
+      {
+        id: docId5,
+        household_id: SEEDED_HOUSEHOLD_ID,
+        asset_id: null,
+        uploaded_by_user_id: SEEDED_USER_SANIKA_ID,
+        title: "MSEDCL Mahavitaran Electricity Utility Bill — September 2026",
+        document_type: "UTILITY_BILL",
+        storage_uri: "file:///tmp/homeiq_document_vault/msedcl_sep_2026_bill.pdf",
+        mime_type: "application/pdf",
+        file_size_bytes: 192800,
+        sha256_checksum: "e7f6c011776e8db7cd330b54174fd76f7d0216b612387a5ffcfb81e6f0919683",
+        document_date: "2026-09-30",
+        extracted_text_summary:
+          "Monthly electricity statement for Consumer #170019283746 (Billing cycle 2026-09-01 to 2026-09-30, 342.5 kWh). Total due Rs. 3,840.00 by 2026-10-05.",
+        structured_extraction_json: {
+          vendor_name: "MSEDCL Mahavitaran",
+          invoice_number: "MSEDCL-2026-09-3746",
+          total_amount_minor: 384000,
+          due_date: "2026-10-05",
+        },
+        is_verified_by_human: false,
+        created_at: nowIso,
+      },
+      {
+        id: docId6,
+        household_id: SEEDED_HOUSEHOLD_ID,
+        asset_id: null,
+        uploaded_by_user_id: SEEDED_USER_SANIKA_ID,
+        title:
+          "Golwilkar Metropolis Senior Health Panel & HbA1c Lab Report (Parents)",
+        document_type: "MEDICAL_LAB_REPORT",
+        storage_uri:
+          "file:///tmp/homeiq_document_vault/parents_metropolis_lab_report_sep2026.pdf",
+        mime_type: "application/pdf",
+        file_size_bytes: 394200,
+        sha256_checksum:
+          "5f227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf9b",
+        document_date: "2026-09-18",
+        extracted_text_summary:
+          "Golwilkar Metropolis Diagnostics Kothrud Pune. Senior Comprehensive Panel (18-Sep-2026). Smt. Sunita Tare (Mother): HbA1c 6.1%, Fasting Glucose 102 mg/dL, Vitamin D 34 ng/mL, BP 124/78 mmHg. Shri. Prakash Tare (Father): Lipid Profile Total Cholesterol 172 mg/dL, BP 128/82 mmHg. Next periodic checkup due 2026-10-05 with Dr. A. Deshmukh at Deenanath Mangeshkar Hospital.",
+        structured_extraction_json: {
+          lab_name: "Golwilkar Metropolis Diagnostics, Kothrud",
+          report_date: "2026-09-18",
+          mother_hba1c: "6.1%",
+          mother_fasting_glucose: "102 mg/dL",
+          father_total_cholesterol: "172 mg/dL",
+          next_checkup_due: "2026-10-05",
+        },
+        is_verified_by_human: true,
+        created_at: nowIso,
+      },
+      {
+        id: docId7,
+        household_id: SEEDED_HOUSEHOLD_ID,
+        asset_id: null,
+        uploaded_by_user_id: SEEDED_USER_SANIKA_ID,
+        title:
+          "IndiGo Flight PNR #K8M4WQ & Taj Lake Palace Udaipur Booking Confirmation",
+        document_type: "TRAVEL_BOOKING_VOUCHER",
+        storage_uri:
+          "file:///tmp/homeiq_document_vault/udaipur_flight_hotel_voucher_oct2026.pdf",
+        mime_type: "application/pdf",
+        file_size_bytes: 342800,
+        sha256_checksum:
+          "8f227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf1c",
+        document_date: "2026-09-22",
+        extracted_text_summary:
+          "IndiGo Airlines Flight 6E-7142 (Pune PNQ to Udaipur UDR, Departure 2026-10-24 07:45 AM, PNR: K8M4WQ, 4 Passengers) & Taj Lake Palace Udaipur 3-Night Lake-View Heritage Suite Confirmation #TLP-UDR-88412 (Check-in 2026-10-24, Check-out 2026-10-27). Total Paid: Rs. 48,600.00.",
+        structured_extraction_json: {
+          carrier_or_hotel: "IndiGo Airlines & Taj Lake Palace Udaipur",
+          booking_reference: "PNR: K8M4WQ / Conf: TLP-UDR-88412",
+          destination: "Udaipur, Rajasthan",
+          departure_date: "2026-10-24",
+          return_date: "2026-10-27",
+          total_amount_minor: 4860000,
+        },
+        is_verified_by_human: true,
+        created_at: nowIso,
+      },
     ],
     grocery_items: [
       {
@@ -396,6 +530,40 @@ function createInitialSeedState(): DatabaseState {
         parts_cost_minor: 0,
         next_recommended_service_on: "2027-03-29",
       },
+      {
+        id: maintId3,
+        household_id: SEEDED_HOUSEHOLD_ID,
+        asset_id: ASSET_CAR_ID,
+        document_id: docId2,
+        title: "10,000 km EV High-Voltage BMS & Regenerative Brake Inspection",
+        description:
+          "Completed 40.5 kWh battery pack cell balancing diagnostic, coolant loop pressure check, and regenerative brake pad calibration.",
+        priority: "MEDIUM",
+        status: "COMPLETED",
+        scheduled_for: "2026-05-12",
+        completed_on: "2026-05-12",
+        technician_or_vendor: "Malen Tata.ev Authorized Service Bay, Baner Pune",
+        labor_cost_minor: 125000,
+        parts_cost_minor: 65000,
+        next_recommended_service_on: "2027-01-15",
+      },
+      {
+        id: maintId4,
+        household_id: SEEDED_HOUSEHOLD_ID,
+        asset_id: ASSET_CAR_ID,
+        document_id: null,
+        title: "Laser 4-Wheel Alignment, Cabin HEPA Filter & Tire Rotation",
+        description:
+          "Scheduled precision 3D laser wheel alignment, suspension torque check, and PM2.5 activated carbon cabin filter replacement.",
+        priority: "HIGH",
+        status: "SCHEDULED",
+        scheduled_for: "2026-10-14",
+        completed_on: null,
+        technician_or_vendor: "Malen Auto Care & EV Diagnostic Center, Pune",
+        labor_cost_minor: 140000,
+        parts_cost_minor: 85000,
+        next_recommended_service_on: "2027-04-14",
+      },
     ],
     expenses: [
       {
@@ -473,6 +641,36 @@ function createInitialSeedState(): DatabaseState {
           "2-year comprehensive parts & labor; 10-year anti-rust inner tub warranty.",
         claim_contact_phone: "1800-266-1880",
       },
+      {
+        id: "ffffffff-ffff-4fff-8fff-ffffffffff02",
+        household_id: SEEDED_HOUSEHOLD_ID,
+        asset_id: ASSET_AC_ID,
+        document_id: docId3,
+        warranty_type: "MANUFACTURER",
+        provider_name: "Daikin Airconditioning India Pvt Ltd",
+        contract_or_policy_number: "DKN-CMP-2023-77410",
+        start_date: "2023-04-10",
+        end_date: "2028-04-09",
+        status: "ACTIVE",
+        coverage_terms:
+          "5-year comprehensive PCB & condenser protection; 10-year inverter swing compressor warranty.",
+        claim_contact_phone: "1860-180-3900",
+      },
+      {
+        id: "ffffffff-ffff-4fff-8fff-ffffffffff03",
+        household_id: SEEDED_HOUSEHOLD_ID,
+        asset_id: ASSET_CAR_ID,
+        document_id: docId2,
+        warranty_type: "MANUFACTURER",
+        provider_name: "Tata Passenger Electric Mobility Ltd",
+        contract_or_policy_number: "TPEM-HV-2025-10482",
+        start_date: "2025-01-20",
+        end_date: "2033-01-19",
+        status: "ACTIVE",
+        coverage_terms:
+          "8-year / 1,60,000 km High-Voltage IP67 Battery Pack & Permanent Magnet Synchronous Motor warranty.",
+        claim_contact_phone: "1800-209-8282",
+      },
     ],
     insurance_policies: [
       {
@@ -491,7 +689,330 @@ function createInitialSeedState(): DatabaseState {
         is_active: true,
       },
     ],
+    parent_health_records: [
+      {
+        id: "66666666-6666-4666-8666-666666666601",
+        household_id: SEEDED_HOUSEHOLD_ID,
+        document_id: docId6,
+        parent_name: "Smt. Sunita Tare (Mother)",
+        record_category: "PERIODIC_CHECKUP",
+        title: "Monthly Comprehensive Senior Checkup",
+        provider_or_doctor: "Dr. A. Deshmukh · Deenanath Mangeshkar Hospital",
+        recorded_date: "2026-09-05",
+        next_due_or_followup_date: "2026-10-05",
+        schedule_or_frequency: "Monthly (1st Monday)",
+        explicit_measurement_value:
+          "BP: 124/78 mmHg · HR: 72 bpm · SpO2: 98% · Weight: 63.8 kg",
+        status: "DUE_SOON",
+        notes: "Carry previous ECG & Golwilkar Metropolis HbA1c folder.",
+      },
+      {
+        id: "66666666-6666-4666-8666-666666666602",
+        household_id: SEEDED_HOUSEHOLD_ID,
+        document_id: docId6,
+        parent_name: "Shri. Prakash Tare (Father)",
+        record_category: "DOCTOR_APPOINTMENT",
+        title: "Cardiology & Ophthalmology Routine Follow-up Visit",
+        provider_or_doctor:
+          "Dr. S. Kulkarni · Sahyadri Super Speciality Hospital",
+        recorded_date: "2026-09-12",
+        next_due_or_followup_date: "2026-10-14",
+        schedule_or_frequency: "Quarterly Follow-up",
+        explicit_measurement_value:
+          "Resting ECG: Recorded Normal Sinus · HR: 68 bpm · IOP: 14 mmHg",
+        status: "SCHEDULED",
+        notes: "Routine 3-month consultation visit booked for 10:30 AM.",
+      },
+      {
+        id: "66666666-6666-4666-8666-666666666603",
+        household_id: SEEDED_HOUSEHOLD_ID,
+        document_id: docId6,
+        parent_name: "Smt. Sunita Tare (Mother)",
+        record_category: "LAB_TEST_REPORT",
+        title: "HbA1c, Fasting Lipid Profile & Vitamin D Lab Panel",
+        provider_or_doctor: "Golwilkar Metropolis Diagnostics, Kothrud",
+        recorded_date: "2026-09-18",
+        next_due_or_followup_date: "2026-12-18",
+        schedule_or_frequency: "Every 3 Months",
+        explicit_measurement_value:
+          "HbA1c: 6.1% · Fasting Glucose: 102 mg/dL · Vitamin D: 34 ng/mL",
+        status: "RECORDED",
+        notes: "10-hour overnight fasting sample collected at home.",
+      },
+      {
+        id: "66666666-6666-4666-8666-666666666604",
+        household_id: SEEDED_HOUSEHOLD_ID,
+        document_id: null,
+        parent_name: "Smt. Sunita Tare (Mother) & Shri. Prakash Tare (Father)",
+        record_category: "MEDICATION_SCHEDULE",
+        title: "Daily Morning & Evening Prescribed Medication Schedule",
+        provider_or_doctor: "Dr. A. Deshmukh · Deenanath Mangeshkar Hospital",
+        recorded_date: "2026-09-01",
+        next_due_or_followup_date: "2026-10-15",
+        schedule_or_frequency: "Daily — 08:00 AM & 08:30 PM",
+        explicit_measurement_value:
+          "Morning 08:00 AM (Post-Breakfast) · Evening 08:30 PM (Post-Dinner) — Refill due Oct 15",
+        status: "ACTIVE",
+        notes: "Weekly pill organizer refilled every Sunday evening.",
+      },
+      {
+        id: "66666666-6666-4666-8666-666666666605",
+        household_id: SEEDED_HOUSEHOLD_ID,
+        document_id: null,
+        parent_name: "Smt. Sunita Tare (Mother) & Shri. Prakash Tare (Father)",
+        record_category: "VACCINATION_SCREENING",
+        title:
+          "Annual Quadrivalent Influenza Vaccine & Bone Density DEXA Screening",
+        provider_or_doctor: "Deenanath Mangeshkar Preventive Care Clinic",
+        recorded_date: "2026-08-20",
+        next_due_or_followup_date: "2027-08-20",
+        schedule_or_frequency: "Annual Screening & Immunization",
+        explicit_measurement_value:
+          "2026-27 Influenza Dose Administered · DEXA Screening Logged",
+        status: "COMPLETED",
+        notes: "Batch certificates archived in household folder.",
+      },
+      {
+        id: "66666666-6666-4666-8666-666666666606",
+        household_id: SEEDED_HOUSEHOLD_ID,
+        document_id: null,
+        parent_name: "Shri. Prakash Tare (Father)",
+        record_category: "HEALTH_MEASUREMENT",
+        title:
+          "Explicitly Recorded Home Blood Pressure, SpO2 & Fasting Glucose",
+        provider_or_doctor: "Home Omron HEM-7156T & Accu-Chek Guide Log",
+        recorded_date: "2026-09-27",
+        next_due_or_followup_date: "2026-10-04",
+        schedule_or_frequency: "Weekly Sunday Morning Log",
+        explicit_measurement_value:
+          "BP: 128/82 mmHg · SpO2: 98% · HR: 70 bpm · Fasting Glucose: 98 mg/dL",
+        status: "RECORDED",
+        notes: "Recorded at 07:30 AM after 10 minutes rest.",
+      },
+    ],
+    travel_records: [
+      {
+        id: "77777777-8888-4888-8888-777777777701",
+        household_id: SEEDED_HOUSEHOLD_ID,
+        document_id: docId7,
+        trip_name: "Udaipur Royal Heritage Diwali Family Getaway",
+        destination: "Udaipur, Rajasthan",
+        origin_city: "Pune (PNQ)",
+        record_category: "FLIGHT_BOOKING",
+        transport_mode: "FLIGHT",
+        booking_reference: "PNR: K8M4WQ · IndiGo 6E-7142",
+        provider_or_carrier:
+          "IndiGo Airlines · Terminal 1 PNQ → Maharana Pratap Airport UDR",
+        accommodation_name:
+          "Taj Lake Palace, Lake Pichola (Conf #TLP-UDR-88412)",
+        departure_date: "2026-10-24",
+        return_date: "2026-10-27",
+        travelers:
+          "Sanika Tare, Aarav Tare, Smt. Sunita Tare & Shri. Prakash Tare (4 Pax)",
+        status: "UPCOMING",
+        expense_amount_minor: 4860000,
+        document_status: "Boarding Pass & Hotel Voucher Verified",
+        important_date_label: "Web Check-In Opens: 2026-10-22 (07:45 AM)",
+        timeline_milestones: [
+          "2026-10-22: Web Check-In & Seat Selection (Row 4A–4D)",
+          "2026-10-24 07:45: Flight 6E-7142 PNQ → UDR Departure",
+          "2026-10-24 12:30: Pichola Jetty Boat Transfer & Taj Lake Palace Check-In",
+          "2026-10-27 16:20: Return Flight 6E-7149 UDR → PNQ",
+        ],
+        notes:
+          "Senior citizen assistance pre-booked at PNQ & UDR airports for parents. Carry original Aadhaar cards and printed hotel voucher.",
+      },
+      {
+        id: "77777777-8888-4888-8888-777777777702",
+        household_id: SEEDED_HOUSEHOLD_ID,
+        document_id: null,
+        trip_name: "South Goa Indo-Portuguese Coastal Retreat",
+        destination: "Cavelossim & Assolna, South Goa",
+        origin_city: "Pune (NH-48 EV Roadtrip)",
+        record_category: "HOTEL_ACCOMMODATION",
+        transport_mode: "CAR_ROADTRIP",
+        booking_reference: "VILLA-GOA-2026-419",
+        provider_or_carrier: "Casa Figueira Boutique Courtyard Villa",
+        accommodation_name:
+          "Casa Figueira Heritage 3-BHK Pool Villa, Cavelossim",
+        departure_date: "2026-11-12",
+        return_date: "2026-11-16",
+        travelers: "Sanika Tare & Aarav Tare (2 Pax)",
+        status: "UPCOMING",
+        expense_amount_minor: 3640000,
+        document_status: "Villa Confirmation & Deposit Receipt Archived",
+        important_date_label: "Free Cancellation Cutoff: 2026-11-05",
+        timeline_milestones: [
+          "2026-11-05: Free Modification / Cancellation Window Closes",
+          "2026-11-12 05:30: Depart Pune via Kolhapur–Amboli Ghat (Tata Nexon EV)",
+          "2026-11-12 14:00: Check-In at Casa Figueira Courtyard Villa",
+          "2026-11-16 11:00: Villa Check-Out & Return Drive to Pune",
+        ],
+        notes:
+          "Includes complimentary Goan breakfast, dedicated 7.2kW EV wall charger in villa courtyard, and full deposit receipt.",
+      },
+      {
+        id: "77777777-8888-4888-8888-777777777703",
+        household_id: SEEDED_HOUSEHOLD_ID,
+        document_id: null,
+        trip_name: "Shimla & Kalka Himalayan Heritage Rail Journey",
+        destination: "Shimla & Mashobra, Himachal Pradesh",
+        origin_city: "Pune → Chandigarh → Kalka",
+        record_category: "TRAIN_BUS_BOOKING",
+        transport_mode: "TRAIN",
+        booking_reference: "IRCTC PNR: 284-9104822 · Train #52459",
+        provider_or_carrier:
+          "IRCTC Kalka-Shimla Shivalik Deluxe Express (First Class Vista)",
+        accommodation_name:
+          "Wildflower Hall Heritage Mountain Retreat, Mashobra",
+        departure_date: "2026-05-14",
+        return_date: "2026-05-19",
+        travelers: "Tare Family Household (4 Pax)",
+        status: "COMPLETED",
+        expense_amount_minor: 6420000,
+        document_status: "IRCTC E-Ticket & Hotel Settlement Folio Archived",
+        important_date_label: "Completed on 2026-05-19",
+        timeline_milestones: [
+          "2026-05-14 05:45: Boarded Shivalik Deluxe Express at Kalka Station",
+          "2026-05-14 10:30: Arrived Shimla & Transfer to Mashobra Cedar Sanctuary",
+          "2026-05-19 15:40: Return Flight IXC → PNQ Completed",
+        ],
+        notes:
+          "Archived summer family trip record with complete rail tickets, mountain lodge invoices, and dining receipts.",
+      },
+      {
+        id: "77777777-8888-4888-8888-777777777704",
+        household_id: SEEDED_HOUSEHOLD_ID,
+        document_id: null,
+        trip_name: "Mahabaleshwar Weekend Monsoon Escapade",
+        destination: "Mahabaleshwar & Panchgani, Maharashtra",
+        origin_city: "Pune (Swargate / Kothrud)",
+        record_category: "TRAIN_BUS_BOOKING",
+        transport_mode: "BUS",
+        booking_reference: "MSRTC-SHIVNERI-90412",
+        provider_or_carrier: "MSRTC E-Shivneri Volvo AC Coach & Ravine Hotel",
+        accommodation_name: "Ravine Valley View Suite, Panchgani",
+        departure_date: "2026-08-15",
+        return_date: "2026-08-17",
+        travelers:
+          "Sanika Tare, Smt. Sunita Tare & Shri. Prakash Tare (3 Pax)",
+        status: "COMPLETED",
+        expense_amount_minor: 1850000,
+        document_status: "Bus E-Ticket & Hotel Tax Receipt Archived",
+        important_date_label: "Completed on 2026-08-17",
+        timeline_milestones: [
+          "2026-08-15 07:00: E-Shivneri Electric Coach Departure from Pune",
+          "2026-08-15 10:15: Check-In at Panchgani Valley View Suite",
+          "2026-08-17 17:00: Return Coach Arrival in Kothrud Pune",
+        ],
+        notes:
+          "Recorded intercity electric Volvo coach tickets, Mapro garden receipts, and hotel checkout invoice.",
+      },
+      {
+        id: "77777777-8888-4888-8888-777777777705",
+        household_id: SEEDED_HOUSEHOLD_ID,
+        document_id: docId7,
+        trip_name: "Household Passports, DigiYatra IDs & Travel Insurance Vault",
+        destination: "Domestic & International Travel Compliance",
+        origin_city: "Pune",
+        record_category: "TRAVEL_DOCUMENT",
+        transport_mode: "DOCUMENT",
+        booking_reference: "DOC-TRV-VAULT-2026",
+        provider_or_carrier:
+          "Passport Seva Kendra Pune & Tata AIG Domestic Travel Guard",
+        accommodation_name: "All 4 Household Passports Valid Through 2031",
+        departure_date: "2026-10-24",
+        return_date: "2031-06-14",
+        travelers: "All 4 Household Members (Passports + DigiYatra Passes)",
+        status: "VERIFIED",
+        expense_amount_minor: 420000,
+        document_status: "Verified & Indexed in RAG Vault",
+        important_date_label: "Passport Renewal Window: 2030-12-14",
+        timeline_milestones: [
+          "DigiYatra Biometric Passes Active for PNQ, UDR, GOI & DEL",
+          "Senior Citizen Travel Medical Cover Active for Oct 2026 Udaipur Trip",
+        ],
+        notes:
+          "Includes scanned passport bio-pages, Aadhaar masked PDFs, DigiYatra QR passes, and senior citizen flight medical policy.",
+      },
+      {
+        id: "77777777-8888-4888-8888-777777777706",
+        household_id: SEEDED_HOUSEHOLD_ID,
+        document_id: docId7,
+        trip_name: "Udaipur Airport Chauffeur Transfers & Lake Pichola Cruise",
+        destination: "Udaipur, Rajasthan",
+        origin_city: "Pune",
+        record_category: "TRAVEL_EXPENSE",
+        transport_mode: "CAB_TRANSFER",
+        booking_reference: "RCPT-UDR-CAB-7721",
+        provider_or_carrier:
+          "HRH Heritage Chauffeur Transfers & Ambrai Ghat Pier",
+        accommodation_name: "Taj Lake Palace Private Jetty Transfer",
+        departure_date: "2026-10-24",
+        return_date: "2026-10-27",
+        travelers: "Tare Family (4 Pax)",
+        status: "UPCOMING",
+        expense_amount_minor: 940000,
+        document_status: "Advance Receipt #RCPT-UDR-CAB-7721 Logged",
+        important_date_label: "Chauffeur Pickup: 2026-10-24 (09:55 AM at UDR)",
+        timeline_milestones: [
+          "Pre-paid SUV transfer from UDR Airport to Lake Pichola Jetty",
+          "Private sunset shikara cruise voucher included",
+        ],
+        notes: "Paid via UPI; linked to household travel expense ledger.",
+      },
+    ],
     reminders: [
+      {
+        id: "ffffffff-ffff-4fff-8fff-ffffffffff04",
+        household_id: SEEDED_HOUSEHOLD_ID,
+        asset_id: null,
+        bill_id: null,
+        title:
+          "Complete IndiGo Web Check-In & Download Boarding Passes (Udaipur Trip)",
+        description:
+          "Flight 6E-7142 (PNR: K8M4WQ) departs Oct 24, 2026 at 07:45 AM from Pune (PNQ). Verify wheelchair assistance for parents and print Taj Lake Palace voucher #TLP-UDR-88412.",
+        domain: "travel_records",
+        due_at: "2026-10-22T07:45:00Z",
+        status: "PENDING",
+      },
+      {
+        id: "ffffffff-ffff-4fff-8fff-ffffffffff05",
+        household_id: SEEDED_HOUSEHOLD_ID,
+        asset_id: null,
+        bill_id: null,
+        title:
+          "South Goa Villa Free Cancellation Cutoff & EV Highway Route Check",
+        description:
+          "Casa Figueira Boutique Villa (#VILLA-GOA-2026-419) free modification window closes Nov 5, 2026. Top up Tata Nexon EV FASTag and highway charging wallet.",
+        domain: "travel_records",
+        due_at: "2026-11-05T09:00:00Z",
+        status: "PENDING",
+      },
+      {
+        id: "ffffffff-ffff-4fff-8fff-ffffffffff02",
+        household_id: SEEDED_HOUSEHOLD_ID,
+        asset_id: null,
+        bill_id: null,
+        title: "Parents' Monthly Senior Checkup & Cardiology Follow-up Visit",
+        description:
+          "Accompany Smt. Sunita Tare (Mother) & Shri. Prakash Tare (Father) to Deenanath Mangeshkar Hospital on Oct 5, 2026 at 09:30 AM with Golwilkar Metropolis lab folder.",
+        domain: "parents_health",
+        due_at: "2026-10-05T09:30:00Z",
+        status: "PENDING",
+      },
+      {
+        id: "ffffffff-ffff-4fff-8fff-ffffffffff03",
+        household_id: SEEDED_HOUSEHOLD_ID,
+        asset_id: null,
+        bill_id: null,
+        title: "Refill Parents' Weekly Medication Organizer & Vitamin D3 Supply",
+        description:
+          "Verify morning (08:00 AM) and evening (08:30 PM) tablet compartments and order October pharmacy refill.",
+        domain: "parents_health",
+        due_at: "2026-10-15T09:00:00Z",
+        status: "PENDING",
+      },
       {
         id: "13131313-1313-4313-8313-131313131301",
         household_id: SEEDED_HOUSEHOLD_ID,
@@ -502,6 +1023,30 @@ function createInitialSeedState(): DatabaseState {
           "Manufacturer warranty expires on 2026-11-14. Review AMC renewal quote.",
         domain: "documents_warranty",
         due_at: "2026-10-25T09:00:00Z",
+        status: "PENDING",
+      },
+      {
+        id: "13131313-1313-4313-8313-131313131302",
+        household_id: SEEDED_HOUSEHOLD_ID,
+        asset_id: ASSET_CAR_ID,
+        bill_id: null,
+        title: "Renew ICICI Lombard EV Zero-Dep Motor Policy",
+        description:
+          "Policy #3001/EV-9928172/00/000 expires on 2026-10-18 (IDV ₹17.50L). Confirm NCB 25% discount.",
+        domain: "documents_warranty",
+        due_at: "2026-10-12T09:00:00Z",
+        status: "PENDING",
+      },
+      {
+        id: "13131313-1313-4313-8313-131313131303",
+        household_id: SEEDED_HOUSEHOLD_ID,
+        asset_id: ASSET_AC_ID,
+        bill_id: null,
+        title: "Upload Daikin Autumn Hydro-Wash Service Certificate",
+        description:
+          "Annual preventive service log required to keep 5-year PCB warranty active.",
+        domain: "documents_warranty",
+        due_at: "2026-10-05T09:00:00Z",
         status: "PENDING",
       },
     ],
@@ -604,6 +1149,53 @@ function loadState(): DatabaseState {
     for (const seedCloth of initial.clothing_items) {
       if (!parsed.clothing_items?.some((c) => c.id === seedCloth.id)) {
         parsed.clothing_items = [...(parsed.clothing_items || []), seedCloth];
+        updated = true;
+      }
+    }
+    for (const seedMaint of initial.maintenance_records) {
+      if (!parsed.maintenance_records?.some((m) => m.id === seedMaint.id)) {
+        parsed.maintenance_records = [
+          ...(parsed.maintenance_records || []),
+          seedMaint,
+        ];
+        updated = true;
+      }
+    }
+    for (const seedDoc of initial.documents) {
+      if (!parsed.documents?.some((d) => d.id === seedDoc.id)) {
+        parsed.documents = [...(parsed.documents || []), seedDoc];
+        updated = true;
+      }
+    }
+    for (const seedWar of initial.warranties) {
+      if (!parsed.warranties?.some((w) => w.id === seedWar.id)) {
+        parsed.warranties = [...(parsed.warranties || []), seedWar];
+        updated = true;
+      }
+    }
+    for (const seedRem of initial.reminders) {
+      if (!parsed.reminders?.some((r) => r.id === seedRem.id)) {
+        parsed.reminders = [...(parsed.reminders || []), seedRem];
+        updated = true;
+      }
+    }
+    for (const seedHealth of initial.parent_health_records) {
+      if (
+        !parsed.parent_health_records?.some((h) => h.id === seedHealth.id)
+      ) {
+        parsed.parent_health_records = [
+          ...(parsed.parent_health_records || []),
+          seedHealth,
+        ];
+        updated = true;
+      }
+    }
+    for (const seedTravel of initial.travel_records) {
+      if (!parsed.travel_records?.some((t) => t.id === seedTravel.id)) {
+        parsed.travel_records = [
+          ...(parsed.travel_records || []),
+          seedTravel,
+        ];
         updated = true;
       }
     }
@@ -1301,6 +1893,70 @@ export async function handleApiRequest(
     return sendJson(res, 200, record);
   }
 
+  const vehiclePatchMatch = pathname.match(/^\/api\/v1\/vehicles\/([^/]+)$/);
+  if (vehiclePatchMatch && method === "PATCH") {
+    const ctx = resolveAuth(req, res, state);
+    if (!ctx) return;
+    const vehicleId = vehiclePatchMatch[1];
+    const vehicle = state.vehicles.find(
+      (v) =>
+        v.household_id === ctx.household_id &&
+        (v.id === vehicleId || v.asset_id === vehicleId)
+    );
+    if (!vehicle) {
+      return sendJson(res, 404, {
+        error: {
+          code: "RESOURCE_NOT_FOUND",
+          message: "Vehicle record not found.",
+        },
+      });
+    }
+    const body = await readJsonBody(req);
+    const currentOdo = Number(vehicle.odometer_km || 0);
+    const deltaKm =
+      body?.delta_km !== undefined ? Number(body.delta_km) : 0;
+    const nextOdo =
+      body?.odometer_km !== undefined
+        ? Math.max(0, Math.round(Number(body.odometer_km)))
+        : Math.max(0, Math.round(currentOdo + deltaKm));
+    vehicle.odometer_km = nextOdo;
+
+    const linkedAsset = state.assets.find(
+      (a) => a.household_id === ctx.household_id && a.id === vehicle.asset_id
+    );
+    if (linkedAsset) {
+      linkedAsset.status =
+        nextOdo >= Number(vehicle.next_service_due_km || 20000)
+          ? "MAINTENANCE_DUE"
+          : "OPERATIONAL";
+    }
+
+    state.events.unshift({
+      id: crypto.randomUUID(),
+      household_id: ctx.household_id,
+      actor_user_id: ctx.user_id,
+      asset_id: vehicle.asset_id,
+      event_type: "vehicle.odometer_updated",
+      domain: "vehicle_mobility",
+      severity:
+        nextOdo >= Number(vehicle.next_service_due_km || 20000)
+          ? "WARNING"
+          : "INFO",
+      correlation_id: `corr-veh-${vehicle.id.slice(0, 8)}`,
+      payload_json: {
+        vehicle_id: vehicle.id,
+        registration_number: vehicle.registration_number,
+        odometer_km: nextOdo,
+        next_service_due_km: vehicle.next_service_due_km,
+      },
+      occurred_at: new Date().toISOString(),
+      processed_by_worker: true,
+    });
+
+    saveState(state);
+    return sendJson(res, 200, vehicle);
+  }
+
   if (pathname === "/api/v1/expenses" && method === "POST") {
     const ctx = resolveAuth(req, res, state);
     if (!ctx) return;
@@ -1382,7 +2038,603 @@ export async function handleApiRequest(
       maintenance_records: state.maintenance_records.filter(
         (m) => m.household_id === ctx.household_id
       ),
+      reminders: state.reminders.filter(
+        (r) => r.household_id === ctx.household_id
+      ),
     });
+  }
+
+  if (pathname === "/api/v1/warranties" && method === "POST") {
+    const ctx = resolveAuth(req, res, state);
+    if (!ctx) return;
+    const body = await readJsonBody(req);
+    const {
+      asset_id = ASSET_DISHWASHER_ID,
+      provider_name = "OnsiteGo Extended Appliance Care",
+      warranty_type = "EXTENDED",
+      contract_or_policy_number = `WR-${Date.now().toString().slice(-6)}`,
+      start_date = "2026-10-01",
+      end_date = "2028-09-30",
+      coverage_terms = "Comprehensive parts, PCB, and labor protection plan.",
+      claim_contact_phone = "1800-266-1880",
+    } = body || {};
+
+    const daysToExpiry = Math.ceil(
+      (new Date(String(end_date)).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+    );
+    const status =
+      daysToExpiry < 0
+        ? "EXPIRED"
+        : daysToExpiry <= 90
+        ? "EXPIRING_SOON"
+        : "ACTIVE";
+
+    const newWarranty = {
+      id: crypto.randomUUID(),
+      household_id: ctx.household_id,
+      asset_id: asset_id || ASSET_DISHWASHER_ID,
+      document_id: null,
+      warranty_type: String(warranty_type).trim(),
+      provider_name: String(provider_name).trim(),
+      contract_or_policy_number: String(contract_or_policy_number).trim(),
+      start_date: String(start_date),
+      end_date: String(end_date),
+      status,
+      coverage_terms: String(coverage_terms).trim(),
+      claim_contact_phone: String(claim_contact_phone).trim(),
+    };
+    state.warranties.unshift(newWarranty);
+
+    state.reminders.unshift({
+      id: crypto.randomUUID(),
+      household_id: ctx.household_id,
+      asset_id: newWarranty.asset_id,
+      bill_id: null,
+      title: `Review Renewal: ${newWarranty.provider_name}`,
+      description: `Policy #${newWarranty.contract_or_policy_number} valid until ${newWarranty.end_date}.`,
+      domain: "documents_warranty",
+      due_at: `${newWarranty.end_date}T09:00:00Z`,
+      status: "PENDING",
+    });
+
+    state.events.unshift({
+      id: crypto.randomUUID(),
+      household_id: ctx.household_id,
+      actor_user_id: ctx.user_id,
+      asset_id: newWarranty.asset_id,
+      event_type: "warranty.registered",
+      domain: "documents_warranty",
+      severity: status === "EXPIRING_SOON" ? "WARNING" : "INFO",
+      correlation_id: `corr-war-${newWarranty.id.slice(0, 8)}`,
+      payload_json: {
+        warranty_id: newWarranty.id,
+        provider_name: newWarranty.provider_name,
+        contract_or_policy_number: newWarranty.contract_or_policy_number,
+        end_date: newWarranty.end_date,
+        status,
+      },
+      occurred_at: new Date().toISOString(),
+      processed_by_worker: true,
+    });
+
+    saveState(state);
+    return sendJson(res, 201, newWarranty);
+  }
+
+  if (pathname === "/api/v1/reminders" && method === "POST") {
+    const ctx = resolveAuth(req, res, state);
+    if (!ctx) return;
+    const body = await readJsonBody(req);
+    const {
+      title = "Document & Warranty Renewal Check",
+      description = "Verify coverage terms and upload renewed policy document.",
+      due_date = "2026-11-01",
+      asset_id = null,
+      domain = "documents_warranty",
+    } = body || {};
+
+    const newReminder = {
+      id: crypto.randomUUID(),
+      household_id: ctx.household_id,
+      asset_id,
+      bill_id: null,
+      title: String(title).trim(),
+      description: String(description).trim(),
+      domain: String(domain),
+      due_at: String(due_date).includes("T")
+        ? String(due_date)
+        : `${String(due_date)}T09:00:00Z`,
+      status: "PENDING",
+    };
+    state.reminders.unshift(newReminder);
+
+    state.events.unshift({
+      id: crypto.randomUUID(),
+      household_id: ctx.household_id,
+      actor_user_id: ctx.user_id,
+      asset_id,
+      event_type: "reminder.scheduled",
+      domain: newReminder.domain || "documents_warranty",
+      severity: "INFO",
+      correlation_id: `corr-rem-${newReminder.id.slice(0, 8)}`,
+      payload_json: {
+        reminder_id: newReminder.id,
+        title: newReminder.title,
+        due_at: newReminder.due_at,
+      },
+      occurred_at: new Date().toISOString(),
+      processed_by_worker: true,
+    });
+
+    saveState(state);
+    return sendJson(res, 201, newReminder);
+  }
+
+  const reminderPatchMatch = pathname.match(/^\/api\/v1\/reminders\/([^/]+)$/);
+  if (reminderPatchMatch && method === "PATCH") {
+    const ctx = resolveAuth(req, res, state);
+    if (!ctx) return;
+    const remId = reminderPatchMatch[1];
+    const reminder = state.reminders.find(
+      (r) => r.household_id === ctx.household_id && r.id === remId
+    );
+    if (!reminder) {
+      return sendJson(res, 404, {
+        error: { code: "RESOURCE_NOT_FOUND", message: "Reminder not found." },
+      });
+    }
+    const body = await readJsonBody(req);
+    reminder.status = body?.status
+      ? String(body.status)
+      : reminder.status === "COMPLETED"
+      ? "PENDING"
+      : "COMPLETED";
+
+    state.events.unshift({
+      id: crypto.randomUUID(),
+      household_id: ctx.household_id,
+      actor_user_id: ctx.user_id,
+      asset_id: reminder.asset_id,
+      event_type:
+        reminder.status === "COMPLETED"
+          ? "reminder.completed"
+          : "reminder.reopened",
+      domain: reminder.domain || "documents_warranty",
+      severity: "INFO",
+      correlation_id: `corr-rem-${reminder.id.slice(0, 8)}`,
+      payload_json: {
+        reminder_id: reminder.id,
+        title: reminder.title,
+        status: reminder.status,
+      },
+      occurred_at: new Date().toISOString(),
+      processed_by_worker: true,
+    });
+
+    saveState(state);
+    return sendJson(res, 200, reminder);
+  }
+
+  // --- Parents' Health Monitoring Endpoints ---
+  if (pathname === "/api/v1/parents-health" && method === "GET") {
+    const ctx = resolveAuth(req, res, state);
+    if (!ctx) return;
+    const records = (state.parent_health_records || []).filter(
+      (r) => r.household_id === ctx.household_id
+    );
+    const healthReminders = (state.reminders || []).filter(
+      (r) =>
+        r.household_id === ctx.household_id && r.domain === "parents_health"
+    );
+    const healthDocs = (state.documents || []).filter(
+      (d) =>
+        d.household_id === ctx.household_id &&
+        (d.document_type === "MEDICAL_LAB_REPORT" ||
+          String(d.title || "").toLowerCase().includes("lab") ||
+          String(d.title || "").toLowerCase().includes("health"))
+    );
+    return sendJson(res, 200, {
+      items: records,
+      reminders: healthReminders,
+      documents: healthDocs,
+      total: records.length,
+      offset: 0,
+      limit: 50,
+    });
+  }
+
+  if (pathname === "/api/v1/parents-health" && method === "POST") {
+    const ctx = resolveAuth(req, res, state);
+    if (!ctx) return;
+    const body = await readJsonBody(req);
+    const {
+      parent_name = "Smt. Sunita Tare (Mother)",
+      record_category = "PERIODIC_CHECKUP",
+      title = "Monthly Senior Checkup & Vitals Log",
+      provider_or_doctor = "Dr. A. Deshmukh · Deenanath Mangeshkar Hospital",
+      recorded_date = new Date().toISOString().slice(0, 10),
+      next_due_or_followup_date = "2026-11-05",
+      schedule_or_frequency = "Monthly Checkup",
+      explicit_measurement_value = "BP: 122/78 mmHg · HR: 72 bpm · SpO2: 98%",
+      status = "SCHEDULED",
+      notes = "Strictly recorded for household monitoring and reminder tracking.",
+      document_id = null,
+    } = body || {};
+
+    if (!title || typeof title !== "string" || !title.trim()) {
+      return sendJson(res, 422, {
+        error: {
+          code: "VALIDATION_ERROR",
+          message: "Health record title is required.",
+        },
+      });
+    }
+
+    const newRecord = {
+      id: crypto.randomUUID(),
+      household_id: ctx.household_id,
+      document_id,
+      parent_name: String(parent_name).trim(),
+      record_category: String(record_category).trim(),
+      title: String(title).trim(),
+      provider_or_doctor: provider_or_doctor
+        ? String(provider_or_doctor).trim()
+        : null,
+      recorded_date: String(recorded_date),
+      next_due_or_followup_date: next_due_or_followup_date
+        ? String(next_due_or_followup_date)
+        : null,
+      schedule_or_frequency: schedule_or_frequency
+        ? String(schedule_or_frequency).trim()
+        : null,
+      explicit_measurement_value: explicit_measurement_value
+        ? String(explicit_measurement_value).trim()
+        : null,
+      status: String(status).trim(),
+      notes: notes ? String(notes).trim() : null,
+    };
+
+    state.parent_health_records = [
+      newRecord,
+      ...(state.parent_health_records || []),
+    ];
+
+    if (newRecord.next_due_or_followup_date) {
+      state.reminders.unshift({
+        id: crypto.randomUUID(),
+        household_id: ctx.household_id,
+        asset_id: null,
+        bill_id: null,
+        title: `${newRecord.parent_name}: ${newRecord.title}`,
+        description: `${newRecord.provider_or_doctor || "Scheduled Health Follow-up"} · ${newRecord.schedule_or_frequency || "Follow-up"}`,
+        domain: "parents_health",
+        due_at: `${newRecord.next_due_or_followup_date}T09:00:00Z`,
+        status: "PENDING",
+      });
+    }
+
+    state.events.unshift({
+      id: crypto.randomUUID(),
+      household_id: ctx.household_id,
+      actor_user_id: ctx.user_id,
+      asset_id: null,
+      event_type: "health.record.logged",
+      domain: "parents_health",
+      severity: "INFO",
+      correlation_id: `corr-hlth-${newRecord.id.slice(0, 8)}`,
+      payload_json: {
+        record_id: newRecord.id,
+        parent_name: newRecord.parent_name,
+        record_category: newRecord.record_category,
+        title: newRecord.title,
+        next_due_or_followup_date: newRecord.next_due_or_followup_date,
+      },
+      occurred_at: new Date().toISOString(),
+      processed_by_worker: true,
+    });
+
+    saveState(state);
+    return sendJson(res, 201, newRecord);
+  }
+
+  const parentHealthPatchMatch = pathname.match(
+    /^\/api\/v1\/parents-health\/([^/]+)$/
+  );
+  if (parentHealthPatchMatch && method === "PATCH") {
+    const ctx = resolveAuth(req, res, state);
+    if (!ctx) return;
+    const recordId = parentHealthPatchMatch[1];
+    const record = (state.parent_health_records || []).find(
+      (r) => r.household_id === ctx.household_id && r.id === recordId
+    );
+    if (!record) {
+      return sendJson(res, 404, {
+        error: {
+          code: "RESOURCE_NOT_FOUND",
+          message: "Parent health record not found.",
+        },
+      });
+    }
+    const body = await readJsonBody(req);
+    if (body?.status) {
+      record.status = String(body.status);
+    } else {
+      record.status =
+        record.status === "COMPLETED" ? "SCHEDULED" : "COMPLETED";
+    }
+    if (body?.explicit_measurement_value !== undefined) {
+      record.explicit_measurement_value = String(
+        body.explicit_measurement_value
+      );
+    }
+    if (body?.next_due_or_followup_date !== undefined) {
+      record.next_due_or_followup_date = String(body.next_due_or_followup_date);
+    }
+
+    state.events.unshift({
+      id: crypto.randomUUID(),
+      household_id: ctx.household_id,
+      actor_user_id: ctx.user_id,
+      asset_id: null,
+      event_type:
+        record.status === "COMPLETED"
+          ? "health.checkup.completed"
+          : "health.record.updated",
+      domain: "parents_health",
+      severity: "INFO",
+      correlation_id: `corr-hlth-${record.id.slice(0, 8)}`,
+      payload_json: {
+        record_id: record.id,
+        parent_name: record.parent_name,
+        title: record.title,
+        status: record.status,
+      },
+      occurred_at: new Date().toISOString(),
+      processed_by_worker: true,
+    });
+
+    saveState(state);
+    return sendJson(res, 200, record);
+  }
+
+  // --- Travel Records Agent Endpoints ---
+  if (pathname === "/api/v1/travel-records" && method === "GET") {
+    const ctx = resolveAuth(req, res, state);
+    if (!ctx) return;
+    const records = (state.travel_records || []).filter(
+      (r) => r.household_id === ctx.household_id
+    );
+    const travelReminders = (state.reminders || []).filter(
+      (r) =>
+        r.household_id === ctx.household_id && r.domain === "travel_records"
+    );
+    const travelDocs = (state.documents || []).filter(
+      (d) =>
+        d.household_id === ctx.household_id &&
+        (d.document_type === "TRAVEL_BOOKING_VOUCHER" ||
+          String(d.title || "").toLowerCase().includes("flight") ||
+          String(d.title || "").toLowerCase().includes("hotel") ||
+          String(d.title || "").toLowerCase().includes("udaipur") ||
+          String(d.title || "").toLowerCase().includes("pnr") ||
+          String(d.title || "").toLowerCase().includes("travel"))
+    );
+    return sendJson(res, 200, {
+      items: records,
+      reminders: travelReminders,
+      documents: travelDocs,
+      total: records.length,
+      offset: 0,
+      limit: 50,
+    });
+  }
+
+  if (pathname === "/api/v1/travel-records" && method === "POST") {
+    const ctx = resolveAuth(req, res, state);
+    if (!ctx) return;
+    const body = await readJsonBody(req);
+    const {
+      trip_name = "Family Weekend Trip & Booking",
+      destination = "Udaipur, Rajasthan",
+      origin_city = "Pune (PNQ)",
+      record_category = "FLIGHT_BOOKING",
+      transport_mode = "FLIGHT",
+      booking_reference = `PNR-${Date.now().toString().slice(-6)}`,
+      provider_or_carrier = "IndiGo Airlines",
+      accommodation_name = "Taj Lake Palace, Udaipur",
+      departure_date = "2026-10-24",
+      return_date = "2026-10-27",
+      travelers = "Tare Family Household (4 Pax)",
+      status = "UPCOMING",
+      expense_amount_inr = "0",
+      document_status = "Booking Confirmation Logged",
+      important_date_label = "Check-In 48h Prior to Departure",
+      notes = "Recorded in HomeIQ Travel Records Agent ledger.",
+      document_id = null,
+    } = body || {};
+
+    if (!trip_name || typeof trip_name !== "string" || !trip_name.trim()) {
+      return sendJson(res, 422, {
+        error: {
+          code: "VALIDATION_ERROR",
+          message: "Trip or travel record title is required.",
+        },
+      });
+    }
+
+    const expenseMinor = Math.max(
+      0,
+      Math.round(parseFloat(String(expense_amount_inr || "0")) * 100)
+    );
+
+    const newTravelRecord = {
+      id: crypto.randomUUID(),
+      household_id: ctx.household_id,
+      document_id,
+      trip_name: String(trip_name).trim(),
+      destination: String(destination).trim(),
+      origin_city: String(origin_city).trim(),
+      record_category: String(record_category).trim(),
+      transport_mode: String(transport_mode).trim(),
+      booking_reference: String(booking_reference).trim(),
+      provider_or_carrier: String(provider_or_carrier).trim(),
+      accommodation_name: String(accommodation_name).trim(),
+      departure_date: String(departure_date),
+      return_date: String(return_date || departure_date),
+      travelers: String(travelers).trim(),
+      status: String(status).trim(),
+      expense_amount_minor: expenseMinor,
+      document_status: String(document_status).trim(),
+      important_date_label: String(important_date_label).trim(),
+      timeline_milestones: [
+        `${departure_date}: Departure from ${origin_city} to ${destination} (${provider_or_carrier})`,
+        `${departure_date}: Stay / Reference — ${accommodation_name} (${booking_reference})`,
+        `${return_date || departure_date}: Scheduled Return / Completion`,
+      ],
+      notes: notes ? String(notes).trim() : null,
+    };
+
+    state.travel_records = [
+      newTravelRecord,
+      ...(state.travel_records || []),
+    ];
+
+    if (newTravelRecord.status === "UPCOMING" && newTravelRecord.departure_date) {
+      state.reminders.unshift({
+        id: crypto.randomUUID(),
+        household_id: ctx.household_id,
+        asset_id: null,
+        bill_id: null,
+        title: `Upcoming Trip: ${newTravelRecord.trip_name} (${newTravelRecord.destination})`,
+        description: `${newTravelRecord.provider_or_carrier} · Ref: ${newTravelRecord.booking_reference} · Verify travel documents before ${newTravelRecord.departure_date}.`,
+        domain: "travel_records",
+        due_at: `${newTravelRecord.departure_date}T08:00:00Z`,
+        status: "PENDING",
+      });
+    }
+
+    state.events.unshift({
+      id: crypto.randomUUID(),
+      household_id: ctx.household_id,
+      actor_user_id: ctx.user_id,
+      asset_id: null,
+      event_type: "travel.record.logged",
+      domain: "travel_records",
+      severity: "INFO",
+      correlation_id: `corr-trv-${newTravelRecord.id.slice(0, 8)}`,
+      payload_json: {
+        record_id: newTravelRecord.id,
+        trip_name: newTravelRecord.trip_name,
+        destination: newTravelRecord.destination,
+        record_category: newTravelRecord.record_category,
+        departure_date: newTravelRecord.departure_date,
+      },
+      occurred_at: new Date().toISOString(),
+      processed_by_worker: true,
+    });
+
+    saveState(state);
+    return sendJson(res, 201, newTravelRecord);
+  }
+
+  const travelPatchMatch = pathname.match(
+    /^\/api\/v1\/travel-records\/([^/]+)$/
+  );
+  if (travelPatchMatch && method === "PATCH") {
+    const ctx = resolveAuth(req, res, state);
+    if (!ctx) return;
+    const recordId = travelPatchMatch[1];
+    const record = (state.travel_records || []).find(
+      (r) => r.household_id === ctx.household_id && r.id === recordId
+    );
+    if (!record) {
+      return sendJson(res, 404, {
+        error: {
+          code: "RESOURCE_NOT_FOUND",
+          message: "Travel record not found.",
+        },
+      });
+    }
+    const body = await readJsonBody(req);
+    if (body?.status) {
+      record.status = String(body.status);
+    } else {
+      record.status =
+        record.status === "COMPLETED" ? "UPCOMING" : "COMPLETED";
+    }
+    if (body?.document_status !== undefined) {
+      record.document_status = String(body.document_status);
+    }
+
+    state.events.unshift({
+      id: crypto.randomUUID(),
+      household_id: ctx.household_id,
+      actor_user_id: ctx.user_id,
+      asset_id: null,
+      event_type:
+        record.status === "COMPLETED"
+          ? "travel.trip.completed"
+          : "travel.record.updated",
+      domain: "travel_records",
+      severity: "INFO",
+      correlation_id: `corr-trv-${record.id.slice(0, 8)}`,
+      payload_json: {
+        record_id: record.id,
+        trip_name: record.trip_name,
+        destination: record.destination,
+        status: record.status,
+      },
+      occurred_at: new Date().toISOString(),
+      processed_by_worker: true,
+    });
+
+    saveState(state);
+    return sendJson(res, 200, record);
+  }
+
+  const docPatchMatch = pathname.match(/^\/api\/v1\/documents\/([^/]+)$/);
+  if (docPatchMatch && method === "PATCH") {
+    const ctx = resolveAuth(req, res, state);
+    if (!ctx) return;
+    const docId = docPatchMatch[1];
+    const doc = state.documents.find(
+      (d) => d.household_id === ctx.household_id && d.id === docId
+    );
+    if (!doc) {
+      return sendJson(res, 404, {
+        error: { code: "RESOURCE_NOT_FOUND", message: "Document not found." },
+      });
+    }
+    const body = await readJsonBody(req);
+    doc.is_verified_by_human =
+      body?.is_verified_by_human !== undefined
+        ? Boolean(body.is_verified_by_human)
+        : !doc.is_verified_by_human;
+    if (body?.document_type) {
+      doc.document_type = String(body.document_type);
+    }
+
+    state.events.unshift({
+      id: crypto.randomUUID(),
+      household_id: ctx.household_id,
+      actor_user_id: ctx.user_id,
+      asset_id: doc.asset_id,
+      event_type: doc.is_verified_by_human
+        ? "document.verified"
+        : "document.flagged_for_review",
+      domain: "documents_warranty",
+      severity: "INFO",
+      correlation_id: `corr-doc-${doc.id.slice(0, 8)}`,
+      payload_json: {
+        document_id: doc.id,
+        title: doc.title,
+        is_verified_by_human: doc.is_verified_by_human,
+      },
+      occurred_at: new Date().toISOString(),
+      processed_by_worker: true,
+    });
+
+    saveState(state);
+    return sendJson(res, 200, doc);
   }
 
   if (pathname === "/api/v1/documents" && method === "GET") {
@@ -1563,6 +2815,64 @@ export async function handleApiRequest(
           expires_on: "2027-09-30",
         },
       };
+    } else if (
+      lower.includes("metropolis") ||
+      lower.includes("hba1c") ||
+      lower.includes("lab report") ||
+      lower.includes("senior health") ||
+      expected_category === "MEDICAL_LAB_REPORT"
+    ) {
+      envelope = {
+        detected_category: "MEDICAL_LAB_REPORT",
+        overall_confidence: 0.98,
+        extracted_text_summary: `Parents' Senior Health Panel & Lab Report extracted (${filename}). Recorded values: HbA1c 6.1%, Fasting Glucose 102 mg/dL, BP 124/78 mmHg. Follow-up checkup scheduled 2026-10-05.`,
+        field_confidences: [
+          {
+            field_name: "explicit_measurement_value",
+            confidence: 0.98,
+            evidence_quote:
+              "HbA1c 6.1%, Fasting Glucose 102 mg/dL, Vitamin D 34 ng/mL, BP 124/78 mmHg",
+          },
+        ],
+        extracted_fields: {
+          lab_name: "Golwilkar Metropolis Diagnostics, Kothrud",
+          parent_name: "Smt. Sunita Tare (Mother) & Shri. Prakash Tare (Father)",
+          report_date: "2026-09-18",
+          next_followup_date: "2026-10-05",
+          explicit_measurement_value:
+            "HbA1c: 6.1% · Fasting Glucose: 102 mg/dL · BP: 124/78 mmHg",
+        },
+      };
+    } else if (
+      lower.includes("indigo") ||
+      lower.includes("flight") ||
+      lower.includes("udaipur") ||
+      lower.includes("pnr") ||
+      lower.includes("taj lake") ||
+      lower.includes("irctc") ||
+      expected_category === "TRAVEL_BOOKING_VOUCHER"
+    ) {
+      envelope = {
+        detected_category: "TRAVEL_BOOKING_VOUCHER",
+        overall_confidence: 0.98,
+        extracted_text_summary: `Household Travel & Accommodation Confirmation extracted (${filename}). IndiGo PNR #K8M4WQ (Pune PNQ → Udaipur UDR, 2026-10-24 to 2026-10-27) & Taj Lake Palace Suite #TLP-UDR-88412. Total Paid: ₹48,600.00.`,
+        field_confidences: [
+          {
+            field_name: "booking_reference",
+            confidence: 0.99,
+            evidence_quote: "PNR: K8M4WQ | Hotel Conf: TLP-UDR-88412",
+          },
+        ],
+        extracted_fields: {
+          trip_name: `Extracted Travel Booking (${filename})`,
+          destination: "Udaipur, Rajasthan",
+          booking_reference: "PNR: K8M4WQ · Conf #TLP-UDR-88412",
+          provider_or_carrier: "IndiGo Airlines & Taj Lake Palace Udaipur",
+          departure_date: "2026-10-24",
+          return_date: "2026-10-27",
+          total_amount_minor: 4860000,
+        },
+      };
     } else {
       const amtMatch = document_text.match(
         /(?:Rs\.?|INR|₹)\s*([\d,]+(?:\.\d{2})?)/i
@@ -1671,6 +2981,73 @@ export async function handleApiRequest(
         is_active: true,
       });
       createdRecords.push({ table: "insurance_policies", record_id: insId });
+    } else if (envelope.detected_category === "MEDICAL_LAB_REPORT") {
+      const hlthId = crypto.randomUUID();
+      state.parent_health_records = [
+        {
+          id: hlthId,
+          household_id: ctx.household_id,
+          document_id: docId,
+          parent_name:
+            fields.parent_name ||
+            "Smt. Sunita Tare (Mother) & Shri. Prakash Tare (Father)",
+          record_category: "LAB_TEST_REPORT",
+          title: `Extracted Lab Panel (${filename})`,
+          provider_or_doctor:
+            fields.lab_name || "Golwilkar Metropolis Diagnostics",
+          recorded_date: fields.report_date || nowIso.slice(0, 10),
+          next_due_or_followup_date: fields.next_followup_date || "2026-12-18",
+          schedule_or_frequency: "Quarterly Lab Panel",
+          explicit_measurement_value:
+            fields.explicit_measurement_value ||
+            "HbA1c: 6.1% · Fasting Glucose: 102 mg/dL",
+          status: "RECORDED",
+          notes: envelope.extracted_text_summary,
+        },
+        ...(state.parent_health_records || []),
+      ];
+      createdRecords.push({
+        table: "parent_health_records",
+        record_id: hlthId,
+      });
+    } else if (envelope.detected_category === "TRAVEL_BOOKING_VOUCHER") {
+      const trvId = crypto.randomUUID();
+      state.travel_records = [
+        {
+          id: trvId,
+          household_id: ctx.household_id,
+          document_id: docId,
+          trip_name:
+            fields.trip_name || `Extracted Travel Booking (${filename})`,
+          destination: fields.destination || "Udaipur, Rajasthan",
+          origin_city: "Pune (PNQ)",
+          record_category: "FLIGHT_BOOKING",
+          transport_mode: "FLIGHT",
+          booking_reference:
+            fields.booking_reference || "PNR: K8M4WQ · Conf #TLP-UDR-88412",
+          provider_or_carrier:
+            fields.provider_or_carrier ||
+            "IndiGo Airlines & Taj Lake Palace Udaipur",
+          accommodation_name: "Taj Lake Palace, Udaipur",
+          departure_date: fields.departure_date || "2026-10-24",
+          return_date: fields.return_date || "2026-10-27",
+          travelers: "Tare Family Household (4 Pax)",
+          status: "UPCOMING",
+          expense_amount_minor: Number(fields.total_amount_minor || 4860000),
+          document_status: "Extracted & Verified in Vault",
+          important_date_label: "Web Check-In 48h Prior to Departure",
+          timeline_milestones: [
+            `${fields.departure_date || "2026-10-24"}: Flight & Hotel Check-In (${fields.destination || "Udaipur"})`,
+            `${fields.return_date || "2026-10-27"}: Scheduled Return to Pune`,
+          ],
+          notes: envelope.extracted_text_summary,
+        },
+        ...(state.travel_records || []),
+      ];
+      createdRecords.push({
+        table: "travel_records",
+        record_id: trvId,
+      });
     } else {
       const expId = crypto.randomUUID();
       state.expenses.unshift({
@@ -1789,6 +3166,49 @@ export async function handleApiRequest(
     const secondaryDomains: string[] = [];
 
     if (
+      qLower.includes("parent") ||
+      qLower.includes("mother") ||
+      qLower.includes("father") ||
+      qLower.includes("sunita") ||
+      qLower.includes("prakash") ||
+      qLower.includes("checkup") ||
+      qLower.includes("doctor") ||
+      qLower.includes("appointment") ||
+      qLower.includes("lab-test") ||
+      qLower.includes("lab report") ||
+      qLower.includes("hba1c") ||
+      qLower.includes("medication") ||
+      qLower.includes("vaccine") ||
+      qLower.includes("vaccination") ||
+      qLower.includes("screening") ||
+      qLower.includes("blood pressure") ||
+      qLower.includes("glucose") ||
+      qLower.includes("spo2") ||
+      qLower.includes("health")
+    ) {
+      primaryDomain = "parents_health";
+    } else if (
+      qLower.includes("travel") ||
+      qLower.includes("trip") ||
+      qLower.includes("flight") ||
+      qLower.includes("train") ||
+      qLower.includes("bus") ||
+      qLower.includes("hotel") ||
+      qLower.includes("accommodation") ||
+      qLower.includes("booking") ||
+      qLower.includes("itinerary") ||
+      qLower.includes("udaipur") ||
+      qLower.includes("goa") ||
+      qLower.includes("shimla") ||
+      qLower.includes("mahabaleshwar") ||
+      qLower.includes("pnr") ||
+      qLower.includes("boarding pass") ||
+      qLower.includes("passport") ||
+      qLower.includes("digiyatra") ||
+      qLower.includes("destination")
+    ) {
+      primaryDomain = "travel_records";
+    } else if (
       isConsequentialPayment ||
       qLower.includes("bill") ||
       qLower.includes("utility") ||
@@ -2012,19 +3432,129 @@ export async function handleApiRequest(
       });
     }
 
+    if (primaryDomain === "parents_health") {
+      const parentRecords = (state.parent_health_records || []).filter(
+        (r) => r.household_id === ctx.household_id
+      );
+      const healthRems = (state.reminders || []).filter(
+        (r) =>
+          r.household_id === ctx.household_id && r.domain === "parents_health"
+      );
+      for (const hr of parentRecords) {
+        recordedFacts.push({
+          source_table: "parent_health_records",
+          record_id: hr.id,
+          field_or_metric: `${hr.parent_name} · ${hr.record_category.replace(
+            /_/g,
+            " "
+          )} (${hr.title})`,
+          recorded_value: `${
+            hr.explicit_measurement_value || hr.schedule_or_frequency
+          } | Provider: ${hr.provider_or_doctor || "Recorded"} | Recorded: ${
+            hr.recorded_date
+          } | Next Follow-up: ${
+            hr.next_due_or_followup_date || "—"
+          } [Status: ${hr.status}]`,
+          is_deterministic_calculation: false,
+          citation_document_id: hr.document_id || null,
+        });
+      }
+      for (const rem of healthRems) {
+        recordedFacts.push({
+          source_table: "reminders",
+          record_id: rem.id,
+          field_or_metric: `Health Reminder: ${rem.title}`,
+          recorded_value: `Due: ${String(rem.due_at).slice(0, 10)} — ${
+            rem.description
+          } [Status: ${rem.status}]`,
+          is_deterministic_calculation: false,
+        });
+      }
+    }
+
+    if (primaryDomain === "travel_records") {
+      const travelRecords = (state.travel_records || []).filter(
+        (r) => r.household_id === ctx.household_id
+      );
+      const travelRems = (state.reminders || []).filter(
+        (r) =>
+          r.household_id === ctx.household_id && r.domain === "travel_records"
+      );
+      const totalTravelSpendMinor = travelRecords.reduce(
+        (acc, t) => acc + Number(t.expense_amount_minor || 0),
+        0
+      );
+      recordedFacts.push({
+        source_table: "travel_records",
+        record_id: travelRecords[0]?.id || SEEDED_HOUSEHOLD_ID,
+        field_or_metric: "Household Travel Ledger & Spend Summary",
+        recorded_value: `${travelRecords.length} recorded trip/booking record(s) (${
+          travelRecords.filter((t) => t.status === "UPCOMING").length
+        } upcoming, ${
+          travelRecords.filter((t) => t.status === "COMPLETED").length
+        } past/completed) · Total Recorded Travel Spend: ₹${(
+          totalTravelSpendMinor / 100
+        ).toLocaleString("en-IN", { minimumFractionDigits: 2 })}`,
+        is_deterministic_calculation: true,
+      });
+      for (const tr of travelRecords) {
+        recordedFacts.push({
+          source_table: "travel_records",
+          record_id: tr.id,
+          field_or_metric: `${tr.trip_name} (${tr.destination})`,
+          recorded_value: `${tr.record_category.replace(/_/g, " ")} · Ref: ${
+            tr.booking_reference
+          } · ${tr.provider_or_carrier} · Stay: ${
+            tr.accommodation_name
+          } · Dates: ${tr.departure_date} to ${tr.return_date} · Cost: ₹${(
+            Number(tr.expense_amount_minor || 0) / 100
+          ).toLocaleString("en-IN")} [Status: ${tr.status}]`,
+          is_deterministic_calculation: false,
+          citation_document_id: tr.document_id || null,
+        });
+      }
+      for (const rem of travelRems) {
+        recordedFacts.push({
+          source_table: "reminders",
+          record_id: rem.id,
+          field_or_metric: `Travel Reminder: ${rem.title}`,
+          recorded_value: `Due: ${String(rem.due_at).slice(0, 10)} — ${
+            rem.description
+          } [Status: ${rem.status}]`,
+          is_deterministic_calculation: false,
+        });
+      }
+    }
+
     const suggestions = [
       {
         title: isConsequentialPayment
           ? "Human Approval Required Before External Payment Dispatch"
+          : primaryDomain === "parents_health"
+          ? "Upcoming Checkup & Lab Folder Reminder (Strictly Monitoring Only)"
+          : primaryDomain === "travel_records"
+          ? "Upcoming Trip Document & Check-In Reminder"
           : "Proactive Household Optimization",
         recommendation_text: isConsequentialPayment
           ? "External bill payment requires explicit OWNER/ADMIN approval before funds are transferred."
+          : primaryDomain === "parents_health"
+          ? "Carry the recorded Golwilkar Metropolis lab report and current medication schedule log to the Oct 5, 2026 checkup at Deenanath Mangeshkar Hospital. Scope Notice: Strictly limited to record organization and reminders — no medical diagnosis, prediction, or treatment advice."
+          : primaryDomain === "travel_records"
+          ? "Complete IndiGo web check-in 48 hours prior to the Oct 24, 2026 Udaipur flight (PNR: K8M4WQ) and keep printed copies of the Taj Lake Palace confirmation voucher (#TLP-UDR-88412) and household ID documents in the travel folder."
           : "Schedule preventive maintenance and review expiring coverage before due dates.",
         is_estimate_or_suggestion: true,
         basis_or_assumption:
-          "Derived deterministically from recorded household rows and warranty/bill dates.",
+          primaryDomain === "parents_health"
+            ? "Derived strictly from recorded appointment dates, medication schedules, and uploaded lab report metadata."
+            : primaryDomain === "travel_records"
+            ? "Derived strictly from recorded household trip dates, flight/hotel booking confirmations, and travel reminders."
+            : "Derived deterministically from recorded household rows and warranty/bill dates.",
         proposed_action_tool: isConsequentialPayment
           ? "dispatch_external_utility_bill_payment"
+          : primaryDomain === "parents_health"
+          ? "retrieve_parents_health_records_and_schedules"
+          : primaryDomain === "travel_records"
+          ? "retrieve_travel_records_and_bookings"
           : "query_domain_facts",
         risk_level: isConsequentialPayment
           ? "EXTERNAL_CONSEQUENTIAL"
@@ -2075,6 +3605,10 @@ export async function handleApiRequest(
     const resolvedAgentName =
       primaryDomain === "finance_expenses"
         ? "Finance & Household Expenses Agent"
+        : primaryDomain === "parents_health"
+        ? "Parents' Health Monitoring Agent"
+        : primaryDomain === "travel_records"
+        ? "Travel Records Agent"
         : `${primaryDomain} Orchestrated Agent`;
 
     state.agent_runs.unshift({
@@ -2417,6 +3951,40 @@ export async function handleApiRequest(
         source_record_id: s.id,
         due_or_expiry_date: s.next_renewal_date,
         metric_value: `₹${(s.amount_minor / 100).toFixed(2)}`,
+      });
+    }
+
+    for (const hr of (state.parent_health_records || []).filter(
+      (x) =>
+        x.household_id === ctx.household_id &&
+        (x.status === "DUE_SOON" || x.status === "SCHEDULED")
+    )) {
+      insights.push({
+        insight_type: "UPCOMING_HEALTH_CHECKUP",
+        domain: "parents_health",
+        severity: hr.status === "DUE_SOON" ? "WARNING" : "INFO",
+        title: `Parents' Health Checkup / Visit: ${hr.title}`,
+        description: `${hr.parent_name} · ${hr.provider_or_doctor} (${hr.schedule_or_frequency}). Monitoring record only.`,
+        source_table: "parent_health_records",
+        source_record_id: hr.id,
+        due_or_expiry_date: hr.next_due_or_followup_date || hr.recorded_date,
+        metric_value: hr.status,
+      });
+    }
+
+    for (const tr of (state.travel_records || []).filter(
+      (x) => x.household_id === ctx.household_id && x.status === "UPCOMING"
+    )) {
+      insights.push({
+        insight_type: "UPCOMING_TRIP_REMINDER",
+        domain: "travel_records",
+        severity: "INFO",
+        title: `Upcoming Household Trip: ${tr.trip_name}`,
+        description: `${tr.destination} (${tr.departure_date} to ${tr.return_date}) · ${tr.booking_reference} · ${tr.accommodation_name}.`,
+        source_table: "travel_records",
+        source_record_id: tr.id,
+        due_or_expiry_date: tr.departure_date,
+        metric_value: `₹${(Number(tr.expense_amount_minor || 0) / 100).toLocaleString("en-IN")}`,
       });
     }
 

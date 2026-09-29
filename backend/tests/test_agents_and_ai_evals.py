@@ -41,9 +41,10 @@ async def test_all_seven_domain_agents_and_human_approval_gate(
     db_session: AsyncSession,
     api_client: AsyncClient,
 ) -> None:
-    assert len(DOMAIN_AGENT_SPECS) == 7
+    assert len(DOMAIN_AGENT_SPECS) == len(HouseholdDomainId)
     assert HouseholdDomainId.FINANCE_EXPENSES in DOMAIN_AGENT_SPECS
     assert HouseholdDomainId.PARENTS_HEALTH in DOMAIN_AGENT_SPECS
+    assert HouseholdDomainId.TRAVEL_RECORDS in DOMAIN_AGENT_SPECS
     orchestrator = HomeIQAgentOrchestrator(db_session)
 
     # 1. Multi-domain query routing across Documents/Warranty + Home Maintenance
@@ -66,6 +67,15 @@ async def test_all_seven_domain_agents_and_human_approval_gate(
     assert any(f.source_table == "parent_health_records" for f in health_res.recorded_facts)
     assert any(f.source_table == "documents" for f in health_res.recorded_facts)
     assert any(f.source_table == "reminders" for f in health_res.recorded_facts)
+
+    # 1C. Travel Records Agent routing & grounded retrieval
+    travel_res = await orchestrator.execute_workflow(
+        household_id=SEEDED_HOUSEHOLD_ID,
+        user_id=SEEDED_USER_ID,
+        user_query="Retrieve our past and upcoming household trips, flight and hotel bookings, travel documents, and travel expenses.",
+    )
+    assert travel_res.route.primary_domain == HouseholdDomainId.TRAVEL_RECORDS
+    assert len(travel_res.recorded_facts) > 0
 
     # 2. Consequential external action (pay electricity bill) triggers HUMAN_APPROVAL_REQUIRED
     pay_res = await orchestrator.execute_workflow(

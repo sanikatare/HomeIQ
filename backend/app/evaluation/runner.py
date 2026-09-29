@@ -914,6 +914,7 @@ class HomeIQEvaluationRunner:
             HouseholdDomainId.PARENTS_HEALTH: "Check our parents' scheduled health checkup reminders, doctor appointments, medication schedules, and lab reports.",
             HouseholdDomainId.VEHICLE_MOBILITY: "Check our Honda car odometer and PUC compliance status.",
             HouseholdDomainId.DOCUMENTS_WARRANTY: "Verify our active warranty certificates and insurance policy coverage.",
+            HouseholdDomainId.TRAVEL_RECORDS: "Retrieve our past and upcoming household trips, flight and hotel bookings, travel documents, and travel expenses.",
         }
 
         results: list[AgentEvaluationCaseResult] = []

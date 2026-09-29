@@ -141,10 +141,10 @@ async def test_complete_evaluation_runner_and_artifacts(
     assert report.error_distribution["VALIDATION_ERROR"] == 1
     assert report.error_distribution["OCR_ERROR"] == 1
 
-    # Verify all 6 RAG cases, 7 Domain Agents, and 4 E2E Scenarios passed
+    # Verify all 6 RAG cases, 8 Domain Agents, and 4 E2E Scenarios passed
     assert len(report.rag_results) == 6
     assert all(r.status == "passed" for r in report.rag_results)
-    assert len(report.agent_results) == 7
+    assert len(report.agent_results) == 8
     assert all(a.status == "passed" for a in report.agent_results)
     assert len(report.end_to_end_results) == 4
     assert all(s.status == "passed" for s in report.end_to_end_results)

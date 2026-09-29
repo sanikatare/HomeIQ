@@ -1,6 +1,6 @@
 {
-  "report_id": "eval-run-20260929-173845",
-  "generated_at": "2026-09-29T17:38:45.969343+00:00",
+  "report_id": "eval-run-20260929-194032",
+  "generated_at": "2026-09-29T19:40:32.268720+00:00",
   "execution_mode": "deterministic_ci",
   "model_configuration": {
     "document_extraction_model": "gemini-2.5-flash",
@@ -585,7 +585,7 @@
       "created_domain_records": [
         {
           "table": "expenses",
-          "id": "b050f054-229d-432d-abd7-7f51263208f8"
+          "id": "a48f3b78-7005-47ce-8014-0e734898ecaf"
         }
       ],
       "errors": []
@@ -708,7 +708,7 @@
       "created_domain_records": [
         {
           "table": "bills",
-          "id": "ee103952-f277-43bb-a79a-cf47b9c8131a"
+          "id": "e798ac9f-71f5-4245-a6a2-ae4f32134b2b"
         }
       ],
       "errors": []
@@ -865,7 +865,7 @@
       "created_domain_records": [
         {
           "table": "expenses",
-          "id": "70ae3843-9e25-4eee-af97-fa3769acfcc8"
+          "id": "32dd0bd7-4ca4-4b61-8ede-fa3d58bb943a"
         }
       ],
       "errors": []
@@ -1024,7 +1024,7 @@
       "created_domain_records": [
         {
           "table": "warranties",
-          "id": "a69557d3-4303-4930-9df3-1e2463de4928"
+          "id": "2a219d26-dff5-4a18-9612-1ccbbe9c3523"
         }
       ],
       "errors": []
@@ -1174,11 +1174,11 @@
       "created_domain_records": [
         {
           "table": "maintenance_records",
-          "id": "8a4ff7be-5fd6-45ab-9bd6-3e339768ad8d"
+          "id": "6daa94b1-abbf-4f09-82f6-d3ebb0edcaf9"
         },
         {
           "table": "expenses",
-          "id": "f1f7439d-33cc-401d-8260-bbee4f157b2c"
+          "id": "c0c17377-b0a9-449a-8a2a-d122edd1f19d"
         }
       ],
       "errors": []
@@ -1301,7 +1301,7 @@
       "created_domain_records": [
         {
           "table": "insurance_policies",
-          "id": "9f41fdc0-0f05-435c-8e4a-d756b0bb7582"
+          "id": "e1c84dcf-18df-4804-be0e-a74d6023f218"
         }
       ],
       "errors": []
@@ -1450,7 +1450,7 @@
       "created_domain_records": [
         {
           "table": "expenses",
-          "id": "c91ac33a-61f6-44e0-bcb9-130677a5ebb1"
+          "id": "f8ac33af-9456-407d-abb1-66dfe97cae7e"
         }
       ],
       "errors": []
@@ -1600,11 +1600,11 @@
       "created_domain_records": [
         {
           "table": "maintenance_records",
-          "id": "5efa5e87-ef69-4f9d-807b-b13a778ea6e3"
+          "id": "5f7a3d08-45e6-4891-9476-cb14c867c2a3"
         },
         {
           "table": "expenses",
-          "id": "ac3398ad-a0ef-4c69-967a-d912bd7cd502"
+          "id": "1656993b-bfb6-47b4-aef7-819c91259d00"
         }
       ],
       "errors": []
@@ -1950,7 +1950,7 @@
       ],
       "created_entities": {
         "document_id": "eval_0001",
-        "expense_id": "b050f054-229d-432d-abd7-7f51263208f8"
+        "expense_id": "a48f3b78-7005-47ce-8014-0e734898ecaf"
       },
       "emitted_events": [
         "document.intelligence.completed",
@@ -1971,7 +1971,7 @@
       "created_entities": {
         "invoice_document_id": "eval_0003",
         "warranty_document_id": "eval_0004",
-        "warranty_id": "a69557d3-4303-4930-9df3-1e2463de4928"
+        "warranty_id": "2a219d26-dff5-4a18-9612-1ccbbe9c3523"
       },
       "emitted_events": [
         "document.intelligence.completed",
@@ -1991,7 +1991,7 @@
       ],
       "created_entities": {
         "document_id": "eval_0002",
-        "bill_id": "ee103952-f277-43bb-a79a-cf47b9c8131a"
+        "bill_id": "e798ac9f-71f5-4245-a6a2-ae4f32134b2b"
       },
       "emitted_events": [
         "document.intelligence.completed",
@@ -2012,8 +2012,8 @@
       ],
       "created_entities": {
         "document_id": "eval_0005",
-        "maintenance_record_id": "8a4ff7be-5fd6-45ab-9bd6-3e339768ad8d",
-        "expense_id": "f1f7439d-33cc-401d-8260-bbee4f157b2c"
+        "maintenance_record_id": "6daa94b1-abbf-4f09-82f6-d3ebb0edcaf9",
+        "expense_id": "c0c17377-b0a9-449a-8a2a-d122edd1f19d"
       },
       "emitted_events": [
         "document.intelligence.completed",
