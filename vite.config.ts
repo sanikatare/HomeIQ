@@ -6,6 +6,12 @@ import { handleApiRequest } from "./src/server/apiMiddleware";
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, ".", "");
+  if (env.GEMINI_API_KEY && !process.env.GEMINI_API_KEY) {
+    process.env.GEMINI_API_KEY = env.GEMINI_API_KEY;
+  }
+  if (env.JWT_SECRET_KEY && !process.env.JWT_SECRET_KEY) {
+    process.env.JWT_SECRET_KEY = env.JWT_SECRET_KEY;
+  }
   return {
     plugins: [
       react(),
@@ -35,9 +41,6 @@ export default defineConfig(({ mode }) => {
         },
       },
     ],
-    define: {
-      "process.env.GEMINI_API_KEY": JSON.stringify(env.GEMINI_API_KEY || ""),
-    },
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "."),
@@ -46,6 +49,7 @@ export default defineConfig(({ mode }) => {
     server: {
       port: 3000,
       host: "0.0.0.0",
+      allowedHosts: true,
       hmr: process.env.DISABLE_HMR !== "true",
     },
   };

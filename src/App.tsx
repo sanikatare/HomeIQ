@@ -2555,8 +2555,6 @@ export function App() {
                           .filter((a) => {
                             if (selectedDomain === "vehicle_mobility")
                               return a.category === "VEHICLE";
-                            if (selectedDomain === "home_maintenance")
-                              return a.category !== "VEHICLE";
                             return true;
                           })
                           .filter((a) =>

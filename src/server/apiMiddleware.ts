@@ -2488,16 +2488,21 @@ export async function handleApiRequest(
     pathname === "/api/v1/intelligence/evaluation/datasets" &&
     method === "GET"
   ) {
-    const manifestPath = path.resolve(
-      process.cwd(),
-      "datasets/evaluation/manifest.json"
-    );
-    if (fs.existsSync(manifestPath)) {
-      return sendJson(
-        res,
-        200,
-        JSON.parse(fs.readFileSync(manifestPath, "utf-8"))
-      );
+    const candidatePaths = [
+      path.resolve(
+        process.cwd(),
+        "datasets/evaluation/manifests/evaluation_manifest.json"
+      ),
+      path.resolve(process.cwd(), "datasets/evaluation/manifest.json"),
+    ];
+    for (const manifestPath of candidatePaths) {
+      if (fs.existsSync(manifestPath)) {
+        return sendJson(
+          res,
+          200,
+          JSON.parse(fs.readFileSync(manifestPath, "utf-8"))
+        );
+      }
     }
     return sendJson(res, 404, { error: { message: "Manifest not found" } });
   }
