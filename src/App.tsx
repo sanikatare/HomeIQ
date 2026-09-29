@@ -15,6 +15,7 @@ import {
   FileText,
   Flame,
   FolderKanban,
+  HeartPulse,
   Layers,
   Minus,
   Package,
@@ -30,6 +31,7 @@ import {
   Sparkles,
   Upload,
   Utensils,
+  Wallet,
   Wrench,
   X,
   XCircle,
@@ -578,6 +580,8 @@ export function App() {
   const [financeReminderDesc, setFinanceReminderDesc] = useState(
     "Verify utility meter reading and authorize scheduled bill payment before due date."
   );
+  const [activeEstateWingId, setActiveEstateWingId] =
+    useState<DomainFilterId>("kitchen_grocery");
 
   const [docFilename, setDocFilename] = useState(SAMPLE_DOCUMENTS[0].filename);
   const [docCategory, setDocCategory] = useState(SAMPLE_DOCUMENTS[0].category);
@@ -592,6 +596,9 @@ export function App() {
 
   const handleSelectDomain = (domainId: DomainFilterId) => {
     setSelectedDomain(domainId);
+    if (domainId !== "all") {
+      setActiveEstateWingId(domainId);
+    }
     if (
       domainId === "kitchen_grocery" ||
       domainId === "home_maintenance" ||
@@ -1499,23 +1506,23 @@ export function App() {
     },
     {
       id: "documents",
-      title: "Document Ingestion & Gemini",
+      title: "Document Ingestion",
       icon: Upload,
     },
     {
       id: "intelligence",
-      title: "Multi-Agent & Approval Gate",
+      title: "Multi-Agent",
       badge: pendingApprovalsCount,
       icon: Sparkles,
     },
     {
       id: "proactive",
-      title: "Proactive Engine & Event Bus",
+      title: "Proactive Engine",
       icon: Bell,
     },
     {
       id: "evaluation",
-      title: "Dataset Evaluation Benchmark",
+      title: "Dataset",
       icon: BarChart3,
     },
   ];
@@ -1548,24 +1555,21 @@ export function App() {
     selectedDomain !== "all" || searchQuery.trim().length > 0;
 
   return (
-    <div className="flex min-h-screen bg-slate-50 text-slate-900">
-      {/* Left Vertical Sidebar */}
-      <aside className="sticky top-0 flex h-screen w-64 shrink-0 flex-col justify-between border-r border-slate-200 bg-slate-950 text-slate-100">
+    <div className="flex min-h-screen bg-zinc-100 text-zinc-900">
+      {/* Left Vertical Sidebar — Minimal Black, Gray & White */}
+      <aside className="sticky top-0 flex h-screen w-60 shrink-0 flex-col justify-between border-r border-zinc-800 bg-zinc-950 text-zinc-100">
         <div>
-          <div className="flex items-center gap-3 border-b border-slate-800 px-5 py-4">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-400">
-              <ShieldCheck className="h-5 w-5" />
+          {/* Top Brand Header — Just HomeIQ */}
+          <div className="flex items-center gap-3 border-b border-zinc-800 px-5 py-4">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-white text-zinc-950">
+              <Layers className="h-4 w-4" />
             </div>
-            <div>
-              <span className="text-base font-bold tracking-tight text-white">
-                HomeIQ
-              </span>
-              <p className="text-[11px] text-slate-400">
-                Tare Family Residence
-              </p>
-            </div>
+            <span className="text-base font-bold tracking-tight text-white">
+              HomeIQ
+            </span>
           </div>
 
+          {/* Core Platform Modules */}
           <nav className="space-y-1 p-3">
             {SIDEBAR_MODULES.map((mod) => {
               const Icon = mod.icon;
@@ -1574,22 +1578,28 @@ export function App() {
                 <button
                   key={mod.id}
                   onClick={() => setActiveView(mod.id)}
-                  className={`flex w-full items-center justify-between gap-2.5 rounded-xl px-3.5 py-2.5 text-left text-xs font-semibold transition-all ${
+                  className={`flex w-full items-center justify-between gap-2.5 rounded-md px-3.5 py-2.5 text-left text-xs font-medium transition-colors ${
                     isActive
-                      ? "bg-white text-slate-950 shadow-xs"
-                      : "text-slate-300 hover:bg-slate-900 hover:text-white"
+                      ? "bg-white text-zinc-950 font-semibold"
+                      : "text-zinc-400 hover:bg-zinc-900 hover:text-white"
                   }`}
                 >
                   <div className="flex items-center gap-2.5 truncate">
                     <Icon
                       className={`h-4 w-4 shrink-0 ${
-                        isActive ? "text-slate-950" : "text-slate-400"
+                        isActive ? "text-zinc-950" : "text-zinc-400"
                       }`}
                     />
                     <span className="truncate">{mod.title}</span>
                   </div>
                   {mod.badge !== undefined && mod.badge > 0 && (
-                    <span className="rounded-md bg-amber-400 px-1.5 py-0.5 font-mono text-[10px] font-bold text-slate-950">
+                    <span
+                      className={`rounded px-1.5 py-0.5 font-mono text-[10px] font-bold ${
+                        isActive
+                          ? "bg-zinc-950 text-white"
+                          : "bg-zinc-800 text-zinc-100"
+                      }`}
+                    >
                       {mod.badge}
                     </span>
                   )}
@@ -1599,68 +1609,78 @@ export function App() {
           </nav>
         </div>
 
-        {/* Owner Profile Footer */}
-        <div className="flex items-center justify-between border-t border-slate-800 bg-slate-900/50 px-4 py-3.5 text-xs">
-          <div className="truncate">
-            <div className="font-semibold text-white">Sanika Tare</div>
-            <div className="text-[11px] text-slate-400">Household Owner</div>
-          </div>
+        {/* Minimal Refresh Control */}
+        <div className="border-t border-zinc-800 p-3">
           <button
             onClick={() => refreshAllData()}
             disabled={loading}
-            title="Refresh Data"
-            className="rounded-lg border border-slate-700 bg-slate-800 p-2 text-slate-200 hover:bg-slate-700 disabled:opacity-50"
+            className="flex w-full items-center justify-center gap-2 rounded-md border border-zinc-800 bg-zinc-900 px-3 py-2 text-xs font-medium text-zinc-300 transition-colors hover:border-zinc-700 hover:bg-zinc-800 hover:text-white disabled:opacity-50"
           >
             <RefreshCw
               className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`}
             />
+            <span>Refresh Data</span>
           </button>
         </div>
       </aside>
 
       {/* Main Content Area */}
       <div className="flex min-w-0 flex-1 flex-col">
-        {/* Top Horizontal 7-Domains Bar + Global Search */}
-        <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 px-6 py-3 backdrop-blur">
+        {/* Top Horizontal Rectangular Navbar */}
+        <header className="sticky top-0 z-20 border-b border-zinc-200 bg-white px-6 py-3">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-            <nav className="flex gap-1.5 overflow-x-auto pb-1 lg:pb-0">
+            <nav className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0">
               {SEVEN_DOMAIN_NAV.map((dom) => {
                 const Icon = dom.icon;
-                const isSelected = selectedDomain === dom.id;
+                const isSelected =
+                  selectedDomain === dom.id && activeView === "dashboard";
+                const navLabel =
+                  dom.id === "all"
+                    ? "Homepage"
+                    : dom.id === "parents_health"
+                    ? "Parents' Health"
+                    : dom.id === "travel_records"
+                    ? "Travel"
+                    : dom.id === "finance_expenses"
+                    ? "Finance & Expenses"
+                    : dom.label;
                 return (
                   <button
                     key={dom.id}
-                    onClick={() => handleSelectDomain(dom.id)}
-                    className={`flex items-center gap-2 rounded-lg px-3.5 py-2 text-xs font-semibold whitespace-nowrap transition-all ${
+                    onClick={() => {
+                      setActiveView("dashboard");
+                      handleSelectDomain(dom.id);
+                    }}
+                    className={`flex items-center gap-2 rounded-md border px-3.5 py-2 text-xs font-medium whitespace-nowrap transition-colors ${
                       isSelected
-                        ? "bg-slate-900 text-white shadow-xs"
-                        : "bg-slate-100 text-slate-600 hover:bg-slate-200/70 hover:text-slate-900"
+                        ? "border-zinc-950 bg-zinc-950 text-white font-semibold"
+                        : "border-zinc-200 bg-zinc-50 text-zinc-700 hover:border-zinc-400 hover:bg-zinc-100 hover:text-zinc-950"
                     }`}
                   >
                     <Icon className="h-3.5 w-3.5" />
-                    <span>{dom.label}</span>
+                    <span>{navLabel}</span>
                   </button>
                 );
               })}
             </nav>
 
             <div className="flex items-center gap-2">
-              <div className="relative w-full shrink-0 lg:w-72">
-                <Search className="pointer-events-none absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+              <div className="relative w-full shrink-0 lg:w-64">
+                <Search className="pointer-events-none absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
                 <input
                   type="search"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search across all domains..."
+                  placeholder="Search household..."
                   aria-label="Global household search"
-                  className="w-full rounded-lg border border-slate-200 bg-slate-50 py-1.5 pr-8 pl-8 text-xs text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:bg-white focus:outline-none"
+                  className="w-full rounded-md border border-zinc-300 bg-zinc-50 py-1.5 pr-8 pl-8 text-xs text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-950 focus:bg-white focus:outline-none"
                 />
                 {searchQuery && (
                   <button
                     type="button"
                     onClick={() => setSearchQuery("")}
                     title="Clear search"
-                    className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded p-0.5 text-slate-400 hover:bg-slate-200/60 hover:text-slate-700"
+                    className="absolute top-1/2 right-2.5 -translate-y-1/2 p-0.5 text-zinc-400 hover:text-zinc-700"
                   >
                     <X className="h-3.5 w-3.5" />
                   </button>
@@ -1673,7 +1693,7 @@ export function App() {
                     setSelectedDomain("all");
                     setSearchQuery("");
                   }}
-                  className="shrink-0 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                  className="shrink-0 rounded-md border border-zinc-900 bg-zinc-950 px-3 py-1.5 text-xs font-medium text-white hover:bg-zinc-800"
                 >
                   Reset
                 </button>
@@ -1684,7 +1704,7 @@ export function App() {
 
         <main className="flex-1 space-y-6 p-6">
           {apiError && (
-            <div className="flex items-center justify-between gap-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-900">
+            <div className="flex items-center justify-between gap-4 rounded-md border border-red-300 bg-red-50 px-4 py-3 text-xs text-red-900">
               <div className="flex items-center gap-2.5">
                 <ShieldAlert className="h-4 w-4 shrink-0 text-red-600" />
                 <span className="font-medium">{apiError.message}</span>
@@ -1699,7 +1719,7 @@ export function App() {
           )}
 
           {actionToast && (
-            <div className="flex items-center justify-between rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-xs text-emerald-900">
+            <div className="flex items-center justify-between rounded-md border border-emerald-300 bg-emerald-50 px-4 py-3 text-xs text-emerald-900">
               <div className="flex items-center gap-2.5">
                 <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                 <span className="font-medium">{actionToast}</span>
@@ -2310,92 +2330,6 @@ export function App() {
                 </div>
               )}
 
-              {/* Top Metric Summary Strip (Shown when not in dedicated domain showcase tabs) */}
-              {selectedDomain !== "kitchen_grocery" &&
-                selectedDomain !== "home_maintenance" &&
-                selectedDomain !== "laundry_clothing" &&
-                selectedDomain !== "vehicle_mobility" &&
-                selectedDomain !== "documents_warranty" &&
-                selectedDomain !== "parents_health" && (
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <div className="rounded-xl border border-slate-200 bg-white p-4">
-                  <div className="flex items-center justify-between text-xs font-medium text-slate-500">
-                    <span>Monthly Budget & Spend</span>
-                    <CreditCard className="h-4 w-4 text-slate-400" />
-                  </div>
-                  <p className="mt-2 font-mono text-lg font-bold tabular-nums text-slate-900">
-                    {formatINR(summary?.metrics?.recorded_expenses_minor)}
-                  </p>
-                  <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
-                    <div
-                      className="h-full rounded-full bg-slate-900 transition-all"
-                      style={{ width: `${budgetUtilizationPct}%` }}
-                    />
-                  </div>
-                  <p className="mt-1.5 text-xs text-slate-500">
-                    {budgetUtilizationPct}% of{" "}
-                    <span className="font-mono tabular-nums">
-                      {formatINR(summary?.metrics?.monthly_budget_minor)}
-                    </span>{" "}
-                    monthly budget
-                  </p>
-                </div>
-
-                <div className="rounded-xl border border-slate-200 bg-white p-4">
-                  <div className="flex items-center justify-between text-xs font-medium text-slate-500">
-                    <span>Pending Utility Bills</span>
-                    <FileText className="h-4 w-4 text-amber-500" />
-                  </div>
-                  <p className="mt-2 font-mono text-lg font-bold tabular-nums text-slate-900">
-                    {formatINR(summary?.metrics?.pending_bills_amount_minor)}
-                  </p>
-                  <p className="mt-1.5 text-xs text-slate-500">
-                    {summary?.metrics?.pending_bills_count ?? 0} pending ·{" "}
-                    {summary?.metrics?.active_subscriptions_count ?? 0} active
-                    subscriptions
-                  </p>
-                </div>
-
-                <div className="rounded-xl border border-slate-200 bg-white p-4">
-                  <div className="flex items-center justify-between text-xs font-medium text-slate-500">
-                    <span>Assets & Coverage</span>
-                    <Wrench className="h-4 w-4 text-blue-500" />
-                  </div>
-                  <p className="mt-2 font-mono text-lg font-bold tabular-nums text-slate-900">
-                    {assets.length} Household Assets
-                  </p>
-                  <p className="mt-1.5 text-xs text-slate-500">
-                    {warrantiesData.items.length} warranties ·{" "}
-                    {warrantiesData.insurance_policies.length} insurance
-                    policies
-                  </p>
-                </div>
-
-                <div className="rounded-xl border border-slate-200 bg-white p-4">
-                  <div className="flex items-center justify-between text-xs font-medium text-slate-500">
-                    <span>Pantry & Approvals</span>
-                    <Package className="h-4 w-4 text-rose-500" />
-                  </div>
-                  <p className="mt-2 font-mono text-lg font-bold tabular-nums text-slate-900">
-                    {summary?.metrics?.low_stock_items_count ?? 0} Low-Stock
-                    Items
-                  </p>
-                  <div className="mt-1.5 flex items-center justify-between text-xs text-slate-500">
-                    <span>{pendingApprovalsCount} awaiting approval</span>
-                    {pendingApprovalsCount > 0 && (
-                      <button
-                        type="button"
-                        onClick={() => setActiveView("intelligence")}
-                        className="font-semibold text-amber-700 hover:underline"
-                      >
-                        Review →
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-              )}
-
               {/* RENOVATION WEBFLOW TEMPLATE UI FOR HOME MAINTENANCE TAB */}
               {selectedDomain === "home_maintenance" && (
                 <div className="space-y-8">
@@ -2835,7 +2769,7 @@ export function App() {
                 </div>
               )}
 
-              {/* LAUNDRY & DRY-CLEANING DELIVERY APP UI FOR LAUNDRY & CLOTHING TAB */}
+              {/* COUTURE WARDROBE & SONIC DRUM VALET UI FOR LAUNDRY & CLOTHING TAB (BLUE & BLACK) */}
               {selectedDomain === "laundry_clothing" && (
                 <div className="space-y-6">
                   {(() => {
@@ -2857,162 +2791,103 @@ export function App() {
                     const needsCareCount = clothing.filter(
                       (c) => c.needs_laundry
                     ).length;
-                    const cleanCount = clothing.length - needsCareCount;
+                    const cleanCount = Math.max(
+                      0,
+                      clothing.length - needsCareCount
+                    );
+                    const activeGarment =
+                      filteredClothing[0] || clothing[0] || null;
+                    const activeIsSilk =
+                      activeGarment?.fabric_type === "SILK" ||
+                      activeGarment?.care_instruction === "DRY_CLEAN_ONLY";
+                    const activeImg = activeIsSilk
+                      ? "/src/assets/images/laundry_silk_saree_care_1790696366528.jpg"
+                      : "/src/assets/images/laundry_linen_wardrobe_1790696378092.jpg";
+
+                    const formatCareShort = (code?: string) => {
+                      if (code === "DRY_CLEAN_ONLY") return "Dry Clean";
+                      if (code === "GENTLE_COLD_WASH") return "Cold Wash";
+                      if (code === "MACHINE_WASH_WARM") return "Warm Wash";
+                      return code || "Gentle Care";
+                    };
 
                     return (
                       <>
-                        {/* Pastel Sky-Blue & Crisp White Valet Delivery App Hero */}
-                        <div className="overflow-hidden rounded-3xl border border-sky-100 bg-gradient-to-br from-[#EAF4FF] via-[#F4F9FF] to-white p-6 shadow-sm lg:p-8">
-                          <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
-                            <div className="space-y-5 lg:col-span-7">
-                              <div className="flex items-center gap-2 text-xs font-semibold text-blue-600">
+                        {/* Hero Split-Screen Sonic Drum & Couture Wardrobe Console (Blue & Black) */}
+                        <div className="relative overflow-hidden rounded-3xl border border-blue-500/25 bg-[#090D16] text-slate-100 shadow-2xl">
+                          {/* Ambient Sapphire Glows */}
+                          <div
+                            aria-hidden="true"
+                            className="pointer-events-none absolute -top-32 -right-28 h-96 w-96 rounded-full bg-blue-500/15 blur-3xl"
+                          />
+                          <div
+                            aria-hidden="true"
+                            className="pointer-events-none absolute -bottom-28 left-1/4 h-80 w-80 rounded-full bg-blue-600/10 blur-3xl"
+                          />
+
+                          {/* Top Wardrobe Valet Navigation Bar */}
+                          <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 border-b border-white/10 px-6 py-4 lg:px-10">
+                            <div className="flex items-center gap-2.5">
+                              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500/20 text-blue-400">
                                 <Shirt className="h-4 w-4" />
-                                <span>
-                                  Tare Wardrobe Valet · Fabric-Safe Dry Cleaning
-                                  & Care
-                                </span>
                               </div>
-
-                              <h1 className="text-2xl leading-tight font-bold tracking-tight text-slate-900 sm:text-4xl">
-                                Gentle Fabric Care & On-Demand Valet Tracker
-                              </h1>
-
-                              <p className="max-w-xl text-xs leading-relaxed text-slate-600 sm:text-sm">
-                                Temperature-governed wash rules, delicate
-                                handloom silk preservation, and one-tap laundry
-                                basket scheduling for every garment in your
-                                wardrobe.
-                              </p>
-
-                              {/* Service Care Category Pills */}
-                              <div className="flex flex-wrap gap-2">
-                                {[
-                                  { id: "ALL", label: "All Wardrobe" },
-                                  {
-                                    id: "DRY_CLEAN_ONLY",
-                                    label: "Dry Clean Valet",
-                                  },
-                                  {
-                                    id: "GENTLE_COLD_WASH",
-                                    label: "Gentle Cold Wash",
-                                  },
-                                  {
-                                    id: "MACHINE_WASH_WARM",
-                                    label: "Warm Wash & Fold",
-                                  },
-                                ].map((pill) => (
-                                  <button
-                                    key={pill.id}
-                                    type="button"
-                                    onClick={() =>
-                                      setLaundryCareFilter(pill.id)
-                                    }
-                                    className={`rounded-2xl px-4 py-2 text-xs font-semibold transition-all duration-200 ${
-                                      laundryCareFilter === pill.id
-                                        ? "bg-blue-600 text-white shadow-sm"
-                                        : "bg-white text-slate-700 hover:bg-blue-50"
-                                    }`}
-                                  >
-                                    {pill.label}
-                                  </button>
-                                ))}
-                              </div>
-
-                              {/* Valet Order Status Stepper Card */}
-                              <div className="rounded-2xl border border-blue-100 bg-white p-4 shadow-xs">
-                                <div className="flex items-center justify-between text-xs">
-                                  <span className="font-bold text-slate-900">
-                                    Active Valet Care Batch · #VL-2026
-                                  </span>
-                                  <span className="font-semibold text-blue-600">
-                                    {needsCareCount} in Basket · {cleanCount}{" "}
-                                    Fresh in Closet
-                                  </span>
-                                </div>
-                                <div className="mt-3 grid grid-cols-3 gap-2 text-[11px]">
-                                  <div className="rounded-xl bg-blue-50 px-3 py-2 font-semibold text-blue-900">
-                                    1. Basket Sorted
-                                  </div>
-                                  <div className="rounded-xl bg-blue-600 px-3 py-2 font-semibold text-white">
-                                    2. Temp-Safe Care
-                                  </div>
-                                  <div className="rounded-xl bg-slate-100 px-3 py-2 font-medium text-slate-600">
-                                    3. Steam & Hang
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div className="flex flex-wrap items-center gap-3">
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    setShowAddGarmentModal((prev) => !prev)
-                                  }
-                                  className="inline-flex items-center gap-1.5 rounded-2xl bg-slate-900 px-4 py-2.5 text-xs font-semibold text-white hover:bg-slate-800"
-                                >
-                                  <Plus className="h-3.5 w-3.5" />
-                                  {showAddGarmentModal
-                                    ? "Close Form"
-                                    : "Add Garment to Wardrobe"}
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    setActiveView("intelligence");
-                                    runAgentQueryText(
-                                      "How should we wash the Paithani Pure Silk Saree and can we tumble dry it?"
-                                    );
-                                  }}
-                                  className="inline-flex items-center gap-1.5 rounded-2xl border border-blue-200 bg-white px-4 py-2.5 text-xs font-semibold text-blue-700 hover:bg-blue-50"
-                                >
-                                  <Sparkles className="h-3.5 w-3.5" />
-                                  Ask Fabric Care AI
-                                </button>
-                              </div>
+                              <span className="font-serif text-lg tracking-wide text-white italic">
+                                Tare Couture Wardrobe & Valet
+                              </span>
                             </div>
 
-                            {/* Right Visual Valet Showcase */}
-                            <div className="grid grid-cols-2 gap-4 lg:col-span-5">
-                              <div className="overflow-hidden rounded-3xl border border-white bg-white p-2 shadow-sm">
-                                <img
-                                  src="/src/assets/images/laundry_silk_saree_care_1790696366528.jpg"
-                                  alt="Paithani Pure Silk Saree Valet Care"
-                                  referrerPolicy="no-referrer"
-                                  className="h-52 w-full rounded-2xl object-cover"
-                                />
-                                <div className="p-2.5 text-xs">
-                                  <div className="font-bold text-slate-900">
-                                    Delicate Silk Valet
-                                  </div>
-                                  <div className="text-[11px] text-slate-500">
-                                    20°C Max · No Tumble Dry
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="overflow-hidden rounded-3xl border border-white bg-white p-2 shadow-sm">
-                                <img
-                                  src="/src/assets/images/laundry_linen_wardrobe_1790696378092.jpg"
-                                  alt="Freshly Pressed Organic Linen Wardrobe"
-                                  referrerPolicy="no-referrer"
-                                  className="h-52 w-full rounded-2xl object-cover"
-                                />
-                                <div className="p-2.5 text-xs">
-                                  <div className="font-bold text-slate-900">
-                                    Linen & Cotton Press
-                                  </div>
-                                  <div className="text-[11px] text-slate-500">
-                                    30°C Gentle · Cedar Hung
-                                  </div>
-                                </div>
-                              </div>
+                            {/* Wash Cycle Filter Tabs */}
+                            <div className="flex flex-wrap items-center gap-1.5">
+                              {[
+                                {
+                                  id: "ALL",
+                                  label: `All (${clothing.length})`,
+                                },
+                                {
+                                  id: "DRY_CLEAN_ONLY",
+                                  label: "Dry Clean · 20°C",
+                                },
+                                {
+                                  id: "GENTLE_COLD_WASH",
+                                  label: "Cold Wash · 30°C",
+                                },
+                                {
+                                  id: "MACHINE_WASH_WARM",
+                                  label: "Warm Wash · 40°C",
+                                },
+                              ].map((pill) => (
+                                <button
+                                  key={pill.id}
+                                  type="button"
+                                  onClick={() => setLaundryCareFilter(pill.id)}
+                                  className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all duration-200 ${
+                                    laundryCareFilter === pill.id
+                                      ? "bg-blue-500 text-slate-950 shadow-sm"
+                                      : "text-slate-300 hover:bg-white/10 hover:text-white"
+                                  }`}
+                                >
+                                  {pill.label}
+                                </button>
+                              ))}
                             </div>
+
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setShowAddGarmentModal((prev) => !prev)
+                              }
+                              className="inline-flex items-center gap-1.5 rounded-full border border-blue-400/40 bg-blue-500/10 px-4 py-1.5 text-xs font-semibold text-blue-300 transition-colors hover:bg-blue-500 hover:text-slate-950"
+                            >
+                              <Plus className="h-3.5 w-3.5" />
+                              {showAddGarmentModal ? "Close" : "Add Garment"}
+                            </button>
                           </div>
 
-                          {/* Add Garment Drawer */}
+                          {/* Collapsible Quick-Add Garment Drawer */}
                           {showAddGarmentModal && (
                             <form
                               onSubmit={handleAddGarment}
-                              className="mt-6 border-t border-blue-100 pt-5"
+                              className="relative z-10 border-b border-white/10 bg-white/5 px-6 py-4 backdrop-blur lg:px-10"
                             >
                               <div className="grid grid-cols-1 gap-3 sm:grid-cols-5">
                                 <input
@@ -3023,14 +2898,14 @@ export function App() {
                                   onChange={(e) =>
                                     setGarmentName(e.target.value)
                                   }
-                                  className="rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs sm:col-span-2"
+                                  className="rounded-xl border border-white/15 bg-black/50 px-3.5 py-2 text-xs text-white placeholder:text-slate-500 sm:col-span-2"
                                 />
                                 <select
                                   value={garmentFabric}
                                   onChange={(e) =>
                                     setGarmentFabric(e.target.value)
                                   }
-                                  className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs"
+                                  className="rounded-xl border border-white/15 bg-slate-950 px-3 py-2 text-xs text-white"
                                 >
                                   <option value="SILK">Pure Silk</option>
                                   <option value="LINEN">Belgian Linen</option>
@@ -3046,30 +2921,225 @@ export function App() {
                                   onChange={(e) =>
                                     setGarmentCare(e.target.value)
                                   }
-                                  className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs"
+                                  className="rounded-xl border border-white/15 bg-slate-950 px-3 py-2 text-xs text-white"
                                 >
                                   <option value="DRY_CLEAN_ONLY">
-                                    Dry Clean Only (20°C)
+                                    Dry Clean (20°C)
                                   </option>
                                   <option value="GENTLE_COLD_WASH">
-                                    Gentle Cold Wash (30°C)
+                                    Cold Wash (30°C)
                                   </option>
                                   <option value="MACHINE_WASH_WARM">
-                                    Machine Wash Warm (40°C)
+                                    Warm Wash (40°C)
                                   </option>
                                 </select>
                                 <button
                                   type="submit"
-                                  className="rounded-xl bg-blue-600 px-4 py-2 text-xs font-bold text-white hover:bg-blue-700"
+                                  className="rounded-xl bg-blue-500 px-4 py-2 text-xs font-bold text-slate-950 hover:bg-blue-400"
                                 >
                                   Save Garment
                                 </button>
                               </div>
                             </form>
                           )}
+
+                          {/* Main 12-Column Split-Screen Valet Showcase */}
+                          <div className="relative z-10 grid grid-cols-1 items-center gap-8 px-6 py-8 lg:grid-cols-12 lg:px-10 lg:py-10">
+                            {/* Left 7 Columns: Concise Garment Specs & Valet Pipeline */}
+                            <div className="space-y-6 lg:col-span-7">
+                              {activeGarment && (
+                                <>
+                                  <div className="flex flex-wrap items-center gap-2 text-xs text-blue-400">
+                                    <span>{activeGarment.brand}</span>
+                                    <span aria-hidden="true">·</span>
+                                    <span>{activeGarment.fabric_type}</span>
+                                    <span aria-hidden="true">·</span>
+                                    <span
+                                      className={
+                                        activeGarment.needs_laundry
+                                          ? "font-semibold text-amber-400"
+                                          : "font-semibold text-emerald-400"
+                                      }
+                                    >
+                                      {activeGarment.needs_laundry
+                                        ? "Queued in Basket"
+                                        : "Fresh in Closet"}
+                                    </span>
+                                  </div>
+
+                                  <div className="space-y-1.5">
+                                    <h1 className="font-serif text-3xl leading-tight font-normal tracking-tight text-white sm:text-5xl">
+                                      {activeGarment.name}
+                                    </h1>
+                                    <div className="text-sm font-medium text-blue-300">
+                                      {formatCareShort(
+                                        activeGarment.care_instruction
+                                      )}{" "}
+                                      · Max {activeGarment.max_wash_temp_c}°C ·{" "}
+                                      {activeGarment.can_tumble_dry
+                                        ? "Low Tumble"
+                                        : "No Tumble Dry"}
+                                    </div>
+                                  </div>
+
+                                  {/* 4-Metric Wardrobe Telemetry Row */}
+                                  <div className="grid grid-cols-2 gap-4 border-y border-white/10 py-4 text-xs sm:grid-cols-4">
+                                    <div>
+                                      <div className="text-slate-400">
+                                        Thermal Limit
+                                      </div>
+                                      <div className="mt-1 font-mono text-xl font-bold tabular-nums text-blue-400">
+                                        {activeGarment.max_wash_temp_c}°C
+                                      </div>
+                                    </div>
+                                    <div>
+                                      <div className="text-slate-400">
+                                        In Basket
+                                      </div>
+                                      <div className="mt-1 font-mono text-xl font-bold tabular-nums text-white">
+                                        {needsCareCount}{" "}
+                                        <span className="text-xs font-normal text-slate-400">
+                                          pcs
+                                        </span>
+                                      </div>
+                                    </div>
+                                    <div>
+                                      <div className="text-slate-400">
+                                        Closet Ready
+                                      </div>
+                                      <div className="mt-1 font-mono text-xl font-bold tabular-nums text-emerald-400">
+                                        {cleanCount}{" "}
+                                        <span className="text-xs font-normal text-slate-400">
+                                          pcs
+                                        </span>
+                                      </div>
+                                    </div>
+                                    <div>
+                                      <div className="text-slate-400">
+                                        Wear Cycle
+                                      </div>
+                                      <div className="mt-1 font-mono text-xl font-bold tabular-nums text-white">
+                                        {activeGarment.wear_count_since_wash ??
+                                          0}{" "}
+                                        <span className="text-xs font-normal text-blue-400">
+                                          wears
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {/* Visual 3-Stage Valet Cycle Bar */}
+                                  <div className="grid grid-cols-3 gap-2.5 text-xs">
+                                    <div className="rounded-2xl border border-blue-500/40 bg-blue-500/15 px-3.5 py-2.5">
+                                      <div className="font-mono text-[10px] text-blue-300">
+                                        01 · SORT
+                                      </div>
+                                      <div className="mt-0.5 font-semibold text-white">
+                                        {needsCareCount} Queued
+                                      </div>
+                                    </div>
+                                    <div className="rounded-2xl border border-blue-400 bg-blue-500 px-3.5 py-2.5 text-slate-950">
+                                      <div className="font-mono text-[10px] font-bold">
+                                        02 · THERMAL
+                                      </div>
+                                      <div className="mt-0.5 font-bold">
+                                        {activeGarment.max_wash_temp_c}°C Safe
+                                      </div>
+                                    </div>
+                                    <div className="rounded-2xl border border-white/10 bg-white/5 px-3.5 py-2.5">
+                                      <div className="font-mono text-[10px] text-slate-400">
+                                        03 · CLOSET
+                                      </div>
+                                      <div className="mt-0.5 font-semibold text-emerald-400">
+                                        {cleanCount} Pressed
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {/* Action CTAs */}
+                                  <div className="flex flex-wrap items-center gap-3">
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        handleToggleLaundry(activeGarment.id)
+                                      }
+                                      className="inline-flex items-center gap-2 rounded-full bg-blue-500 px-5 py-2.5 text-xs font-bold text-slate-950 shadow-md transition-transform duration-200 hover:-translate-y-0.5 hover:bg-blue-400"
+                                    >
+                                      <Check className="h-4 w-4" />
+                                      {activeGarment.needs_laundry
+                                        ? "Complete Valet Care →"
+                                        : "Queue for Wash →"}
+                                    </button>
+
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setActiveView("intelligence");
+                                        runAgentQueryText(
+                                          `How should we wash the ${activeGarment.name} and can we tumble dry it?`
+                                        );
+                                      }}
+                                      className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-4 py-2.5 text-xs font-semibold text-slate-200 transition-colors hover:bg-white/15"
+                                    >
+                                      <Sparkles className="h-3.5 w-3.5 text-blue-400" />
+                                      Ask Fabric AI
+                                    </button>
+                                  </div>
+                                </>
+                              )}
+                            </div>
+
+                            {/* Right 5 Columns: Animated Circular Sonic Wash Drum Dial */}
+                            <div className="flex flex-col items-center justify-center lg:col-span-5">
+                              <div className="relative flex h-80 w-80 items-center justify-center sm:h-96 sm:w-96">
+                                {/* Outer Rotating Sonic Drum Ring */}
+                                <div className="absolute inset-0 rounded-full border border-dashed border-blue-400/40 animate-un-orbit-slow">
+                                  <span className="absolute -top-2 left-1/2 h-4 w-4 -translate-x-1/2 rounded-full border-2 border-slate-950 bg-blue-400 shadow" />
+                                  <span className="absolute top-1/2 -right-2 h-3 w-3 -translate-y-1/2 rounded-full bg-blue-500/60" />
+                                  <span className="absolute -bottom-2 left-1/2 h-3 w-3 -translate-x-1/2 rounded-full bg-sky-400" />
+                                  <span className="absolute top-1/2 -left-2 h-3 w-3 -translate-y-1/2 rounded-full bg-slate-600" />
+                                </div>
+
+                                {/* Middle Thermal Gauge Ring */}
+                                <div className="absolute inset-5 rounded-full border border-blue-500/20 bg-gradient-to-br from-blue-500/15 via-transparent to-white/5 shadow-inner" />
+
+                                {/* Center Circular Couture Garment Viewport */}
+                                <div className="relative h-60 w-60 overflow-hidden rounded-full border-4 border-blue-400/35 shadow-2xl sm:h-72 sm:w-72">
+                                  <img
+                                    src={activeImg}
+                                    alt={activeGarment?.name || "Wardrobe"}
+                                    referrerPolicy="no-referrer"
+                                    className="h-full w-full object-cover"
+                                  />
+                                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent" />
+                                  <div className="absolute inset-x-0 bottom-5 text-center">
+                                    <div className="font-mono text-xs font-bold text-blue-300">
+                                      {activeGarment?.max_wash_temp_c ?? 20}°C
+                                      MAX
+                                    </div>
+                                    <div className="text-[11px] text-slate-300">
+                                      {activeGarment?.can_tumble_dry
+                                        ? "Tumble Safe"
+                                        : "Air / Steam Only"}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* Floating Drum Status Callout */}
+                                <div className="absolute right-2 bottom-2 rounded-2xl border border-blue-400/30 bg-slate-950/95 px-3.5 py-2 text-xs backdrop-blur">
+                                  <div className="text-[10px] text-slate-400">
+                                    Valet Queue
+                                  </div>
+                                  <div className="font-mono text-sm font-bold tabular-nums text-blue-400">
+                                    {needsCareCount} Basket · {cleanCount} Ready
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
 
-                        {/* Garment Care Cards Grid */}
+                        {/* Wardrobe Grid — Blue & Black Cards (Title -> Important Value -> Short Context -> Action) */}
                         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                           {filteredClothing.map((c) => {
                             const isSilk =
@@ -3082,77 +3152,85 @@ export function App() {
                             return (
                               <div
                                 key={c.id}
-                                className="flex flex-col justify-between overflow-hidden rounded-3xl border border-slate-200 bg-white p-4 shadow-xs transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
+                                className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-blue-500/20 bg-[#0B101B] text-white transition-all duration-200 hover:-translate-y-1 hover:border-blue-400/60 hover:shadow-xl"
                               >
                                 <div>
-                                  <div className="relative h-44 w-full overflow-hidden rounded-2xl bg-slate-100">
+                                  <div className="relative h-44 w-full overflow-hidden bg-slate-900">
                                     <img
                                       src={imgSrc}
                                       alt={c.name}
                                       referrerPolicy="no-referrer"
-                                      className="h-full w-full object-cover"
+                                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                                     />
-                                    <div className="absolute top-3 right-3 rounded-xl bg-white/95 px-2.5 py-1 font-mono text-[11px] font-bold tabular-nums text-slate-900 backdrop-blur">
-                                      Max {c.max_wash_temp_c}°C
+                                    <div className="absolute inset-0 bg-gradient-to-t from-[#0B101B] via-black/30 to-transparent" />
+                                    <div className="absolute top-3 right-3 rounded-lg border border-blue-400/30 bg-slate-950/90 px-2.5 py-1 font-mono text-xs font-bold tabular-nums text-blue-400">
+                                      {c.max_wash_temp_c}°C Max
+                                    </div>
+                                    <div className="absolute right-4 bottom-3 left-4">
+                                      <h3 className="truncate text-base font-bold text-white">
+                                        {c.name}
+                                      </h3>
                                     </div>
                                   </div>
 
-                                  <div className="mt-4 space-y-1.5">
-                                    <div className="flex items-center justify-between text-[11px] text-slate-500">
-                                      <span>
-                                        {c.brand} · {c.fabric_type}
+                                  <div className="space-y-2 p-4 text-xs">
+                                    {/* Important Value */}
+                                    <div className="flex items-center justify-between">
+                                      <span className="font-mono text-sm font-bold text-blue-400">
+                                        {formatCareShort(c.care_instruction)} ·{" "}
+                                        {c.can_tumble_dry
+                                          ? "Tumble OK"
+                                          : "No Tumble"}
                                       </span>
                                       <span
                                         className={
                                           c.needs_laundry
-                                            ? "font-semibold text-amber-700"
-                                            : "font-semibold text-emerald-700"
+                                            ? "font-semibold text-amber-400"
+                                            : "font-semibold text-emerald-400"
                                         }
                                       >
                                         {c.needs_laundry
-                                          ? "In Laundry Basket"
-                                          : "Fresh & Ready"}
+                                          ? "In Basket"
+                                          : "Ready"}
                                       </span>
                                     </div>
-                                    <h3 className="text-sm font-bold text-slate-900">
-                                      {c.name}
-                                    </h3>
-                                    <div className="text-xs text-slate-600">
-                                      Care: {c.care_instruction} · Tumble Dry:{" "}
-                                      <span
-                                        className={
-                                          c.can_tumble_dry
-                                            ? "font-medium text-slate-800"
-                                            : "font-semibold text-rose-700"
-                                        }
-                                      >
-                                        {c.can_tumble_dry
-                                          ? "Allowed"
-                                          : "Do Not Tumble Dry"}
+
+                                    {/* Short Context */}
+                                    <div className="text-[11px] text-slate-400">
+                                      {c.brand} · {c.fabric_type} ·{" "}
+                                      <span className="font-mono text-slate-200">
+                                        {c.wear_count_since_wash ?? 0} wears
                                       </span>
                                     </div>
                                   </div>
                                 </div>
 
-                                <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3">
-                                  <span className="text-[11px] text-slate-500">
-                                    Wears since wash:{" "}
-                                    <strong className="font-mono text-slate-800">
-                                      {c.wear_count_since_wash ?? 0}
-                                    </strong>
-                                  </span>
+                                {/* Clear CTA */}
+                                <div className="flex items-center justify-between border-t border-white/10 px-4 py-3">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setActiveView("intelligence");
+                                      runAgentQueryText(
+                                        `What is the care instruction and wash limit for ${c.name}?`
+                                      );
+                                    }}
+                                    className="text-[11px] font-semibold text-slate-400 hover:text-blue-300"
+                                  >
+                                    Care AI →
+                                  </button>
                                   <button
                                     type="button"
                                     onClick={() => handleToggleLaundry(c.id)}
-                                    className={`rounded-xl px-3.5 py-2 text-xs font-semibold transition-colors ${
+                                    className={`rounded-xl px-3.5 py-1.5 text-xs font-bold transition-colors ${
                                       c.needs_laundry
-                                        ? "bg-blue-600 text-white hover:bg-blue-700"
-                                        : "border border-slate-200 bg-slate-50 text-slate-800 hover:bg-slate-100"
+                                        ? "bg-blue-500 text-slate-950 hover:bg-blue-400"
+                                        : "border border-white/15 bg-white/5 text-white hover:bg-white/10"
                                     }`}
                                   >
                                     {c.needs_laundry
-                                      ? "Complete Valet Care"
-                                      : "Queue for Wash"}
+                                      ? "Complete Care →"
+                                      : "Queue Wash →"}
                                   </button>
                                 </div>
                               </div>
@@ -3990,7 +4068,7 @@ export function App() {
                 </div>
               )}
 
-              {/* DRIBBBLE FINANCE ANALYTICS DASHBOARD FOR DOCUMENTS & WARRANTY TAB */}
+              {/* DIGITAL VAULT & COVERAGE HORIZON UI FOR DOCUMENTS & WARRANTY TAB (LIGHT BLUE & BLACK) */}
               {selectedDomain === "documents_warranty" && (
                 <div className="space-y-6">
                   {(() => {
@@ -4017,6 +4095,15 @@ export function App() {
                       return Math.min(100, Math.max(6, pct));
                     };
 
+                    const getWidthClass = (pct: number) => {
+                      if (pct >= 90) return "w-11/12";
+                      if (pct >= 75) return "w-3/4";
+                      if (pct >= 60) return "w-3/5";
+                      if (pct >= 45) return "w-1/2";
+                      if (pct >= 30) return "w-1/3";
+                      return "w-1/4";
+                    };
+
                     const allWarranties = warrantiesData.items || [];
                     const allPolicies = warrantiesData.insurance_policies || [];
                     const allReminders = (
@@ -4028,7 +4115,6 @@ export function App() {
                         !r.domain || r.domain === "documents_warranty"
                     );
 
-                    // Total Protected Asset & Coverage Value
                     const totalInsuredIdvMinor = allPolicies.reduce(
                       (acc: number, p: any) =>
                         acc + Number(p.coverage_limit_minor || 0),
@@ -4044,7 +4130,6 @@ export function App() {
                         0
                       );
 
-                    // Purchase records & receipts total value from documents
                     const totalReceiptsValueMinor = documents.reduce(
                       (acc, d) =>
                         acc +
@@ -4057,10 +4142,6 @@ export function App() {
                     const verifiedDocsCount = documents.filter(
                       (d) => d.is_verified_by_human
                     ).length;
-                    const pendingReviewDocsCount = Math.max(
-                      0,
-                      documents.length - verifiedDocsCount
-                    );
 
                     const expiringCoverageCount =
                       allWarranties.filter(
@@ -4076,7 +4157,6 @@ export function App() {
                       (r: any) => r.status !== "COMPLETED"
                     ).length;
 
-                    // Unified Coverage Portfolio (Warranties + Insurance Policies)
                     const unifiedCoverageRows = [
                       ...allWarranties.map((w: any) => {
                         const linkedAsset = assets.find(
@@ -4093,8 +4173,6 @@ export function App() {
                           kind: "WARRANTY",
                           assetName:
                             linkedAsset?.name || "Household Appliance",
-                          assetLocation:
-                            linkedAsset?.location_room || "Residence",
                           providerName: w.provider_name,
                           policyNumber: w.contract_or_policy_number,
                           coverageType: w.warranty_type || "MANUFACTURER",
@@ -4108,8 +4186,6 @@ export function App() {
                           protectedValueMinor: Number(
                             linkedAsset?.purchase_price_minor || 5490000
                           ),
-                          termsSummary: w.coverage_terms,
-                          contactPhone: w.claim_contact_phone,
                           statusKey: isExpired
                             ? "EXPIRED"
                             : isExpiring
@@ -4127,9 +4203,7 @@ export function App() {
                           id: p.id,
                           kind: "INSURANCE",
                           assetName:
-                            linkedAsset?.name || "Tata Nexon EV Empowered+ LR",
-                          assetLocation:
-                            linkedAsset?.location_room || "Basement B-14",
+                            linkedAsset?.name || "Tata Nexon EV Insurance",
                           providerName: p.insurer_name,
                           policyNumber: p.policy_number,
                           coverageType: p.policy_type || "MOTOR_VEHICLE",
@@ -4143,10 +4217,6 @@ export function App() {
                           protectedValueMinor: Number(
                             p.coverage_limit_minor || 175000000
                           ),
-                          termsSummary: `Comprehensive Zero-Dep IDV Coverage · Annual Premium ${formatINR(
-                            p.annual_premium_minor
-                          )} · Deductible ${formatINR(p.deductible_minor)}`,
-                          contactPhone: "1800-2666",
                           statusKey:
                             daysLeft < 0
                               ? "EXPIRED"
@@ -4170,42 +4240,51 @@ export function App() {
                           row.policyNumber,
                           row.coverageType,
                           row.startDate,
-                          row.endDate,
-                          row.termsSummary
+                          row.endDate
                         )
                       );
 
-                    // Document Categories Allocation
+                    const featuredCoverage =
+                      unifiedCoverageRows[0] || {
+                        assetName: "Bosch Serie 8 Dishwasher",
+                        daysLeft: 19,
+                        endDate: "2026-10-18",
+                        policyNumber: "BSH-EXT-2024-991",
+                        providerName: "Bosch Home India",
+                        protectedValueMinor: 6450000,
+                        progressPct: 88,
+                      };
+
                     const DOC_CATEGORY_SPECS = [
                       {
                         id: "WARRANTY_CERTIFICATE",
-                        label: "Warranty Certificates",
-                        barColor: "bg-indigo-600",
-                        dotColor: "bg-indigo-600",
+                        label: "Warranties",
+                        flexClass: "flex-[3] bg-sky-400",
+                        dotColor: "bg-sky-400",
                       },
                       {
                         id: "PURCHASE_RECEIPT",
-                        label: "Purchase Receipts",
-                        barColor: "bg-emerald-600",
-                        dotColor: "bg-emerald-600",
+                        label: "Receipts",
+                        flexClass: "flex-[3] bg-cyan-300",
+                        dotColor: "bg-cyan-300",
                       },
                       {
                         id: "INSURANCE_POLICY",
-                        label: "Insurance Policies",
-                        barColor: "bg-sky-500",
-                        dotColor: "bg-sky-500",
+                        label: "Insurance",
+                        flexClass: "flex-[2] bg-blue-400",
+                        dotColor: "bg-blue-400",
                       },
                       {
                         id: "SERVICE_INVOICE",
-                        label: "Service Invoices",
-                        barColor: "bg-amber-500",
-                        dotColor: "bg-amber-500",
+                        label: "Invoices",
+                        flexClass: "flex-[2] bg-sky-200",
+                        dotColor: "bg-sky-200",
                       },
                       {
                         id: "UTILITY_BILL",
-                        label: "Utility Statements",
-                        barColor: "bg-slate-600",
-                        dotColor: "bg-slate-600",
+                        label: "Utilities",
+                        flexClass: "flex-[2] bg-slate-500",
+                        dotColor: "bg-slate-400",
                       },
                     ];
 
@@ -4235,14 +4314,6 @@ export function App() {
                       return {
                         ...cat,
                         count: matchingDocs.length,
-                        sharePct: Math.max(
-                          8,
-                          Math.round(
-                            (matchingDocs.length /
-                              Math.max(1, documents.length)) *
-                              100
-                          )
-                        ),
                         recordedMinor,
                       };
                     });
@@ -4298,90 +4369,90 @@ export function App() {
 
                     return (
                       <>
-                        {/* Executive Finance-Analytics Header Bar */}
-                        <div className="rounded-2xl border border-slate-200 bg-white p-6">
-                          <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
-                            <div>
-                              <div className="flex items-center gap-2 text-xs font-semibold text-indigo-600">
-                                <FolderKanban className="h-4 w-4" />
-                                <span>
-                                  Documents & Warranty Analytics · RAG Knowledge
-                                  Vault
-                                </span>
+                        {/* HERO DIGITAL VAULT CONSOLE (LIGHT BLUE & BLACK) */}
+                        <div className="relative overflow-hidden rounded-3xl border border-sky-400/25 bg-[#080E17] text-slate-100 shadow-2xl">
+                          <div
+                            aria-hidden="true"
+                            className="pointer-events-none absolute -top-32 -right-24 h-96 w-96 rounded-full bg-sky-400/15 blur-3xl"
+                          />
+                          <div
+                            aria-hidden="true"
+                            className="pointer-events-none absolute -bottom-28 left-1/4 h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl"
+                          />
+
+                          {/* Top Vault Bar */}
+                          <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 border-b border-white/10 px-6 py-4 lg:px-10">
+                            <div className="flex items-center gap-2.5">
+                              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-sky-400/20 text-sky-300">
+                                <ShieldCheck className="h-4 w-4" />
                               </div>
-                              <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-                                Household Coverage, Purchase Receipts & Expiry
-                                Ledger
-                              </h1>
-                              <p className="mt-1 max-w-2xl text-xs text-slate-500">
-                                Track product and service warranties, start and
-                                expiry horizons, verified purchase invoices,
-                                category allocations, and automated renewal
-                                reminders.
-                              </p>
+                              <span className="font-serif text-lg tracking-wide text-white italic">
+                                Tare Digital Vault & Coverage Safe
+                              </span>
                             </div>
 
-                            <div className="flex flex-wrap items-center gap-2.5">
+                            {/* Coverage Filter Tabs */}
+                            <div className="flex flex-wrap items-center gap-1.5">
+                              {[
+                                { id: "ALL", label: "All Coverage" },
+                                { id: "ACTIVE", label: "Active" },
+                                { id: "EXPIRING_SOON", label: "Expiring Soon" },
+                              ].map((tab) => (
+                                <button
+                                  key={tab.id}
+                                  type="button"
+                                  onClick={() =>
+                                    setWarrantyStatusFilter(tab.id)
+                                  }
+                                  className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all ${
+                                    warrantyStatusFilter === tab.id
+                                      ? "bg-sky-400 text-slate-950 shadow-xs"
+                                      : "text-slate-300 hover:bg-white/10 hover:text-white"
+                                  }`}
+                                >
+                                  {tab.label}
+                                </button>
+                              ))}
+                            </div>
+
+                            {/* Quick Vault Actions */}
+                            <div className="flex flex-wrap items-center gap-2">
                               <button
                                 type="button"
                                 onClick={() =>
                                   setShowRegisterWarrantyModal((prev) => !prev)
                                 }
-                                className="inline-flex items-center gap-1.5 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-semibold text-white transition-colors hover:bg-slate-800 whitespace-nowrap"
+                                className="inline-flex items-center gap-1.5 rounded-full bg-sky-400 px-4 py-1.5 text-xs font-bold text-slate-950 transition-colors hover:bg-sky-300"
                               >
                                 <Plus className="h-3.5 w-3.5" />
                                 {showRegisterWarrantyModal
-                                  ? "Close Form"
-                                  : "Register Warranty"}
+                                  ? "Close"
+                                  : "Add Coverage"}
                               </button>
-
                               <button
                                 type="button"
                                 onClick={() => setActiveView("documents")}
-                                className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-800 transition-colors hover:bg-slate-50 whitespace-nowrap"
+                                className="inline-flex items-center gap-1.5 rounded-full border border-sky-400/35 bg-sky-400/10 px-3.5 py-1.5 text-xs font-semibold text-sky-300 hover:bg-sky-400/20"
                               >
-                                <Upload className="h-3.5 w-3.5 text-indigo-600" />
-                                Ingest Document PDF
-                              </button>
-
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setActiveView("intelligence");
-                                  runAgentQueryText(
-                                    "Is our Bosch dishwasher covered under warranty, when does coverage expire, and what purchase receipts are on file?"
-                                  );
-                                }}
-                                className="inline-flex items-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50/70 px-4 py-2.5 text-xs font-semibold text-indigo-950 transition-colors hover:bg-indigo-100/80 whitespace-nowrap"
-                              >
-                                <Sparkles className="h-3.5 w-3.5 text-indigo-600" />
-                                Ask Warranty RAG
+                                <Upload className="h-3.5 w-3.5" />
+                                Ingest PDF
                               </button>
                             </div>
                           </div>
 
-                          {/* Collapsible Register New Product/Service Warranty Drawer */}
+                          {/* Collapsible Register Coverage Form */}
                           {showRegisterWarrantyModal && (
                             <form
                               onSubmit={handleRegisterWarranty}
-                              className="mt-5 border-t border-slate-100 pt-5"
+                              className="relative z-10 border-b border-white/10 bg-white/5 px-6 py-4 backdrop-blur lg:px-10"
                             >
-                              <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-xs">
-                                <span className="font-bold text-slate-900">
-                                  Register Product or Extended Service Warranty
-                                </span>
-                                <span className="text-slate-500">
-                                  Automatically schedules an expiry reminder and
-                                  publishes a domain event
-                                </span>
-                              </div>
                               <div className="grid grid-cols-1 gap-3 sm:grid-cols-6">
                                 <select
                                   value={newWarrantyAssetId}
                                   onChange={(e) =>
                                     setNewWarrantyAssetId(e.target.value)
                                   }
-                                  className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900"
+                                  className="rounded-xl border border-white/15 bg-slate-950 px-3 py-2 text-xs text-white"
                                 >
                                   {assets.map((a) => (
                                     <option key={a.id} value={a.id}>
@@ -4392,12 +4463,12 @@ export function App() {
                                 <input
                                   type="text"
                                   required
-                                  placeholder="Provider / OEM Name"
+                                  placeholder="Provider / OEM"
                                   value={newWarrantyProvider}
                                   onChange={(e) =>
                                     setNewWarrantyProvider(e.target.value)
                                   }
-                                  className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900"
+                                  className="rounded-xl border border-white/15 bg-black/50 px-3 py-2 text-xs text-white"
                                 />
                                 <input
                                   type="text"
@@ -4407,7 +4478,7 @@ export function App() {
                                   onChange={(e) =>
                                     setNewWarrantyPolicyNum(e.target.value)
                                   }
-                                  className="rounded-xl border border-slate-300 bg-white px-3 py-2 font-mono text-xs text-slate-900"
+                                  className="rounded-xl border border-white/15 bg-black/50 px-3 py-2 font-mono text-xs text-white"
                                 />
                                 <input
                                   type="date"
@@ -4416,7 +4487,7 @@ export function App() {
                                   onChange={(e) =>
                                     setNewWarrantyStartDate(e.target.value)
                                   }
-                                  className="rounded-xl border border-slate-300 bg-white px-3 py-2 font-mono text-xs tabular-nums text-slate-900"
+                                  className="rounded-xl border border-white/15 bg-black/50 px-3 py-2 font-mono text-xs text-white"
                                 />
                                 <input
                                   type="date"
@@ -4425,562 +4496,296 @@ export function App() {
                                   onChange={(e) =>
                                     setNewWarrantyEndDate(e.target.value)
                                   }
-                                  className="rounded-xl border border-slate-300 bg-white px-3 py-2 font-mono text-xs tabular-nums text-slate-900"
+                                  className="rounded-xl border border-white/15 bg-black/50 px-3 py-2 font-mono text-xs text-white"
                                 />
                                 <button
                                   type="submit"
-                                  className="rounded-xl bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-500 whitespace-nowrap"
+                                  className="rounded-xl bg-sky-400 px-4 py-2 text-xs font-bold text-slate-950 hover:bg-sky-300"
                                 >
                                   Save Coverage
                                 </button>
                               </div>
-                              <div className="mt-2.5 grid grid-cols-1 gap-3 sm:grid-cols-6">
-                                <select
-                                  value={newWarrantyType}
-                                  onChange={(e) =>
-                                    setNewWarrantyType(e.target.value)
-                                  }
-                                  className="rounded-xl border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-700"
-                                >
-                                  <option value="MANUFACTURER">
-                                    Manufacturer Warranty
-                                  </option>
-                                  <option value="EXTENDED">
-                                    Extended Protection Plan
-                                  </option>
-                                  <option value="AMC_SERVICE">
-                                    Annual Maintenance Contract (AMC)
-                                  </option>
-                                </select>
-                                <input
-                                  type="text"
-                                  value={newWarrantyTerms}
-                                  onChange={(e) =>
-                                    setNewWarrantyTerms(e.target.value)
-                                  }
-                                  placeholder="Coverage terms (e.g., Comprehensive parts, motor, and labor)"
-                                  className="rounded-xl border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-700 sm:col-span-5"
-                                />
-                              </div>
                             </form>
                           )}
-                        </div>
 
-                        {/* Row 1: Dribbble Finance Analytics 4-Column KPI Strip */}
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                          {/* KPI 1: Protected Asset & Policy Value */}
-                          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-                            <div className="flex items-center justify-between text-xs font-medium text-slate-500">
-                              <span>Protected Coverage Value</span>
-                              <ShieldCheck className="h-4 w-4 text-indigo-600" />
-                            </div>
-                            <div className="mt-2 font-mono text-2xl font-bold tabular-nums text-slate-900">
-                              {formatINR(
-                                totalWarrantyAssetValueMinor +
-                                  totalInsuredIdvMinor
-                              )}
-                            </div>
-                            <div className="mt-2 flex items-center justify-between border-t border-slate-100 pt-2.5 text-[11px] text-slate-500">
-                              <span>
-                                Warranties:{" "}
-                                <strong className="font-mono tabular-nums text-slate-800">
-                                  {formatINR(totalWarrantyAssetValueMinor)}
-                                </strong>
-                              </span>
-                              <span>
-                                IDV:{" "}
-                                <strong className="font-mono tabular-nums text-indigo-700">
-                                  {formatINR(totalInsuredIdvMinor)}
-                                </strong>
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* KPI 2: Active & Expiring Warranties */}
-                          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-                            <div className="flex items-center justify-between text-xs font-medium text-slate-500">
-                              <span>Warranties & Policies</span>
-                              <FileCheck2 className="h-4 w-4 text-emerald-600" />
-                            </div>
-                            <div className="mt-2 font-mono text-2xl font-bold tabular-nums text-slate-900">
-                              {allWarranties.length + allPolicies.length} Active
-                            </div>
-                            <div className="mt-2 flex items-center justify-between border-t border-slate-100 pt-2.5 text-[11px]">
-                              <span className="font-semibold text-amber-700">
-                                {expiringCoverageCount} Expiring &lt; 90d
-                              </span>
-                              <span className="font-mono tabular-nums text-slate-500">
-                                Next: 2026-10-18
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* KPI 3: Purchase Records & Receipts Vault */}
-                          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-                            <div className="flex items-center justify-between text-xs font-medium text-slate-500">
-                              <span>Purchase Receipts & Bills</span>
-                              <Receipt className="h-4 w-4 text-slate-700" />
-                            </div>
-                            <div className="mt-2 font-mono text-2xl font-bold tabular-nums text-slate-900">
-                              {formatINR(totalReceiptsValueMinor)}
-                            </div>
-                            <div className="mt-2 flex items-center justify-between border-t border-slate-100 pt-2.5 text-[11px] text-slate-500">
-                              <span className="text-emerald-700 font-semibold">
-                                {verifiedDocsCount} Verified PDF(s)
-                              </span>
-                              <span>
-                                {pendingReviewDocsCount > 0
-                                  ? `${pendingReviewDocsCount} Needs Review`
-                                  : "100% Audited"}
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* KPI 4: Renewal & Expiry Reminders */}
-                          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-                            <div className="flex items-center justify-between text-xs font-medium text-slate-500">
-                              <span>Renewal & Expiry Alerts</span>
-                              <Bell className="h-4 w-4 text-amber-600" />
-                            </div>
-                            <div className="mt-2 font-mono text-2xl font-bold tabular-nums text-slate-900">
-                              {pendingRemindersCount} Pending
-                            </div>
-                            <div className="mt-2 flex items-center justify-between border-t border-slate-100 pt-2.5 text-[11px] text-slate-500">
-                              <span>
-                                {allReminders.length} total scheduled
-                              </span>
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  setShowAddReminderModal((prev) => !prev)
-                                }
-                                className="font-semibold text-indigo-600 hover:underline"
-                              >
-                                + Add Alert
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Row 2: 12-Column Financial Analytics Split (Coverage Horizon Timeline + Category Allocation & Reminders) */}
-                        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-                          {/* Left 7 Columns: Product/Service Warranties & Coverage Horizon Timeline */}
-                          <div className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 lg:col-span-7">
-                            <div>
-                              <div className="flex flex-wrap items-center justify-between gap-3">
-                                <div>
-                                  <h2 className="text-base font-bold text-slate-900">
-                                    Product & Service Warranties Horizon
-                                  </h2>
-                                  <p className="mt-0.5 text-xs text-slate-500">
-                                    Start and expiry dates, elapsed coverage
-                                    timelines, and protected asset values.
-                                  </p>
+                          {/* Main 12-Column Split: Vault Summary & Interactive Shield Dial */}
+                          <div className="relative z-10 grid grid-cols-1 items-center gap-8 px-6 py-8 lg:grid-cols-12 lg:px-10 lg:py-10">
+                            {/* Left 7 Columns: Protected Value & Category Vault Share */}
+                            <div className="space-y-6 lg:col-span-7">
+                              <div>
+                                <div className="text-xs font-semibold text-sky-400">
+                                  Protected Household Coverage ·{" "}
+                                  {allWarranties.length + allPolicies.length}{" "}
+                                  Active Contracts
                                 </div>
+                                <h1 className="mt-1 font-mono text-4xl font-bold tracking-tight tabular-nums text-white sm:text-5xl">
+                                  {formatINR(
+                                    totalWarrantyAssetValueMinor +
+                                      totalInsuredIdvMinor
+                                  )}
+                                </h1>
+                              </div>
 
-                                <div className="flex items-center gap-1 rounded-xl bg-slate-100 p-1">
-                                  {[
-                                    { id: "ALL", label: "All Coverage" },
-                                    { id: "ACTIVE", label: "Active" },
-                                    {
-                                      id: "EXPIRING_SOON",
-                                      label: "Expiring Soon",
-                                    },
-                                  ].map((tab) => (
+                              {/* 4 Concise Vault KPIs */}
+                              <div className="grid grid-cols-2 gap-4 border-y border-white/10 py-4 text-xs sm:grid-cols-4">
+                                <div>
+                                  <div className="text-slate-400">
+                                    Warranties
+                                  </div>
+                                  <div className="mt-1 font-mono text-lg font-bold tabular-nums text-sky-300">
+                                    {formatINR(totalWarrantyAssetValueMinor)}
+                                  </div>
+                                </div>
+                                <div>
+                                  <div className="text-slate-400">
+                                    Insured IDV
+                                  </div>
+                                  <div className="mt-1 font-mono text-lg font-bold tabular-nums text-white">
+                                    {formatINR(totalInsuredIdvMinor)}
+                                  </div>
+                                </div>
+                                <div>
+                                  <div className="text-slate-400">
+                                    Receipts Vault
+                                  </div>
+                                  <div className="mt-1 font-mono text-lg font-bold tabular-nums text-cyan-300">
+                                    {formatINR(totalReceiptsValueMinor)}
+                                  </div>
+                                </div>
+                                <div>
+                                  <div className="text-slate-400">
+                                    Expiring &lt; 90d
+                                  </div>
+                                  <div className="mt-1 font-mono text-lg font-bold tabular-nums text-amber-400">
+                                    {expiringCoverageCount} Alerts
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Interactive Category Allocation Bar */}
+                              <div className="space-y-2.5">
+                                <div className="flex items-center justify-between text-xs">
+                                  <span className="text-slate-300">
+                                    Vault Distribution ({documents.length}{" "}
+                                    Files · {verifiedDocsCount} Verified)
+                                  </span>
+                                  {docVaultCategoryFilter !== "ALL" && (
                                     <button
-                                      key={tab.id}
                                       type="button"
                                       onClick={() =>
-                                        setWarrantyStatusFilter(tab.id)
+                                        setDocVaultCategoryFilter("ALL")
                                       }
-                                      className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition-colors whitespace-nowrap ${
-                                        warrantyStatusFilter === tab.id
-                                          ? "bg-white text-slate-900 shadow-xs"
-                                          : "text-slate-600 hover:text-slate-900"
-                                      }`}
+                                      className="text-sky-400 hover:underline"
                                     >
-                                      {tab.label}
+                                      Reset Filter
                                     </button>
+                                  )}
+                                </div>
+
+                                <div className="flex h-2.5 w-full gap-1 overflow-hidden rounded-full bg-white/10 p-0.5">
+                                  {categoryBreakdown.map((cat) => (
+                                    <div
+                                      key={cat.id}
+                                      className={`h-full first:rounded-l-full last:rounded-r-full ${cat.flexClass}`}
+                                    />
                                   ))}
                                 </div>
-                              </div>
 
-                              <div className="mt-5 space-y-4">
-                                {unifiedCoverageRows.map((row) => {
-                                  const isExpiring =
-                                    row.statusKey === "EXPIRING_SOON";
-                                  const isExpired = row.statusKey === "EXPIRED";
-                                  return (
-                                    <div
-                                      key={row.id}
-                                      className="rounded-xl border border-slate-200 bg-slate-50/40 p-4 text-xs transition-colors hover:border-slate-300"
-                                    >
-                                      {/* Row Top: Asset & Status */}
-                                      <div className="flex flex-wrap items-start justify-between gap-2">
-                                        <div>
-                                          <div className="flex items-center gap-2">
-                                            <span className="text-sm font-bold text-slate-900">
-                                              {row.assetName}
-                                            </span>
-                                            <span className="font-mono text-[11px] text-slate-500">
-                                              #{row.policyNumber}
-                                            </span>
-                                          </div>
-                                          <div className="mt-0.5 text-[11px] text-slate-500">
-                                            {row.providerName} ·{" "}
-                                            {row.coverageType} ·{" "}
-                                            {row.assetLocation}
-                                          </div>
-                                        </div>
-
-                                        <div className="text-right">
-                                          <div className="flex items-center justify-end gap-1.5">
-                                            <span
-                                              className={`h-2 w-2 rounded-full ${
-                                                isExpired
-                                                  ? "bg-rose-600"
-                                                  : isExpiring
-                                                  ? "bg-amber-500"
-                                                  : "bg-emerald-600"
-                                              }`}
-                                            />
-                                            <span
-                                              className={`font-semibold ${
-                                                isExpired
-                                                  ? "text-rose-700"
-                                                  : isExpiring
-                                                  ? "text-amber-700"
-                                                  : "text-emerald-700"
-                                              }`}
-                                            >
-                                              {isExpired
-                                                ? "Expired"
-                                                : isExpiring
-                                                ? `Expiring in ${row.daysLeft}d`
-                                                : `Active (${row.daysLeft}d left)`}
-                                            </span>
-                                          </div>
-                                          <div className="mt-0.5 font-mono text-xs font-bold tabular-nums text-slate-900">
-                                            {formatINR(row.protectedValueMinor)}
-                                          </div>
-                                        </div>
-                                      </div>
-
-                                      {/* Row Middle: Start & Expiry Dates + Progress Bar */}
-                                      <div className="mt-3">
-                                        <div className="flex items-center justify-between font-mono text-[11px] tabular-nums text-slate-500">
-                                          <span>Start: {row.startDate}</span>
-                                          <span>
-                                            {row.progressPct}% term elapsed
-                                          </span>
-                                          <span className="font-semibold text-slate-800">
-                                            Expires: {row.endDate}
-                                          </span>
-                                        </div>
-                                        <div className="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-slate-200/80">
-                                          <div
-                                            className={`h-full rounded-full transition-all ${
-                                              isExpired
-                                                ? "bg-rose-600"
-                                                : isExpiring
-                                                ? "bg-amber-500"
-                                                : "bg-indigo-600"
-                                            }`}
-                                            style={{
-                                              width: `${row.progressPct}%`,
-                                            }}
-                                          />
-                                        </div>
-                                      </div>
-
-                                      {/* Row Bottom: Coverage Terms & Quick RAG Query */}
-                                      <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200/70 pt-2.5 text-[11px] text-slate-600">
-                                        <span className="max-w-lg truncate">
-                                          {row.termsSummary}
-                                        </span>
-                                        <button
-                                          type="button"
-                                          onClick={() => {
-                                            setActiveView("intelligence");
-                                            runAgentQueryText(
-                                              `Is ${row.assetName} covered under warranty/policy #${row.policyNumber} and when does coverage expire?`
-                                            );
-                                          }}
-                                          className="font-semibold text-indigo-600 hover:underline whitespace-nowrap"
-                                        >
-                                          Verify Terms →
-                                        </button>
-                                      </div>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Right 5 Columns: Document Categories Allocation + Renewal/Expiry Reminders */}
-                          <div className="space-y-6 lg:col-span-5">
-                            {/* Analytics Card: Document Categories Breakdown */}
-                            <div className="rounded-2xl border border-slate-200 bg-white p-6">
-                              <div className="flex items-center justify-between">
-                                <div>
-                                  <h2 className="text-base font-bold text-slate-900">
-                                    Document Categories & Vault Share
-                                  </h2>
-                                  <p className="mt-0.5 text-xs text-slate-500">
-                                    Click any category to filter the structured
-                                    document ledger below.
-                                  </p>
-                                </div>
-                                {docVaultCategoryFilter !== "ALL" && (
-                                  <button
-                                    type="button"
-                                    onClick={() =>
-                                      setDocVaultCategoryFilter("ALL")
-                                    }
-                                    className="text-xs font-semibold text-indigo-600 hover:underline"
-                                  >
-                                    Reset Filter
-                                  </button>
-                                )}
-                              </div>
-
-                              {/* Stacked Horizontal Category Distribution Bar */}
-                              <div className="mt-4 flex h-3 w-full overflow-hidden rounded-full bg-slate-100 p-0.5 gap-0.5">
-                                {categoryBreakdown.map((cat) => (
-                                  <div
-                                    key={cat.id}
-                                    className={`h-full first:rounded-l-full last:rounded-r-full ${cat.barColor}`}
-                                    style={{ width: `${cat.sharePct}%` }}
-                                    title={`${cat.label}: ${cat.count} document(s)`}
-                                  />
-                                ))}
-                              </div>
-
-                              {/* Category Rows */}
-                              <div className="mt-4 divide-y divide-slate-100 text-xs">
-                                {categoryBreakdown.map((cat) => {
-                                  const isSelected =
-                                    docVaultCategoryFilter === cat.id;
-                                  return (
-                                    <button
-                                      key={cat.id}
-                                      type="button"
-                                      onClick={() =>
-                                        setDocVaultCategoryFilter(
-                                          isSelected ? "ALL" : cat.id
-                                        )
-                                      }
-                                      className={`flex w-full items-center justify-between py-2.5 text-left transition-colors ${
-                                        isSelected
-                                          ? "bg-indigo-50/60 font-semibold text-indigo-950 px-2 rounded-lg"
-                                          : "hover:bg-slate-50"
-                                      }`}
-                                    >
-                                      <div className="flex items-center gap-2.5">
-                                        <span
-                                          className={`h-2.5 w-2.5 rounded-full ${cat.dotColor}`}
-                                        />
-                                        <span className="font-medium text-slate-900">
-                                          {cat.label}
-                                        </span>
-                                      </div>
-                                      <div className="flex items-center gap-4 font-mono tabular-nums">
-                                        <span className="text-slate-500">
-                                          {cat.count} file
-                                          {cat.count === 1 ? "" : "s"}
-                                        </span>
-                                        <span className="w-24 text-right font-semibold text-slate-900">
-                                          {cat.recordedMinor > 0
-                                            ? formatINR(cat.recordedMinor)
-                                            : "—"}
-                                        </span>
-                                      </div>
-                                    </button>
-                                  );
-                                })}
-                              </div>
-                            </div>
-
-                            {/* Analytics Card: Important Renewal & Expiry Reminders */}
-                            <div className="rounded-2xl border border-slate-200 bg-white p-6">
-                              <div className="flex items-center justify-between">
-                                <div>
-                                  <h2 className="text-base font-bold text-slate-900">
-                                    Renewal & Expiry Reminders
-                                  </h2>
-                                  <p className="mt-0.5 text-xs text-slate-500">
-                                    Proactive deadline alerts for expiring
-                                    warranties and policies.
-                                  </p>
-                                </div>
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    setShowAddReminderModal((prev) => !prev)
-                                  }
-                                  className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-semibold text-slate-800 hover:bg-slate-100 whitespace-nowrap"
-                                >
-                                  {showAddReminderModal
-                                    ? "Close"
-                                    : "+ New Reminder"}
-                                </button>
-                              </div>
-
-                              {showAddReminderModal && (
-                                <form
-                                  onSubmit={handleAddWarrantyReminder}
-                                  className="mt-3 space-y-2.5 rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-xs"
-                                >
-                                  <input
-                                    type="text"
-                                    required
-                                    placeholder="Reminder title (e.g., Renew Bosch AMC Plan)"
-                                    value={newReminderTitle}
-                                    onChange={(e) =>
-                                      setNewReminderTitle(e.target.value)
-                                    }
-                                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs"
-                                  />
-                                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                                    <input
-                                      type="date"
-                                      required
-                                      value={newReminderDueDate}
-                                      onChange={(e) =>
-                                        setNewReminderDueDate(e.target.value)
-                                      }
-                                      className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 font-mono text-xs tabular-nums"
-                                    />
-                                    <button
-                                      type="submit"
-                                      className="rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800"
-                                    >
-                                      Schedule Reminder
-                                    </button>
-                                  </div>
-                                </form>
-                              )}
-
-                              <div className="mt-4 space-y-2.5">
-                                {allReminders.map((rem: any) => {
-                                  const isDone = rem.status === "COMPLETED";
-                                  const dueDateShort = String(
-                                    rem.due_at || ""
-                                  ).slice(0, 10);
-                                  const daysUntilDue =
-                                    computeDaysUntil(dueDateShort);
-                                  return (
-                                    <div
-                                      key={rem.id}
-                                      className="flex items-start justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50/50 p-3.5 text-xs"
-                                    >
-                                      <div>
-                                        <div className="flex items-center gap-2">
-                                          <span
-                                            className={`h-2 w-2 rounded-full ${
-                                              isDone
-                                                ? "bg-emerald-600"
-                                                : daysUntilDue <= 14
-                                                ? "bg-rose-600"
-                                                : "bg-amber-500"
-                                            }`}
-                                          />
-                                          <span
-                                            className={`font-bold ${
-                                              isDone
-                                                ? "line-through text-slate-400"
-                                                : "text-slate-900"
-                                            }`}
-                                          >
-                                            {rem.title}
-                                          </span>
-                                        </div>
-                                        <p className="mt-1 text-[11px] leading-relaxed text-slate-600">
-                                          {rem.description}
-                                        </p>
-                                        <div className="mt-1.5 font-mono text-[11px] tabular-nums text-slate-500">
-                                          Due: {dueDateShort} ·{" "}
-                                          {isDone
-                                            ? "Completed"
-                                            : `${daysUntilDue} days remaining`}
-                                        </div>
-                                      </div>
-
+                                <div className="grid grid-cols-2 gap-2 pt-1 sm:grid-cols-5">
+                                  {categoryBreakdown.map((cat) => {
+                                    const isSelected =
+                                      docVaultCategoryFilter === cat.id;
+                                    return (
                                       <button
+                                        key={cat.id}
                                         type="button"
                                         onClick={() =>
-                                          handleToggleReminderStatus(rem.id)
+                                          setDocVaultCategoryFilter(
+                                            isSelected ? "ALL" : cat.id
+                                          )
                                         }
-                                        className={`shrink-0 rounded-lg border px-2.5 py-1 text-[11px] font-semibold transition-colors whitespace-nowrap ${
-                                          isDone
-                                            ? "border-slate-200 bg-white text-slate-600 hover:bg-slate-100"
-                                            : "border-slate-900 bg-slate-900 text-white hover:bg-slate-800"
+                                        className={`rounded-xl border p-2.5 text-left text-xs transition-colors ${
+                                          isSelected
+                                            ? "border-sky-400 bg-sky-400/15 text-white"
+                                            : "border-white/10 bg-white/5 text-slate-300 hover:border-white/25"
                                         }`}
                                       >
-                                        {isDone ? "Reopen" : "Complete"}
+                                        <div className="flex items-center gap-1.5">
+                                          <span
+                                            className={`h-2 w-2 rounded-full ${cat.dotColor}`}
+                                          />
+                                          <span className="truncate font-semibold">
+                                            {cat.label}
+                                          </span>
+                                        </div>
+                                        <div className="mt-1 font-mono text-xs font-bold text-white">
+                                          {cat.count} PDF
+                                          {cat.count === 1 ? "" : "s"}
+                                        </div>
                                       </button>
-                                    </div>
-                                  );
-                                })}
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Right 5 Columns: Circular Cryptographic Coverage Horizon Gauge */}
+                            <div className="flex flex-col items-center justify-center lg:col-span-5">
+                              <div className="relative flex h-76 w-76 items-center justify-center rounded-full border border-sky-400/25 bg-[#0D1624] p-6 shadow-2xl sm:h-84 sm:w-84">
+                                <svg
+                                  className="absolute inset-3 h-[calc(100%-1.5rem)] w-[calc(100%-1.5rem)] -rotate-90"
+                                  viewBox="0 0 240 240"
+                                >
+                                  <circle
+                                    cx="120"
+                                    cy="120"
+                                    r="102"
+                                    fill="none"
+                                    stroke="rgba(56, 189, 248, 0.14)"
+                                    strokeWidth="12"
+                                  />
+                                  <circle
+                                    cx="120"
+                                    cy="120"
+                                    r="102"
+                                    fill="none"
+                                    stroke="#38BDF8"
+                                    strokeWidth="12"
+                                    strokeLinecap="round"
+                                    strokeDasharray="640"
+                                    strokeDashoffset={
+                                      640 -
+                                      (640 *
+                                        Math.min(
+                                          95,
+                                          featuredCoverage.progressPct
+                                        )) /
+                                        100
+                                    }
+                                  />
+                                </svg>
+
+                                {/* Center Priority Coverage Countdown (Title -> Value -> Context -> Action) */}
+                                <div className="relative z-10 flex flex-col items-center px-4 text-center">
+                                  <span className="text-[11px] font-semibold text-sky-400">
+                                    {featuredCoverage.assetName}
+                                  </span>
+                                  <div className="mt-1 font-mono text-3xl font-extrabold tabular-nums text-white">
+                                    {featuredCoverage.daysLeft} days left
+                                  </div>
+                                  <div className="mt-1 font-mono text-xs text-slate-400">
+                                    Expires {featuredCoverage.endDate} · #
+                                    {featuredCoverage.policyNumber}
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setActiveView("intelligence");
+                                      runAgentQueryText(
+                                        `Is ${featuredCoverage.assetName} covered under policy #${featuredCoverage.policyNumber} and when does it expire?`
+                                      );
+                                    }}
+                                    className="mt-3 rounded-full bg-sky-400 px-4 py-1.5 text-xs font-bold text-slate-950 hover:bg-sky-300"
+                                  >
+                                    Verify & Renew →
+                                  </button>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
 
-                        {/* Row 3: Structured Household Documents, Purchase Records & Receipts Ledger */}
-                        <div className="rounded-2xl border border-slate-200 bg-white p-6">
-                          <div className="flex flex-col justify-between gap-4 border-b border-slate-100 pb-4 lg:flex-row lg:items-center">
-                            <div>
-                              <h2 className="text-base font-bold text-slate-900">
-                                Household Documents, Purchase Records & Receipts
-                                Ledger
-                              </h2>
-                              <p className="mt-0.5 text-xs text-slate-500">
-                                Search, filter by document category or audit
-                                status, inspect OCR extraction fields, and
-                                verify purchase records.
-                              </p>
-                            </div>
-
-                            <div className="flex flex-wrap items-center gap-2">
-                              {/* Category Select Filter */}
-                              <select
-                                value={docVaultCategoryFilter}
-                                onChange={(e) =>
-                                  setDocVaultCategoryFilter(e.target.value)
-                                }
-                                className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-800"
+                        {/* COVERAGE COUNTDOWN CARDS GRID (Title -> Important Value -> Short Context -> Action) */}
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                          {unifiedCoverageRows.map((row) => {
+                            const isExpiring =
+                              row.statusKey === "EXPIRING_SOON";
+                            const isExpired = row.statusKey === "EXPIRED";
+                            return (
+                              <div
+                                key={row.id}
+                                className="flex flex-col justify-between rounded-2xl border border-sky-400/20 bg-[#0B121E] p-5 text-white transition-all hover:-translate-y-0.5 hover:border-sky-400/50"
                               >
-                                <option value="ALL">
-                                  All Categories ({documents.length})
-                                </option>
-                                <option value="WARRANTY_CERTIFICATE">
-                                  Warranty Certificates
-                                </option>
-                                <option value="PURCHASE_RECEIPT">
-                                  Purchase Receipts
-                                </option>
-                                <option value="INSURANCE_POLICY">
-                                  Insurance Policies
-                                </option>
-                                <option value="SERVICE_INVOICE">
-                                  Service Invoices
-                                </option>
-                                <option value="UTILITY_BILL">
-                                  Utility Statements
-                                </option>
-                              </select>
+                                <div>
+                                  {/* Title */}
+                                  <div className="flex items-center justify-between gap-2 text-xs text-slate-400">
+                                    <span className="truncate font-semibold text-white">
+                                      {row.assetName}
+                                    </span>
+                                    <span className="font-mono text-[11px] text-sky-400">
+                                      {formatINR(row.protectedValueMinor)}
+                                    </span>
+                                  </div>
 
-                              {/* Status Segmented Filter */}
-                              <div className="flex items-center gap-1 rounded-xl bg-slate-100 p-1">
+                                  {/* Important Value */}
+                                  <div
+                                    className={`mt-2 font-mono text-2xl font-bold tabular-nums ${
+                                      isExpired
+                                        ? "text-rose-400"
+                                        : isExpiring
+                                        ? "text-amber-400"
+                                        : "text-sky-300"
+                                    }`}
+                                  >
+                                    {isExpired
+                                      ? "Expired"
+                                      : `${row.daysLeft} days left`}
+                                  </div>
+
+                                  {/* Progress Bar */}
+                                  <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+                                    <div
+                                      className={`h-full rounded-full ${getWidthClass(
+                                        row.progressPct
+                                      )} ${
+                                        isExpired
+                                          ? "bg-rose-500"
+                                          : isExpiring
+                                          ? "bg-amber-400"
+                                          : "bg-sky-400"
+                                      }`}
+                                    />
+                                  </div>
+                                </div>
+
+                                {/* Short Context & Action */}
+                                <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3 text-[11px]">
+                                  <span className="truncate font-mono text-slate-400">
+                                    Expires {row.endDate}
+                                  </span>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setActiveView("intelligence");
+                                      runAgentQueryText(
+                                        `Is ${row.assetName} covered under #${row.policyNumber} and when does it expire?`
+                                      );
+                                    }}
+                                    className="shrink-0 font-semibold text-sky-400 hover:underline"
+                                  >
+                                    Renew / Verify →
+                                  </button>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        {/* 12-COLUMN SPLIT: DIGITAL DOCUMENT SAFE (8 COLS) + EXPIRY ALERTS (4 COLS) */}
+                        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+                          {/* Left 8 Cols: Document Safe & OCR Inspector */}
+                          <div className="rounded-2xl border border-sky-500/20 bg-[#0B121E] p-6 text-white lg:col-span-8">
+                            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
+                              <h2 className="text-base font-bold text-white">
+                                Indexed Document Safe (
+                                {filteredVaultDocs.length})
+                              </h2>
+
+                              <div className="flex items-center gap-1 rounded-xl bg-white/5 p-1">
                                 {[
-                                  { id: "ALL", label: "All Status" },
+                                  { id: "ALL", label: "All" },
                                   { id: "VERIFIED", label: "Verified" },
-                                  {
-                                    id: "PENDING_REVIEW",
-                                    label: "Needs Review",
-                                  },
+                                  { id: "PENDING_REVIEW", label: "Review" },
                                 ].map((st) => (
                                   <button
                                     key={st.id}
@@ -4988,10 +4793,10 @@ export function App() {
                                     onClick={() =>
                                       setDocVaultStatusFilter(st.id)
                                     }
-                                    className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition-colors whitespace-nowrap ${
+                                    className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition-colors ${
                                       docVaultStatusFilter === st.id
-                                        ? "bg-white text-slate-900 shadow-xs"
-                                        : "text-slate-600 hover:text-slate-900"
+                                        ? "bg-sky-400 text-slate-950"
+                                        : "text-slate-400 hover:text-white"
                                     }`}
                                   >
                                     {st.label}
@@ -4999,184 +4804,87 @@ export function App() {
                                 ))}
                               </div>
                             </div>
-                          </div>
 
-                          <div className="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-12">
-                            {/* Structured Financial-Style Document Table (8 Cols) */}
-                            <div className="overflow-x-auto lg:col-span-8">
-                              {filteredVaultDocs.length === 0 ? (
-                                <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center text-xs text-slate-500">
-                                  No documents match the current category or
-                                  search filter.
-                                </div>
-                              ) : (
-                                <table className="w-full text-left text-xs">
-                                  <thead>
-                                    <tr className="border-b border-slate-200 text-slate-500">
-                                      <th className="pb-2.5 font-semibold">
-                                        Document & Vendor / Merchant
-                                      </th>
-                                      <th className="pb-2.5 font-semibold">
-                                        Category
-                                      </th>
-                                      <th className="pb-2.5 font-semibold">
-                                        Record Date
-                                      </th>
-                                      <th className="pb-2.5 text-right font-semibold">
-                                        Receipt / Policy Value
-                                      </th>
-                                      <th className="pb-2.5 pl-4 font-semibold">
-                                        Status & Audit
-                                      </th>
-                                    </tr>
-                                  </thead>
-                                  <tbody className="divide-y divide-slate-100">
-                                    {filteredVaultDocs.map((doc) => {
-                                      const linkedAsset = assets.find(
-                                        (a) => a.id === doc.asset_id
-                                      );
-                                      const ext =
-                                        doc.structured_extraction_json || {};
-                                      const vendorOrInsurer =
-                                        ext.vendor_name ||
-                                        ext.insurer_name ||
-                                        linkedAsset?.brand ||
-                                        "Household Record";
-                                      const refNum =
-                                        ext.invoice_number ||
-                                        ext.policy_number ||
-                                        ext.contract_number ||
-                                        doc.sha256_checksum?.slice(0, 8);
-                                      const valueMinor = Number(
-                                        ext.total_amount_minor ||
-                                          ext.amount_due_minor ||
-                                          ext.idv_minor ||
-                                          0
-                                      );
-                                      const isSelected =
-                                        inspectedDoc?.id === doc.id;
+                            <div className="mt-4 grid grid-cols-1 gap-5 lg:grid-cols-12">
+                              {/* Concise Document List (7 cols) */}
+                              <div className="space-y-2.5 lg:col-span-7">
+                                {filteredVaultDocs.map((doc) => {
+                                  const ext =
+                                    doc.structured_extraction_json || {};
+                                  const valueMinor = Number(
+                                    ext.total_amount_minor ||
+                                      ext.amount_due_minor ||
+                                      ext.idv_minor ||
+                                      0
+                                  );
+                                  const isSelected =
+                                    inspectedDoc?.id === doc.id;
 
-                                      return (
-                                        <tr
-                                          key={doc.id}
+                                  return (
+                                    <div
+                                      key={doc.id}
+                                      onClick={() =>
+                                        setSelectedInspectedDocId(doc.id)
+                                      }
+                                      className={`flex cursor-pointer items-center justify-between gap-3 rounded-xl border p-3.5 text-xs transition-colors ${
+                                        isSelected
+                                          ? "border-sky-400 bg-sky-400/10"
+                                          : "border-white/10 bg-white/[0.03] hover:border-white/25"
+                                      }`}
+                                    >
+                                      <div className="min-w-0 flex-1">
+                                        <div className="truncate font-bold text-white">
+                                          {doc.title}
+                                        </div>
+                                        <div className="mt-0.5 font-mono text-[11px] text-slate-400">
+                                          {doc.document_date} ·{" "}
+                                          {doc.is_verified_by_human
+                                            ? "Verified"
+                                            : "Needs Review"}
+                                        </div>
+                                      </div>
+
+                                      <div
+                                        className="flex items-center gap-3"
+                                        onClick={(e) => e.stopPropagation()}
+                                      >
+                                        {valueMinor > 0 && (
+                                          <span className="font-mono font-bold tabular-nums text-sky-300">
+                                            {formatINR(valueMinor)}
+                                          </span>
+                                        )}
+                                        <button
+                                          type="button"
                                           onClick={() =>
-                                            setSelectedInspectedDocId(doc.id)
+                                            handleToggleDocumentVerified(doc.id)
                                           }
-                                          className={`cursor-pointer transition-colors ${
-                                            isSelected
-                                              ? "bg-indigo-50/50"
-                                              : "hover:bg-slate-50/80"
-                                          }`}
+                                          className="rounded-lg border border-white/15 bg-white/5 px-2.5 py-1 text-[11px] font-semibold text-slate-200 hover:bg-sky-400 hover:text-slate-950"
                                         >
-                                          <td className="py-3.5 pr-4">
-                                            <div className="font-semibold text-slate-900">
-                                              {doc.title}
-                                            </div>
-                                            <div className="mt-0.5 text-[11px] text-slate-500">
-                                              {vendorOrInsurer} · Ref #{refNum}
-                                              {linkedAsset
-                                                ? ` · ${linkedAsset.name}`
-                                                : ""}
-                                            </div>
-                                          </td>
-                                          <td className="py-3.5 pr-4 font-mono text-[11px] text-slate-600">
-                                            {doc.document_type.replace(
-                                              /_/g,
-                                              " "
-                                            )}
-                                          </td>
-                                          <td className="py-3.5 pr-4 font-mono tabular-nums text-slate-700">
-                                            {doc.document_date}
-                                          </td>
-                                          <td className="py-3.5 pr-4 text-right font-mono font-bold tabular-nums text-slate-900">
-                                            {valueMinor > 0
-                                              ? formatINR(valueMinor)
-                                              : "—"}
-                                          </td>
-                                          <td
-                                            className="py-3.5 pl-4"
-                                            onClick={(e) => e.stopPropagation()}
-                                          >
-                                            <div className="flex items-center justify-between gap-2">
-                                              <span
-                                                className={`inline-flex items-center gap-1.5 font-semibold ${
-                                                  doc.is_verified_by_human
-                                                    ? "text-emerald-700"
-                                                    : "text-amber-700"
-                                                }`}
-                                              >
-                                                <span
-                                                  className={`h-1.5 w-1.5 rounded-full ${
-                                                    doc.is_verified_by_human
-                                                      ? "bg-emerald-600"
-                                                      : "bg-amber-500"
-                                                  }`}
-                                                />
-                                                {doc.is_verified_by_human
-                                                  ? "Verified"
-                                                  : "Needs Review"}
-                                              </span>
-                                              <button
-                                                type="button"
-                                                onClick={() =>
-                                                  handleToggleDocumentVerified(
-                                                    doc.id
-                                                  )
-                                                }
-                                                className="rounded border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-slate-700 hover:bg-slate-100 whitespace-nowrap"
-                                              >
-                                                {doc.is_verified_by_human
-                                                  ? "Flag"
-                                                  : "Verify"}
-                                              </button>
-                                            </div>
-                                          </td>
-                                        </tr>
-                                      );
-                                    })}
-                                  </tbody>
-                                </table>
-                              )}
-                            </div>
-
-                            {/* Structured Document & Extraction Inspector Panel (4 Cols) */}
-                            <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-4 text-xs lg:col-span-4">
-                              {inspectedDoc ? (
-                                <div className="space-y-3.5">
-                                  <div className="flex items-start justify-between gap-2 border-b border-slate-200 pb-3">
-                                    <div>
-                                      <div className="text-[11px] font-semibold text-indigo-600">
-                                        RAG Document Inspector
+                                          {doc.is_verified_by_human
+                                            ? "Flag"
+                                            : "Verify"}
+                                        </button>
                                       </div>
-                                      <h3 className="mt-0.5 text-sm font-bold text-slate-900">
+                                    </div>
+                                  );
+                                })}
+                              </div>
+
+                              {/* Concise OCR Inspector (5 cols) */}
+                              <div className="rounded-xl border border-white/10 bg-black/40 p-4 text-xs lg:col-span-5">
+                                {inspectedDoc ? (
+                                  <div className="space-y-3">
+                                    <div className="border-b border-white/10 pb-2.5">
+                                      <div className="text-[10px] font-semibold text-sky-400">
+                                        OCR EXTRACTION SAFE
+                                      </div>
+                                      <div className="mt-0.5 font-bold text-white">
                                         {inspectedDoc.title}
-                                      </h3>
-                                    </div>
-                                    <span className="font-mono text-[11px] tabular-nums text-slate-500">
-                                      {(
-                                        Number(
-                                          inspectedDoc.file_size_bytes || 240000
-                                        ) / 1024
-                                      ).toFixed(0)}{" "}
-                                      KB
-                                    </span>
-                                  </div>
-
-                                  <div>
-                                    <div className="text-[11px] font-semibold text-slate-500">
-                                      Extracted Knowledge Summary
-                                    </div>
-                                    <p className="mt-1 leading-relaxed text-slate-700">
-                                      {inspectedDoc.extracted_text_summary}
-                                    </p>
-                                  </div>
-
-                                  {inspectedDoc.structured_extraction_json && (
-                                    <div>
-                                      <div className="text-[11px] font-semibold text-slate-500">
-                                        Structured Purchase / Warranty Fields
                                       </div>
-                                      <div className="mt-1.5 divide-y divide-slate-200/70 rounded-lg border border-slate-200 bg-white px-3 py-1">
+                                    </div>
+
+                                    {inspectedDoc.structured_extraction_json && (
+                                      <div className="divide-y divide-white/10">
                                         {Object.entries(
                                           inspectedDoc.structured_extraction_json
                                         ).map(([k, v]) => (
@@ -5184,10 +4892,10 @@ export function App() {
                                             key={k}
                                             className="flex items-center justify-between py-1.5 text-[11px]"
                                           >
-                                            <span className="text-slate-500">
+                                            <span className="text-slate-400">
                                               {k.replace(/_/g, " ")}
                                             </span>
-                                            <span className="font-mono font-semibold tabular-nums text-slate-900">
+                                            <span className="font-mono font-semibold tabular-nums text-sky-200">
                                               {k.endsWith("_minor")
                                                 ? formatINR(Number(v))
                                                 : String(v)}
@@ -5195,38 +4903,124 @@ export function App() {
                                           </div>
                                         ))}
                                       </div>
-                                    </div>
-                                  )}
+                                    )}
 
-                                  <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 pt-3">
-                                    <span className="font-mono text-[10px] text-slate-400">
-                                      SHA256:{" "}
-                                      {String(
-                                        inspectedDoc.sha256_checksum || ""
-                                      ).slice(0, 16)}
-                                      …
-                                    </span>
                                     <button
                                       type="button"
                                       onClick={() => {
                                         setActiveView("intelligence");
                                         runAgentQueryText(
-                                          `Summarize the key warranty terms, purchase amount, and expiry dates in "${inspectedDoc.title}".`
+                                          `Summarize the warranty terms, amount, and expiry date in "${inspectedDoc.title}".`
                                         );
                                       }}
-                                      className="inline-flex items-center gap-1 rounded-lg bg-slate-900 px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-slate-800"
+                                      className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-sky-400 px-3 py-2 text-xs font-bold text-slate-950 hover:bg-sky-300"
                                     >
-                                      <Sparkles className="h-3 w-3 text-amber-400" />
-                                      Query in RAG
+                                      <Sparkles className="h-3.5 w-3.5" />
+                                      Query in RAG →
                                     </button>
                                   </div>
+                                ) : null}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Right 4 Cols: Renewal & Expiry Reminders */}
+                          <div className="rounded-2xl border border-sky-500/20 bg-[#0B121E] p-6 text-white lg:col-span-4">
+                            <div className="flex items-center justify-between border-b border-white/10 pb-3.5">
+                              <h2 className="text-base font-bold text-white">
+                                Expiry Alerts ({pendingRemindersCount})
+                              </h2>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setShowAddReminderModal((prev) => !prev)
+                                }
+                                className="rounded-lg border border-sky-400/30 bg-sky-400/10 px-2.5 py-1 text-xs font-semibold text-sky-300 hover:bg-sky-400 hover:text-slate-950"
+                              >
+                                {showAddReminderModal ? "Close" : "+ Alert"}
+                              </button>
+                            </div>
+
+                            {showAddReminderModal && (
+                              <form
+                                onSubmit={handleAddWarrantyReminder}
+                                className="mt-3 space-y-2 rounded-xl border border-white/10 bg-black/40 p-3 text-xs"
+                              >
+                                <input
+                                  type="text"
+                                  required
+                                  placeholder="Reminder title"
+                                  value={newReminderTitle}
+                                  onChange={(e) =>
+                                    setNewReminderTitle(e.target.value)
+                                  }
+                                  className="w-full rounded-lg border border-white/15 bg-slate-950 px-2.5 py-1.5 text-xs text-white"
+                                />
+                                <div className="grid grid-cols-2 gap-2">
+                                  <input
+                                    type="date"
+                                    required
+                                    value={newReminderDueDate}
+                                    onChange={(e) =>
+                                      setNewReminderDueDate(e.target.value)
+                                    }
+                                    className="rounded-lg border border-white/15 bg-slate-950 px-2.5 py-1.5 font-mono text-xs text-white"
+                                  />
+                                  <button
+                                    type="submit"
+                                    className="rounded-lg bg-sky-400 px-3 py-1.5 text-xs font-bold text-slate-950"
+                                  >
+                                    Save
+                                  </button>
                                 </div>
-                              ) : (
-                                <div className="py-8 text-center text-slate-500">
-                                  Select a document row to inspect extracted
-                                  fields and warranty metadata.
-                                </div>
-                              )}
+                              </form>
+                            )}
+
+                            <div className="mt-4 space-y-2.5">
+                              {allReminders.map((rem: any) => {
+                                const isDone = rem.status === "COMPLETED";
+                                const dueDateShort = String(
+                                  rem.due_at || ""
+                                ).slice(0, 10);
+                                const daysUntilDue =
+                                  computeDaysUntil(dueDateShort);
+                                return (
+                                  <div
+                                    key={rem.id}
+                                    className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-3.5 text-xs"
+                                  >
+                                    <div className="min-w-0 flex-1">
+                                      <div
+                                        className={`truncate font-bold ${
+                                          isDone
+                                            ? "line-through text-slate-500"
+                                            : "text-white"
+                                        }`}
+                                      >
+                                        {rem.title}
+                                      </div>
+                                      <div className="mt-0.5 font-mono text-xs font-semibold text-sky-400">
+                                        {isDone
+                                          ? "Completed"
+                                          : `${daysUntilDue} days left`}
+                                      </div>
+                                      <div className="font-mono text-[11px] text-slate-400">
+                                        Due {dueDateShort}
+                                      </div>
+                                    </div>
+
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        handleToggleReminderStatus(rem.id)
+                                      }
+                                      className="shrink-0 rounded-lg bg-sky-400 px-2.5 py-1.5 text-[11px] font-bold text-slate-950 hover:bg-sky-300"
+                                    >
+                                      {isDone ? "Reopen" : "Done →"}
+                                    </button>
+                                  </div>
+                                );
+                              })}
                             </div>
                           </div>
                         </div>
@@ -5236,7 +5030,7 @@ export function App() {
                 </div>
               )}
 
-              {/* POWERPEAK SMARTWATCH FITNESS APP UI FOR PARENTS' HEALTH MONITORING AGENT TAB */}
+              {/* CALM CLINICAL SANCTUARY & BIOMETRIC WELLNESS UI FOR PARENTS' HEALTH TAB (GREEN & BLACK) */}
               {selectedDomain === "parents_health" && (
                 <div className="space-y-6">
                   {(() => {
@@ -5306,8 +5100,7 @@ export function App() {
                           rec.next_due_or_followup_date,
                           rec.schedule_or_frequency,
                           rec.explicit_measurement_value,
-                          rec.status,
-                          rec.notes
+                          rec.status
                         )
                       );
 
@@ -5349,134 +5142,109 @@ export function App() {
 
                     const HEALTH_CATEGORY_META: Record<
                       string,
-                      { label: string; accent: string; badgeBg: string }
+                      { label: string; shortTag: string }
                     > = {
                       PERIODIC_CHECKUP: {
-                        label: "Monthly / Periodic Checkup",
-                        accent: "text-lime-400",
-                        badgeBg:
-                          "bg-lime-400/15 text-lime-300 border-lime-400/30",
+                        label: "Monthly Checkup",
+                        shortTag: "CHECKUP",
                       },
                       DOCTOR_APPOINTMENT: {
-                        label: "Doctor Appointment & Visit",
-                        accent: "text-cyan-400",
-                        badgeBg:
-                          "bg-cyan-400/15 text-cyan-300 border-cyan-400/30",
+                        label: "Doctor Visit",
+                        shortTag: "CONSULT",
                       },
                       LAB_TEST_REPORT: {
-                        label: "Lab-Test & Medical Report",
-                        accent: "text-emerald-400",
-                        badgeBg:
-                          "bg-emerald-400/15 text-emerald-300 border-emerald-400/30",
+                        label: "Lab Panel",
+                        shortTag: "LAB REPORT",
                       },
                       MEDICATION_SCHEDULE: {
-                        label: "Medication Schedule",
-                        accent: "text-amber-400",
-                        badgeBg:
-                          "bg-amber-400/15 text-amber-300 border-amber-400/30",
+                        label: "Medication",
+                        shortTag: "REGIMEN",
                       },
                       VACCINATION_SCREENING: {
-                        label: "Vaccination & Screening",
-                        accent: "text-purple-400",
-                        badgeBg:
-                          "bg-purple-400/15 text-purple-300 border-purple-400/30",
+                        label: "Screening",
+                        shortTag: "PREVENTIVE",
                       },
                       HEALTH_MEASUREMENT: {
-                        label: "Explicit Health Measurement",
-                        accent: "text-rose-400",
-                        badgeBg:
-                          "bg-rose-400/15 text-rose-300 border-rose-400/30",
+                        label: "Vitals Log",
+                        shortTag: "BIOMETRICS",
                       },
                     };
 
-                    const SMARTWATCH_TIMELINE_DAYS = [
+                    const WELLNESS_TIMELINE_SLOTS = [
                       {
                         date: "2026-10-05",
-                        dayLabel: "05 OCT",
-                        eventTitle: "Mother · Comprehensive Checkup & ECG",
-                        sub: "Deenanath Mangeshkar Hospital · Dr. A. Deshmukh",
+                        dayLabel: "OCT 05",
+                        eventTitle: "Mother · Cardiac & ECG Checkup",
+                        sub: "Deenanath Hospital · Dr. A. Deshmukh",
                         ringPct: 92,
                       },
                       {
                         date: "2026-10-12",
-                        dayLabel: "12 OCT",
-                        eventTitle: "Father · Orthopedic & Lipid Follow-Up",
-                        sub: "Sahyadri Super Speciality · Dr. R. Kulkarni",
+                        dayLabel: "OCT 12",
+                        eventTitle: "Father · Orthopedic & Lipid Review",
+                        sub: "Sahyadri Speciality · Dr. R. Kulkarni",
                         ringPct: 86,
                       },
                       {
                         date: "2026-10-15",
-                        dayLabel: "15 OCT",
-                        eventTitle: "Both Parents · 30-Day Medication Refill",
-                        sub: "Telmisartan 40mg, Metformin SR & D3",
+                        dayLabel: "OCT 15",
+                        eventTitle: "Both Parents · 30-Day Med Refill",
+                        sub: "Telmisartan 40mg · Metformin SR · D3",
                         ringPct: 96,
                       },
                       {
                         date: "2026-11-10",
-                        dayLabel: "10 NOV",
-                        eventTitle: "Annual Retinal & Bone DEXA Screening",
-                        sub: "Vaccination & Preventive Screening Log",
+                        dayLabel: "NOV 10",
+                        eventTitle: "Retinal & Bone DEXA Screening",
+                        sub: "Annual Preventive Wellness Log",
                         ringPct: 78,
                       },
                     ];
 
                     const activeWatchSlot =
-                      SMARTWATCH_TIMELINE_DAYS.find(
+                      WELLNESS_TIMELINE_SLOTS.find(
                         (d) => d.date === activeSmartwatchDay
-                      ) || SMARTWATCH_TIMELINE_DAYS[0];
+                      ) || WELLNESS_TIMELINE_SLOTS[0];
 
                     return (
                       <>
-                        {/* PowerPeak Smartwatch Fitness App Hero Console (Obsidian Carbon + Electric Lime + Vital Coral) */}
-                        <div className="relative overflow-hidden rounded-3xl border border-slate-800 bg-[#0B0F14] text-slate-100 shadow-2xl">
-                          {/* Ambient Smartwatch Neon Glows */}
+                        {/* SECTION 1: GREEN & BLACK CALM BIOMETRIC SANCTUARY CONSOLE */}
+                        <div className="relative overflow-hidden rounded-3xl border border-emerald-500/25 bg-[#07130E] text-white shadow-2xl">
                           <div
                             aria-hidden="true"
-                            className="pointer-events-none absolute -top-28 -right-24 h-96 w-96 rounded-full bg-[#D4FF33]/10 blur-3xl"
+                            className="pointer-events-none absolute -top-28 -right-24 h-96 w-96 rounded-full bg-emerald-500/15 blur-3xl"
                           />
                           <div
                             aria-hidden="true"
-                            className="pointer-events-none absolute -bottom-28 left-1/4 h-80 w-80 rounded-full bg-cyan-500/10 blur-3xl"
+                            className="pointer-events-none absolute -bottom-28 left-1/4 h-80 w-80 rounded-full bg-emerald-400/10 blur-3xl"
                           />
 
-                          {/* Top Bar: PowerPeak Brand Header + Parent Selector + Strict Non-Diagnostic Guardrail Badge */}
-                          <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 border-b border-white/10 px-6 py-4 lg:px-8">
+                          {/* Top Sanctuary Bar */}
+                          <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 border-b border-emerald-500/20 px-6 py-4 lg:px-8">
                             <div className="flex items-center gap-3">
-                              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#D4FF33] text-slate-950 shadow-md">
-                                <Activity className="h-5 w-5 stroke-[2.5]" />
+                              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20">
+                                <HeartPulse className="h-5 w-5 stroke-[2.25]" />
                               </div>
                               <div>
                                 <div className="flex items-center gap-2">
-                                  <span className="font-mono text-xs font-bold tracking-wider text-[#D4FF33] uppercase">
-                                    PowerPeak · Parents' Health Monitoring Agent
+                                  <span className="font-mono text-[11px] font-bold tracking-widest text-emerald-400 uppercase">
+                                    PARENTAL WELLNESS SANCTUARY
                                   </span>
-                                  <span className="rounded-md border border-white/15 bg-white/5 px-2 py-0.5 font-mono text-[10px] text-slate-300">
-                                    RECORD & REMINDER LOG ONLY
-                                  </span>
+                                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
                                 </div>
-                                <p className="mt-0.5 text-xs text-slate-400">
-                                  Strict monitoring & record management for
-                                  monthly checkups, doctor visits, lab reports,
-                                  medications, vaccinations, and recorded
-                                  measurements (no diagnosis or treatment
-                                  decisions).
-                                </p>
+                                <h1 className="text-lg font-bold tracking-tight text-white">
+                                  Biometric Vitals & Care Schedule
+                                </h1>
                               </div>
                             </div>
 
-                            {/* Parent Member Switcher */}
+                            {/* Parent Member Switcher & Quick Actions */}
                             <div className="flex flex-wrap items-center gap-2">
-                              <div className="flex items-center gap-1 rounded-2xl border border-white/10 bg-[#131922] p-1">
+                              <div className="flex items-center gap-1 rounded-xl border border-emerald-500/20 bg-[#0B1E16] p-1">
                                 {[
-                                  { id: "ALL", label: "Both Parents (6)" },
-                                  {
-                                    id: "MOTHER",
-                                    label: "Mother · Sunita Tare",
-                                  },
-                                  {
-                                    id: "FATHER",
-                                    label: "Father · Prakash Tare",
-                                  },
+                                  { id: "ALL", label: "Both Parents" },
+                                  { id: "MOTHER", label: "Mother · Sunita" },
+                                  { id: "FATHER", label: "Father · Prakash" },
                                 ].map((m) => (
                                   <button
                                     key={m.id}
@@ -5484,10 +5252,10 @@ export function App() {
                                     onClick={() =>
                                       setParentHealthMemberFilter(m.id)
                                     }
-                                    className={`rounded-xl px-3 py-1.5 text-xs font-semibold transition-all whitespace-nowrap ${
+                                    className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-all whitespace-nowrap ${
                                       parentHealthMemberFilter === m.id
-                                        ? "bg-[#D4FF33] text-slate-950 shadow-xs"
-                                        : "text-slate-300 hover:bg-white/5 hover:text-white"
+                                        ? "bg-emerald-500 text-slate-950 shadow-xs"
+                                        : "text-slate-300 hover:text-white"
                                     }`}
                                   >
                                     {m.label}
@@ -5500,12 +5268,12 @@ export function App() {
                                 onClick={() =>
                                   setShowAddHealthRecordModal((prev) => !prev)
                                 }
-                                className="inline-flex items-center gap-1.5 rounded-2xl bg-[#D4FF33] px-4 py-2 text-xs font-bold text-slate-950 transition-transform hover:-translate-y-0.5 hover:bg-lime-300 whitespace-nowrap"
+                                className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-500 px-3.5 py-2 text-xs font-bold text-slate-950 transition-colors hover:bg-emerald-400 whitespace-nowrap"
                               >
                                 <Plus className="h-3.5 w-3.5 stroke-[2.5]" />
                                 {showAddHealthRecordModal
-                                  ? "Close Form"
-                                  : "Log Health Record"}
+                                  ? "Close"
+                                  : "Log Record"}
                               </button>
 
                               <button
@@ -5516,10 +5284,10 @@ export function App() {
                                     "Check our parents' monthly checkups, doctor appointments, lab-test records, medication schedules, vaccination records, recorded health measurements, and health reminders."
                                   );
                                 }}
-                                className="inline-flex items-center gap-1.5 rounded-2xl border border-[#D4FF33]/40 bg-[#D4FF33]/10 px-4 py-2 text-xs font-semibold text-[#D4FF33] transition-colors hover:bg-[#D4FF33]/20 whitespace-nowrap"
+                                className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-500/35 bg-emerald-500/10 px-3.5 py-2 text-xs font-bold text-emerald-300 transition-colors hover:bg-emerald-500/20 whitespace-nowrap"
                               >
                                 <Sparkles className="h-3.5 w-3.5" />
-                                Ask Health Agent
+                                Health AI →
                               </button>
                             </div>
                           </div>
@@ -5528,25 +5296,15 @@ export function App() {
                           {showAddHealthRecordModal && (
                             <form
                               onSubmit={handleCreateParentHealthRecord}
-                              className="relative z-10 border-b border-white/10 bg-[#131922]/90 px-6 py-5 backdrop-blur lg:px-8"
+                              className="relative z-10 border-b border-emerald-500/20 bg-[#0B1E16] px-6 py-4 lg:px-8"
                             >
-                              <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-xs">
-                                <span className="font-bold text-[#D4FF33]">
-                                  Record Parent Checkup, Appointment, Lab Test,
-                                  Medication, Vaccination, or Health Measurement
-                                </span>
-                                <span className="text-slate-400">
-                                  Persists to parent_health_records table &
-                                  auto-schedules follow-up reminder
-                                </span>
-                              </div>
-                              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                              <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
                                 <select
                                   value={healthParentName}
                                   onChange={(e) =>
                                     setHealthParentName(e.target.value)
                                   }
-                                  className="rounded-xl border border-white/15 bg-black/50 px-3 py-2 text-xs text-white"
+                                  className="rounded-xl border border-emerald-500/25 bg-[#07130E] px-3 py-2 text-xs text-white"
                                 >
                                   <option value="Smt. Sunita Tare (Mother)">
                                     Smt. Sunita Tare (Mother)
@@ -5555,7 +5313,7 @@ export function App() {
                                     Shri. Prakash Tare (Father)
                                   </option>
                                   <option value="Smt. Sunita Tare & Shri. Prakash Tare">
-                                    Both Parents (Joint Checkup)
+                                    Both Parents
                                   </option>
                                 </select>
 
@@ -5564,37 +5322,37 @@ export function App() {
                                   onChange={(e) =>
                                     setHealthCategory(e.target.value)
                                   }
-                                  className="rounded-xl border border-white/15 bg-black/50 px-3 py-2 text-xs text-white"
+                                  className="rounded-xl border border-emerald-500/25 bg-[#07130E] px-3 py-2 text-xs text-white"
                                 >
                                   <option value="PERIODIC_CHECKUP">
-                                    Monthly / Periodic Checkup
+                                    Monthly Checkup
                                   </option>
                                   <option value="DOCTOR_APPOINTMENT">
-                                    Doctor Appointment & Visit
+                                    Doctor Visit
                                   </option>
                                   <option value="LAB_TEST_REPORT">
-                                    Lab-Test Record / Medical Report
+                                    Lab-Test Report
                                   </option>
                                   <option value="MEDICATION_SCHEDULE">
                                     Medication Schedule
                                   </option>
                                   <option value="VACCINATION_SCREENING">
-                                    Vaccination & Screening Record
+                                    Vaccination & Screening
                                   </option>
                                   <option value="HEALTH_MEASUREMENT">
-                                    Explicit Health Measurement
+                                    Health Measurement
                                   </option>
                                 </select>
 
                                 <input
                                   type="text"
                                   required
-                                  placeholder="Record title (e.g., Monthly Cardiac Checkup)"
+                                  placeholder="Record title (e.g., Cardiac Checkup)"
                                   value={healthTitle}
                                   onChange={(e) =>
                                     setHealthTitle(e.target.value)
                                   }
-                                  className="rounded-xl border border-white/15 bg-black/50 px-3 py-2 text-xs text-white placeholder:text-slate-500"
+                                  className="rounded-xl border border-emerald-500/25 bg-[#07130E] px-3 py-2 text-xs text-white placeholder:text-slate-500"
                                 />
 
                                 <input
@@ -5605,115 +5363,79 @@ export function App() {
                                   onChange={(e) =>
                                     setHealthProvider(e.target.value)
                                   }
-                                  className="rounded-xl border border-white/15 bg-black/50 px-3 py-2 text-xs text-white placeholder:text-slate-500"
+                                  className="rounded-xl border border-emerald-500/25 bg-[#07130E] px-3 py-2 text-xs text-white placeholder:text-slate-500"
                                 />
                               </div>
 
-                              <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
-                                <div>
-                                  <label className="block text-[10px] font-mono text-slate-400 uppercase">
-                                    Recorded Date
-                                  </label>
-                                  <input
-                                    type="date"
-                                    value={healthRecordedDate}
-                                    onChange={(e) =>
-                                      setHealthRecordedDate(e.target.value)
-                                    }
-                                    className="mt-1 w-full rounded-xl border border-white/15 bg-black/50 px-3 py-1.5 font-mono text-xs text-white"
-                                  />
-                                </div>
-                                <div>
-                                  <label className="block text-[10px] font-mono text-slate-400 uppercase">
-                                    Next Due / Follow-Up Date
-                                  </label>
-                                  <input
-                                    type="date"
-                                    value={healthNextDueDate}
-                                    onChange={(e) =>
-                                      setHealthNextDueDate(e.target.value)
-                                    }
-                                    className="mt-1 w-full rounded-xl border border-white/15 bg-black/50 px-3 py-1.5 font-mono text-xs text-white"
-                                  />
-                                </div>
-                                <div>
-                                  <label className="block text-[10px] font-mono text-slate-400 uppercase">
-                                    Schedule / Frequency
-                                  </label>
-                                  <input
-                                    type="text"
-                                    value={healthScheduleFreq}
-                                    onChange={(e) =>
-                                      setHealthScheduleFreq(e.target.value)
-                                    }
-                                    placeholder="e.g., Monthly / Daily 8 AM"
-                                    className="mt-1 w-full rounded-xl border border-white/15 bg-black/50 px-3 py-1.5 text-xs text-white"
-                                  />
-                                </div>
-                                <div>
-                                  <label className="block text-[10px] font-mono text-slate-400 uppercase">
-                                    Explicitly Recorded Measurements
-                                  </label>
-                                  <input
-                                    type="text"
-                                    value={healthExplicitMeasurement}
-                                    onChange={(e) =>
-                                      setHealthExplicitMeasurement(
-                                        e.target.value
-                                      )
-                                    }
-                                    placeholder="BP 122/78 mmHg, Glucose 99 mg/dL"
-                                    className="mt-1 w-full rounded-xl border border-white/15 bg-black/50 px-3 py-1.5 font-mono text-xs text-lime-300"
-                                  />
-                                </div>
-                                <div className="flex items-end">
-                                  <button
-                                    type="submit"
-                                    className="w-full rounded-xl bg-[#D4FF33] px-4 py-2 text-xs font-bold text-slate-950 hover:bg-lime-300"
-                                  >
-                                    Save Health Record
-                                  </button>
-                                </div>
+                              <div className="mt-2.5 grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-5">
+                                <input
+                                  type="date"
+                                  value={healthRecordedDate}
+                                  onChange={(e) =>
+                                    setHealthRecordedDate(e.target.value)
+                                  }
+                                  className="rounded-xl border border-emerald-500/25 bg-[#07130E] px-3 py-2 font-mono text-xs text-white"
+                                />
+                                <input
+                                  type="date"
+                                  value={healthNextDueDate}
+                                  onChange={(e) =>
+                                    setHealthNextDueDate(e.target.value)
+                                  }
+                                  className="rounded-xl border border-emerald-500/25 bg-[#07130E] px-3 py-2 font-mono text-xs text-white"
+                                />
+                                <input
+                                  type="text"
+                                  value={healthScheduleFreq}
+                                  onChange={(e) =>
+                                    setHealthScheduleFreq(e.target.value)
+                                  }
+                                  placeholder="Schedule (e.g., Monthly)"
+                                  className="rounded-xl border border-emerald-500/25 bg-[#07130E] px-3 py-2 text-xs text-white placeholder:text-slate-500"
+                                />
+                                <input
+                                  type="text"
+                                  value={healthExplicitMeasurement}
+                                  onChange={(e) =>
+                                    setHealthExplicitMeasurement(e.target.value)
+                                  }
+                                  placeholder="BP 122/78 · Glu 99 mg/dL"
+                                  className="rounded-xl border border-emerald-500/25 bg-[#07130E] px-3 py-2 font-mono text-xs text-emerald-300 placeholder:text-slate-500"
+                                />
+                                <button
+                                  type="submit"
+                                  className="rounded-xl bg-emerald-500 px-4 py-2 text-xs font-bold text-slate-950 hover:bg-emerald-400"
+                                >
+                                  Save Record →
+                                </button>
                               </div>
                             </form>
                           )}
 
-                          {/* Main Smartwatch Dial & Telemetry Grid (12 Columns) */}
+                          {/* Main 12-Column Biometric Sanctuary Grid */}
                           <div className="relative z-10 grid grid-cols-1 items-center gap-8 px-6 py-8 lg:grid-cols-12 lg:px-8">
-                            {/* Left 5 Columns: PowerPeak Smartwatch Circular Bezel & Activity Rings */}
+                            {/* Left 5 Columns: Calm Concentric Wellness Dial */}
                             <div className="flex flex-col items-center justify-center lg:col-span-5">
-                              <div className="relative flex h-80 w-80 items-center justify-center rounded-[52px] border-4 border-slate-700/80 bg-gradient-to-b from-[#171F2C] to-[#0B0F14] p-6 shadow-2xl ring-1 ring-white/10 sm:h-88 sm:w-88">
-                                {/* Smartwatch Side Crown Button */}
-                                <div
-                                  aria-hidden="true"
-                                  className="absolute -right-2.5 top-24 h-12 w-2 rounded-r-md bg-[#D4FF33]"
-                                />
-                                <div
-                                  aria-hidden="true"
-                                  className="absolute -right-2 top-44 h-8 w-1.5 rounded-r-md bg-slate-600"
-                                />
-
-                                {/* Multi-Ring SVG Biometric & Schedule Dial */}
+                              <div className="relative flex h-76 w-76 items-center justify-center rounded-full border border-emerald-500/25 bg-[#0B1E16] p-6 shadow-2xl sm:h-84 sm:w-84">
                                 <svg
-                                  className="absolute inset-4 h-[calc(100%-2rem)] w-[calc(100%-2rem)] -rotate-90"
+                                  className="absolute inset-3 h-[calc(100%-1.5rem)] w-[calc(100%-1.5rem)] -rotate-90"
                                   viewBox="0 0 240 240"
                                 >
-                                  {/* Outer Track: Checkup & Follow-Up Schedule Ring */}
                                   <circle
                                     cx="120"
                                     cy="120"
                                     r="102"
                                     fill="none"
-                                    stroke="rgba(212, 255, 51, 0.12)"
-                                    strokeWidth="12"
+                                    stroke="rgba(16, 185, 129, 0.14)"
+                                    strokeWidth="11"
                                   />
                                   <circle
                                     cx="120"
                                     cy="120"
                                     r="102"
                                     fill="none"
-                                    stroke="#D4FF33"
-                                    strokeWidth="12"
+                                    stroke="#10B981"
+                                    strokeWidth="11"
                                     strokeLinecap="round"
                                     strokeDasharray="640"
                                     strokeDashoffset={
@@ -5721,349 +5443,291 @@ export function App() {
                                       (640 * activeWatchSlot.ringPct) / 100
                                     }
                                   />
-                                  {/* Middle Track: Medication Schedule Adherence Ring */}
                                   <circle
                                     cx="120"
                                     cy="120"
                                     r="84"
                                     fill="none"
-                                    stroke="rgba(0, 229, 255, 0.12)"
-                                    strokeWidth="10"
+                                    stroke="rgba(52, 211, 153, 0.12)"
+                                    strokeWidth="9"
                                   />
                                   <circle
                                     cx="120"
                                     cy="120"
                                     r="84"
                                     fill="none"
-                                    stroke="#00E5FF"
-                                    strokeWidth="10"
+                                    stroke="#34D399"
+                                    strokeWidth="9"
                                     strokeLinecap="round"
                                     strokeDasharray="527"
-                                    strokeDashoffset={527 - (527 * 94) / 100}
-                                  />
-                                  {/* Inner Track: Vitals & Lab Screening Completion */}
-                                  <circle
-                                    cx="120"
-                                    cy="120"
-                                    r="68"
-                                    fill="none"
-                                    stroke="rgba(255, 90, 95, 0.14)"
-                                    strokeWidth="8"
+                                    strokeDashoffset={527 - (527 * 96) / 100}
                                   />
                                   <circle
                                     cx="120"
                                     cy="120"
                                     r="68"
                                     fill="none"
-                                    stroke="#FF5A5F"
-                                    strokeWidth="8"
+                                    stroke="rgba(110, 231, 183, 0.12)"
+                                    strokeWidth="7"
+                                  />
+                                  <circle
+                                    cx="120"
+                                    cy="120"
+                                    r="68"
+                                    fill="none"
+                                    stroke="#6EE7B7"
+                                    strokeWidth="7"
                                     strokeLinecap="round"
                                     strokeDasharray="427"
-                                    strokeDashoffset={427 - (427 * 88) / 100}
+                                    strokeDashoffset={427 - (427 * 90) / 100}
                                   />
                                 </svg>
 
-                                {/* Center Watchface Readout */}
                                 <div className="relative z-10 flex flex-col items-center text-center">
-                                  <span className="font-mono text-[10px] font-bold tracking-widest text-[#D4FF33] uppercase">
-                                    {activeWatchSlot.dayLabel} · WATCH SYNC
+                                  <span className="font-mono text-[10px] font-bold tracking-widest text-emerald-400 uppercase">
+                                    {activeWatchSlot.dayLabel} · VITALS
                                   </span>
                                   <div className="mt-1 font-mono text-3xl font-extrabold tracking-tight tabular-nums text-white">
                                     124/78
                                   </div>
-                                  <span className="font-mono text-[11px] text-slate-400">
-                                    mmHg · HR 72 bpm · SpO2 98%
+                                  <span className="font-mono text-[11px] text-emerald-300">
+                                    mmHg · 72 bpm · SpO2 98%
                                   </span>
-                                  <div className="mt-2 rounded-xl border border-white/10 bg-white/5 px-3 py-1 font-mono text-[11px] font-semibold text-cyan-300">
-                                    HbA1c 6.1% · Glu 102 mg/dL
+                                  <div className="mt-2 rounded-lg border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-0.5 font-mono text-[11px] font-semibold text-emerald-200">
+                                    HbA1c 6.1% · Glu 102
                                   </div>
-                                  <span className="mt-1.5 max-w-[165px] truncate text-[10px] text-slate-400">
+                                  <span className="mt-1.5 max-w-[160px] truncate text-[10px] text-slate-400">
                                     {featuredMeasurement?.parent_name ||
                                       "Smt. Sunita Tare"}
                                   </span>
                                 </div>
                               </div>
 
-                              {/* Ring Legend Under Watch */}
                               <div className="mt-4 flex flex-wrap items-center justify-center gap-4 text-xs">
                                 <div className="flex items-center gap-1.5">
-                                  <span className="h-2.5 w-2.5 rounded-full bg-[#D4FF33]" />
+                                  <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
                                   <span className="text-slate-300">
-                                    Checkups ({activeWatchSlot.ringPct}%)
+                                    Checkups {activeWatchSlot.ringPct}%
                                   </span>
                                 </div>
                                 <div className="flex items-center gap-1.5">
-                                  <span className="h-2.5 w-2.5 rounded-full bg-[#00E5FF]" />
+                                  <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
                                   <span className="text-slate-300">
-                                    Med Schedule (94%)
+                                    Meds 96%
                                   </span>
                                 </div>
                                 <div className="flex items-center gap-1.5">
-                                  <span className="h-2.5 w-2.5 rounded-full bg-[#FF5A5F]" />
+                                  <span className="h-2.5 w-2.5 rounded-full bg-emerald-300" />
                                   <span className="text-slate-300">
-                                    Vitals & Labs (88%)
+                                    Labs 90%
                                   </span>
                                 </div>
                               </div>
                             </div>
 
-                            {/* Right 7 Columns: Smartwatch Horizon Scrubber, Recorded Vitals Cards & One-Tap Vitals Sync */}
+                            {/* Right 7 Columns: Vitals Cards & Timeline Scrubber */}
                             <div className="space-y-5 lg:col-span-7">
-                              <div>
-                                <div className="text-xs font-semibold text-[#D4FF33] uppercase tracking-wider">
-                                  Upcoming Checkups & Follow-Up Horizon
-                                </div>
-                                <h2 className="mt-1 text-2xl font-bold tracking-tight text-white sm:text-3xl">
-                                  {activeWatchSlot.eventTitle}
-                                </h2>
-                                <p className="mt-1 text-xs text-slate-300">
-                                  {activeWatchSlot.sub}
-                                </p>
-                              </div>
-
-                              {/* Interactive Smartwatch Day Scrubber */}
-                              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-                                {SMARTWATCH_TIMELINE_DAYS.map((slot) => {
-                                  const isSelected =
-                                    slot.date === activeWatchSlot.date;
-                                  return (
+                              {/* 3-Column Biometric Snapshot */}
+                              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                                <div className="rounded-2xl border border-emerald-500/20 bg-[#0B1E16] p-4">
+                                  <div className="text-xs font-medium text-slate-400">
+                                    Mother's Vitals
+                                  </div>
+                                  <div className="mt-1 font-mono text-2xl font-extrabold tabular-nums text-white">
+                                    124/78{" "}
+                                    <span className="text-xs font-normal text-emerald-400">
+                                      mmHg
+                                    </span>
+                                  </div>
+                                  <div className="mt-1 flex items-center justify-between text-[11px] text-slate-400">
+                                    <span>72 bpm · SpO2 98%</span>
                                     <button
-                                      key={slot.date}
                                       type="button"
                                       onClick={() =>
-                                        setActiveSmartwatchDay(slot.date)
+                                        handleQuickLogParentVitals(
+                                          "Smt. Sunita Tare (Mother)",
+                                          "HEALTH_MEASUREMENT",
+                                          "Morning Omron BP & Pulse Log",
+                                          "BP: 122/78 mmHg · HR: 71 bpm · SpO2: 98% · Fasting Glucose: 99 mg/dL",
+                                          "Omron HEM-7156"
+                                        )
                                       }
-                                      className={`rounded-2xl border p-3 text-left transition-all ${
-                                        isSelected
-                                          ? "border-[#D4FF33] bg-[#D4FF33]/15 shadow-md"
-                                          : "border-white/10 bg-[#131922] hover:border-white/25"
-                                      }`}
+                                      className="font-bold text-emerald-400 hover:text-emerald-300"
                                     >
-                                      <div className="flex items-center justify-between">
-                                        <span
-                                          className={`font-mono text-xs font-bold ${
-                                            isSelected
-                                              ? "text-[#D4FF33]"
-                                              : "text-white"
-                                          }`}
-                                        >
-                                          {slot.dayLabel}
-                                        </span>
-                                        <span className="font-mono text-[10px] text-slate-400">
-                                          {slot.ringPct}%
-                                        </span>
-                                      </div>
-                                      <div className="mt-1.5 truncate text-xs font-semibold text-white">
-                                        {slot.eventTitle}
-                                      </div>
-                                      <div className="mt-0.5 truncate text-[10px] text-slate-400">
-                                        {slot.sub}
-                                      </div>
+                                      Sync →
                                     </button>
-                                  );
-                                })}
-                              </div>
-
-                              {/* Explicitly Recorded Health Measurements Telemetry Strip */}
-                              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                                <div className="rounded-2xl border border-white/10 bg-[#131922] p-4">
-                                  <div className="flex items-center justify-between text-[11px] text-slate-400">
-                                    <span>Mother · Recorded Vitals</span>
-                                    <span className="font-mono text-[10px] text-[#D4FF33]">
-                                      OMRON HEM-7156
-                                    </span>
-                                  </div>
-                                  <div className="mt-1.5 font-mono text-lg font-bold tabular-nums text-white">
-                                    BP 124/78 · 72 bpm
-                                  </div>
-                                  <div className="mt-1 font-mono text-[11px] text-slate-300">
-                                    SpO2: 98% · Fasting Glu: 102 mg/dL
                                   </div>
                                 </div>
 
-                                <div className="rounded-2xl border border-white/10 bg-[#131922] p-4">
-                                  <div className="flex items-center justify-between text-[11px] text-slate-400">
-                                    <span>Father · Recorded Vitals</span>
-                                    <span className="font-mono text-[10px] text-cyan-400">
-                                      HOME LOGGED
+                                <div className="rounded-2xl border border-emerald-500/20 bg-[#0B1E16] p-4">
+                                  <div className="text-xs font-medium text-slate-400">
+                                    Father's Vitals
+                                  </div>
+                                  <div className="mt-1 font-mono text-2xl font-extrabold tabular-nums text-white">
+                                    128/82{" "}
+                                    <span className="text-xs font-normal text-emerald-400">
+                                      mmHg
                                     </span>
                                   </div>
-                                  <div className="mt-1.5 font-mono text-lg font-bold tabular-nums text-white">
-                                    BP 128/82 · 70 bpm
-                                  </div>
-                                  <div className="mt-1 font-mono text-[11px] text-slate-300">
-                                    Weight: 71.4 kg · Temp: 98.2°F
+                                  <div className="mt-1 flex items-center justify-between text-[11px] text-slate-400">
+                                    <span>70 bpm · 71.4 kg</span>
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        handleQuickLogParentVitals(
+                                          "Shri. Prakash Tare (Father)",
+                                          "HEALTH_MEASUREMENT",
+                                          "Evening BP & Weight Check",
+                                          "BP: 126/80 mmHg · Pulse: 69 bpm · SpO2: 98% · Weight: 71.2 kg",
+                                          "Home Vitals Monitor"
+                                        )
+                                      }
+                                      className="font-bold text-emerald-400 hover:text-emerald-300"
+                                    >
+                                      Sync →
+                                    </button>
                                   </div>
                                 </div>
 
-                                <div className="rounded-2xl border border-white/10 bg-[#131922] p-4">
-                                  <div className="flex items-center justify-between text-[11px] text-slate-400">
-                                    <span>Latest Lab Panel</span>
-                                    <span className="font-mono text-[10px] text-emerald-400">
-                                      METROPOLIS
-                                    </span>
+                                <div className="rounded-2xl border border-emerald-500/20 bg-[#0B1E16] p-4">
+                                  <div className="text-xs font-medium text-slate-400">
+                                    Metabolic Lab Panel
                                   </div>
-                                  <div className="mt-1.5 font-mono text-lg font-bold tabular-nums text-white">
+                                  <div className="mt-1 font-mono text-2xl font-extrabold tabular-nums text-emerald-400">
                                     HbA1c 6.1%
                                   </div>
-                                  <div className="mt-1 font-mono text-[11px] text-slate-300">
-                                    Vit D: 34 ng/mL · LDL: 94 mg/dL
+                                  <div className="mt-1 flex items-center justify-between text-[11px] text-slate-400">
+                                    <span>Vit D 34 · LDL 94</span>
+                                    <button
+                                      type="button"
+                                      onClick={() => setActiveView("documents")}
+                                      className="font-bold text-emerald-400 hover:text-emerald-300"
+                                    >
+                                      Upload →
+                                    </button>
                                   </div>
                                 </div>
                               </div>
 
-                              {/* Quick Smartwatch Sync & Action Buttons */}
-                              <div className="flex flex-wrap items-center gap-2.5 pt-1">
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    handleQuickLogParentVitals(
-                                      "Smt. Sunita Tare (Mother)",
-                                      "HEALTH_MEASUREMENT",
-                                      "Morning Smartwatch & Omron BP Telemetry Log",
-                                      "BP: 122/78 mmHg · HR: 71 bpm · SpO2: 98% · Fasting Glucose: 99 mg/dL",
-                                      "PowerPeak Smartwatch & Omron HEM-7156"
-                                    )
-                                  }
-                                  className="rounded-xl bg-[#D4FF33] px-3.5 py-2 text-xs font-bold text-slate-950 transition-colors hover:bg-lime-300"
-                                >
-                                  + Sync Mother's Today Vitals
-                                </button>
+                              {/* Interactive Care Horizon Timeline */}
+                              <div className="rounded-2xl border border-emerald-500/20 bg-[#0B1E16]/80 p-4">
+                                <div className="flex items-center justify-between">
+                                  <div>
+                                    <span className="font-mono text-[10px] font-bold tracking-widest text-emerald-400 uppercase">
+                                      CARE TIMELINE · {activeWatchSlot.dayLabel}
+                                    </span>
+                                    <h2 className="mt-0.5 text-base font-bold text-white">
+                                      {activeWatchSlot.eventTitle}
+                                    </h2>
+                                  </div>
+                                  <span className="font-mono text-xs text-slate-400">
+                                    {activeWatchSlot.sub}
+                                  </span>
+                                </div>
 
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    handleQuickLogParentVitals(
-                                      "Shri. Prakash Tare (Father)",
-                                      "HEALTH_MEASUREMENT",
-                                      "Evening Smartwatch BP & Weight Check-In",
-                                      "BP: 126/80 mmHg · Pulse: 69 bpm · SpO2: 98% · Weight: 71.2 kg",
-                                      "PowerPeak Smartwatch & Home Vitals Log"
-                                    )
-                                  }
-                                  className="rounded-xl border border-cyan-400/40 bg-cyan-400/10 px-3.5 py-2 text-xs font-semibold text-cyan-300 transition-colors hover:bg-cyan-400/20"
-                                >
-                                  + Sync Father's BP & Weight
-                                </button>
+                                <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                                  {WELLNESS_TIMELINE_SLOTS.map((slot) => {
+                                    const isSelected =
+                                      slot.date === activeWatchSlot.date;
+                                    return (
+                                      <button
+                                        key={slot.date}
+                                        type="button"
+                                        onClick={() =>
+                                          setActiveSmartwatchDay(slot.date)
+                                        }
+                                        className={`rounded-xl border p-2.5 text-left transition-all ${
+                                          isSelected
+                                            ? "border-emerald-400 bg-emerald-500/15"
+                                            : "border-white/10 bg-[#07130E] hover:border-emerald-500/35"
+                                        }`}
+                                      >
+                                        <div className="flex items-center justify-between">
+                                          <span
+                                            className={`font-mono text-xs font-bold ${
+                                              isSelected
+                                                ? "text-emerald-400"
+                                                : "text-white"
+                                            }`}
+                                          >
+                                            {slot.dayLabel}
+                                          </span>
+                                          <span className="font-mono text-[10px] text-emerald-300">
+                                            {slot.ringPct}%
+                                          </span>
+                                        </div>
+                                        <div className="mt-1 truncate text-xs font-semibold text-slate-200">
+                                          {slot.eventTitle.split("·")[1] ||
+                                            slot.eventTitle}
+                                        </div>
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </div>
 
-                                <button
-                                  type="button"
-                                  onClick={() => setActiveView("documents")}
-                                  className="rounded-xl border border-white/15 bg-white/5 px-3.5 py-2 text-xs font-semibold text-slate-200 transition-colors hover:bg-white/10"
-                                >
-                                  Upload Lab Report PDF →
-                                </button>
+                              {/* 4-Column Quick Metrics Row */}
+                              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+                                <div className="rounded-xl border border-emerald-500/15 bg-[#0B1E16]/60 px-3.5 py-2.5">
+                                  <div className="text-[11px] text-slate-400">
+                                    Checkups & Visits
+                                  </div>
+                                  <div className="mt-0.5 font-mono text-lg font-bold text-white">
+                                    {periodicCheckupsCount + doctorVisitsCount}{" "}
+                                    Scheduled
+                                  </div>
+                                </div>
+                                <div className="rounded-xl border border-emerald-500/15 bg-[#0B1E16]/60 px-3.5 py-2.5">
+                                  <div className="text-[11px] text-slate-400">
+                                    Daily Regimens
+                                  </div>
+                                  <div className="mt-0.5 font-mono text-lg font-bold text-emerald-400">
+                                    {medicationSchedules.length} Active
+                                  </div>
+                                </div>
+                                <div className="rounded-xl border border-emerald-500/15 bg-[#0B1E16]/60 px-3.5 py-2.5">
+                                  <div className="text-[11px] text-slate-400">
+                                    Lab & Screenings
+                                  </div>
+                                  <div className="mt-0.5 font-mono text-lg font-bold text-white">
+                                    {labReportsCount + vaccinationRecordsCount}{" "}
+                                    Logged
+                                  </div>
+                                </div>
+                                <div className="rounded-xl border border-emerald-500/15 bg-[#0B1E16]/60 px-3.5 py-2.5">
+                                  <div className="text-[11px] text-slate-400">
+                                    Care Reminders
+                                  </div>
+                                  <div className="mt-0.5 font-mono text-lg font-bold text-emerald-300">
+                                    {pendingHealthRemindersCount} Due
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
 
-                        {/* 4-Column PowerPeak Summary Bento Strip */}
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-                            <div className="flex items-center justify-between text-xs font-medium text-slate-500">
-                              <span>Periodic Checkups & Visits</span>
-                              <Activity className="h-4 w-4 text-emerald-600" />
-                            </div>
-                            <div className="mt-2 font-mono text-2xl font-bold tabular-nums text-slate-900">
-                              {periodicCheckupsCount + doctorVisitsCount}{" "}
-                              Scheduled
-                            </div>
-                            <div className="mt-2 flex items-center justify-between border-t border-slate-100 pt-2.5 text-[11px] text-slate-500">
-                              <span>
-                                {periodicCheckupsCount} Monthly Checkup(s)
-                              </span>
-                              <span className="font-mono font-semibold text-slate-800">
-                                Next: 2026-10-05
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-                            <div className="flex items-center justify-between text-xs font-medium text-slate-500">
-                              <span>Lab Reports & Screenings</span>
-                              <FileCheck2 className="h-4 w-4 text-teal-600" />
-                            </div>
-                            <div className="mt-2 font-mono text-2xl font-bold tabular-nums text-slate-900">
-                              {labReportsCount + vaccinationRecordsCount}{" "}
-                              Records
-                            </div>
-                            <div className="mt-2 flex items-center justify-between border-t border-slate-100 pt-2.5 text-[11px] text-slate-500">
-                              <span>{labReportsCount} Lab Panel(s)</span>
-                              <span className="font-semibold text-teal-700">
-                                {vaccinationRecordsCount} Screening/Vaccine
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-                            <div className="flex items-center justify-between text-xs font-medium text-slate-500">
-                              <span>Active Medication Schedules</span>
-                              <ShieldCheck className="h-4 w-4 text-indigo-600" />
-                            </div>
-                            <div className="mt-2 font-mono text-2xl font-bold tabular-nums text-slate-900">
-                              {medicationSchedules.length} Active Regimens
-                            </div>
-                            <div className="mt-2 flex items-center justify-between border-t border-slate-100 pt-2.5 text-[11px] text-slate-500">
-                              <span>08:00 AM & 08:30 PM</span>
-                              <span className="font-mono font-semibold text-amber-700">
-                                Refill: 2026-10-15
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-                            <div className="flex items-center justify-between text-xs font-medium text-slate-500">
-                              <span>Health Reminders & Alerts</span>
-                              <Bell className="h-4 w-4 text-amber-600" />
-                            </div>
-                            <div className="mt-2 font-mono text-2xl font-bold tabular-nums text-slate-900">
-                              {pendingHealthRemindersCount} Upcoming
-                            </div>
-                            <div className="mt-2 flex items-center justify-between border-t border-slate-100 pt-2.5 text-[11px] text-slate-500">
-                              <span>
-                                {measurementRecords.length} Vitals Logs
-                              </span>
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  setShowAddHealthReminderModal((prev) => !prev)
-                                }
-                                className="font-semibold text-teal-700 hover:underline"
-                              >
-                                + Add Reminder
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* 12-Column Split: Complete Parents' Health Monitoring Ledger (7 Cols) + Medication, Reminders & Lab Vault (5 Cols) */}
+                        {/* SECTION 2: 12-COLUMN CLINICAL RECORDS GRID (8 COLS) & CARE REMINDERS / LAB VAULT (4 COLS) */}
                         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-                          {/* Left 7 Columns: Structured Health Monitoring & Follow-Up Ledger */}
-                          <div className="rounded-2xl border border-slate-200 bg-white p-6 lg:col-span-7">
-                            <div className="flex flex-wrap items-center justify-between gap-3">
+                          {/* Left 8 Columns: Simplified Visual Care Cards */}
+                          <div className="rounded-3xl border border-emerald-500/20 bg-[#07130E] p-6 text-white lg:col-span-8">
+                            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-emerald-500/15 pb-4">
                               <div>
-                                <h2 className="text-base font-bold text-slate-900">
-                                  Parents' Health Monitoring & Follow-Up Ledger
-                                  ({filteredHealthRecords.length})
+                                <span className="font-mono text-[10px] font-bold tracking-widest text-emerald-400 uppercase">
+                                  CLINICAL CARE LEDGER
+                                </span>
+                                <h2 className="mt-0.5 text-lg font-bold text-white">
+                                  Checkups, Regimens & Biometrics (
+                                  {filteredHealthRecords.length})
                                 </h2>
-                                <p className="mt-0.5 text-xs text-slate-500">
-                                  Organized records for periodic checkups,
-                                  doctor visits, lab panels, medications,
-                                  vaccinations, and explicit measurements.
-                                </p>
                               </div>
 
-                              {/* Status Filter */}
-                              <div className="flex items-center gap-1 rounded-xl bg-slate-100 p-1">
+                              <div className="flex items-center gap-1 rounded-xl border border-emerald-500/20 bg-[#0B1E16] p-1">
                                 {[
                                   { id: "ALL", label: "All" },
                                   { id: "UPCOMING", label: "Scheduled" },
-                                  {
-                                    id: "ACTIVE_RECORDED",
-                                    label: "Active / Logged",
-                                  },
-                                  { id: "COMPLETED", label: "Completed" },
+                                  { id: "ACTIVE_RECORDED", label: "Active" },
+                                  { id: "COMPLETED", label: "Done" },
                                 ].map((st) => (
                                   <button
                                     key={st.id}
@@ -6071,10 +5735,10 @@ export function App() {
                                     onClick={() =>
                                       setParentHealthStatusFilter(st.id)
                                     }
-                                    className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition-colors whitespace-nowrap ${
+                                    className={`rounded-lg px-2.5 py-1 text-xs font-bold transition-colors ${
                                       parentHealthStatusFilter === st.id
-                                        ? "bg-white text-slate-900 shadow-xs"
-                                        : "text-slate-600 hover:text-slate-900"
+                                        ? "bg-emerald-500 text-slate-950"
+                                        : "text-slate-400 hover:text-white"
                                     }`}
                                   >
                                     {st.label}
@@ -6084,12 +5748,12 @@ export function App() {
                             </div>
 
                             {/* Category Filter Bar */}
-                            <div className="mt-3 flex flex-wrap gap-1.5 border-b border-slate-100 pb-3">
+                            <div className="mt-3 flex flex-wrap gap-1.5">
                               {[
-                                { id: "ALL", label: "All Categories" },
+                                { id: "ALL", label: "All" },
                                 {
                                   id: "PERIODIC_CHECKUP",
-                                  label: "Monthly Checkups",
+                                  label: "Checkups",
                                 },
                                 {
                                   id: "DOCTOR_APPOINTMENT",
@@ -6097,7 +5761,7 @@ export function App() {
                                 },
                                 {
                                   id: "LAB_TEST_REPORT",
-                                  label: "Lab-Test Reports",
+                                  label: "Lab Reports",
                                 },
                                 {
                                   id: "MEDICATION_SCHEDULE",
@@ -6105,11 +5769,11 @@ export function App() {
                                 },
                                 {
                                   id: "VACCINATION_SCREENING",
-                                  label: "Vaccinations & Screenings",
+                                  label: "Screenings",
                                 },
                                 {
                                   id: "HEALTH_MEASUREMENT",
-                                  label: "Recorded Measurements",
+                                  label: "Vitals",
                                 },
                               ].map((cat) => (
                                 <button
@@ -6120,8 +5784,8 @@ export function App() {
                                   }
                                   className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition-colors ${
                                     parentHealthCategoryFilter === cat.id
-                                      ? "bg-slate-900 text-[#D4FF33]"
-                                      : "bg-slate-100 text-slate-600 hover:bg-slate-200/70 hover:text-slate-900"
+                                      ? "border border-emerald-400 bg-emerald-500/20 text-emerald-300"
+                                      : "border border-white/10 bg-[#0B1E16] text-slate-400 hover:text-white"
                                   }`}
                                 >
                                   {cat.label}
@@ -6129,156 +5793,117 @@ export function App() {
                               ))}
                             </div>
 
-                            {/* Health Records List */}
-                            <div className="mt-4 space-y-3.5">
-                              {filteredHealthRecords.length === 0 ? (
-                                <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center text-xs text-slate-500">
-                                  No parent health records match the selected
-                                  filter.
-                                </div>
-                              ) : (
-                                filteredHealthRecords.map((rec: any) => {
-                                  const meta = HEALTH_CATEGORY_META[
-                                    rec.record_category
-                                  ] || {
-                                    label: rec.record_category,
-                                    accent: "text-teal-600",
-                                    badgeBg: "bg-slate-100 text-slate-800",
-                                  };
-                                  const isCompleted =
-                                    rec.status === "COMPLETED";
+                            {/* 2-Column Visual Care Cards (Title -> Important Value -> Short Context -> Action) */}
+                            <div className="mt-4 grid grid-cols-1 gap-3.5 sm:grid-cols-2">
+                              {filteredHealthRecords.map((rec: any) => {
+                                const meta = HEALTH_CATEGORY_META[
+                                  rec.record_category
+                                ] || {
+                                  label: rec.record_category,
+                                  shortTag: "RECORD",
+                                };
+                                const isCompleted = rec.status === "COMPLETED";
+                                const isMother = String(rec.parent_name || "")
+                                  .toLowerCase()
+                                  .includes("sunita");
 
-                                  return (
-                                    <div
-                                      key={rec.id}
-                                      className="rounded-2xl border border-slate-200 bg-slate-50/50 p-4 text-xs transition-colors hover:border-slate-300"
-                                    >
-                                      <div className="flex flex-wrap items-start justify-between gap-2">
-                                        <div>
-                                          <div className="flex flex-wrap items-center gap-2">
-                                            <span className="rounded-md bg-slate-900 px-2 py-0.5 font-mono text-[10px] font-semibold text-[#D4FF33]">
-                                              {meta.label}
-                                            </span>
-                                            <span className="font-semibold text-slate-700">
-                                              {rec.parent_name}
-                                            </span>
-                                          </div>
-                                          <h3 className="mt-1.5 text-sm font-bold text-slate-900">
-                                            {rec.title}
-                                          </h3>
-                                          <div className="mt-0.5 text-[11px] text-slate-500">
-                                            {rec.provider_or_doctor} ·{" "}
-                                            {rec.schedule_or_frequency}
-                                          </div>
-                                        </div>
-
-                                        <div className="flex flex-col items-end gap-1.5">
+                                return (
+                                  <div
+                                    key={rec.id}
+                                    className="flex flex-col justify-between rounded-2xl border border-emerald-500/20 bg-[#0B1E16] p-4 transition-all hover:border-emerald-400/50"
+                                  >
+                                    <div>
+                                      <div className="flex items-center justify-between gap-2">
+                                        <span className="rounded-md bg-emerald-500/15 px-2 py-0.5 font-mono text-[10px] font-bold text-emerald-300">
+                                          {meta.shortTag} ·{" "}
+                                          {isMother ? "MOTHER" : "FATHER"}
+                                        </span>
+                                        <span
+                                          className={`inline-flex items-center gap-1 font-mono text-[10px] font-bold ${
+                                            isCompleted
+                                              ? "text-emerald-400"
+                                              : "text-amber-300"
+                                          }`}
+                                        >
                                           <span
-                                            className={`inline-flex items-center gap-1.5 font-mono text-[11px] font-bold ${
+                                            className={`h-1.5 w-1.5 rounded-full ${
                                               isCompleted
-                                                ? "text-emerald-700"
-                                                : rec.status === "SCHEDULED"
-                                                ? "text-amber-700"
-                                                : "text-teal-700"
+                                                ? "bg-emerald-400"
+                                                : "bg-amber-400"
                                             }`}
-                                          >
-                                            <span
-                                              className={`h-2 w-2 rounded-full ${
-                                                isCompleted
-                                                  ? "bg-emerald-600"
-                                                  : rec.status === "SCHEDULED"
-                                                  ? "bg-amber-500"
-                                                  : "bg-teal-600"
-                                              }`}
-                                            />
-                                            {rec.status}
-                                          </span>
-                                          <button
-                                            type="button"
-                                            onClick={() =>
-                                              handleToggleParentHealthStatus(
-                                                rec.id
-                                              )
-                                            }
-                                            className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-700 hover:bg-slate-100"
-                                          >
-                                            {isCompleted
-                                              ? "Re-open Schedule"
-                                              : "Mark Completed"}
-                                          </button>
-                                        </div>
+                                          />
+                                          {rec.status}
+                                        </span>
                                       </div>
 
-                                      {/* Explicitly Recorded Measurement Callout Box */}
-                                      {rec.explicit_measurement_value && (
-                                        <div className="mt-3 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5">
-                                          <div className="text-[10px] font-semibold tracking-wider text-slate-400 uppercase">
-                                            Explicitly Recorded Measurements /
-                                            Schedule Details
-                                          </div>
-                                          <div className="mt-0.5 font-mono text-xs font-bold tabular-nums text-slate-900">
-                                            {rec.explicit_measurement_value}
-                                          </div>
-                                        </div>
-                                      )}
+                                      {/* 1. Title */}
+                                      <h3 className="mt-2.5 text-sm font-bold text-white">
+                                        {rec.title}
+                                      </h3>
 
-                                      {rec.notes && (
-                                        <p className="mt-2.5 leading-relaxed text-slate-600">
-                                          {rec.notes}
-                                        </p>
-                                      )}
+                                      {/* 2. Important Value */}
+                                      <div className="mt-1 font-mono text-base font-extrabold text-emerald-400">
+                                        {rec.explicit_measurement_value
+                                          ? String(
+                                              rec.explicit_measurement_value
+                                            ).split("·")[0]
+                                          : rec.next_due_or_followup_date
+                                          ? `Due ${rec.next_due_or_followup_date}`
+                                          : rec.schedule_or_frequency ||
+                                            "Active Schedule"}
+                                      </div>
 
-                                      <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200/80 pt-2.5 text-[11px] text-slate-500">
-                                        <div className="flex flex-wrap items-center gap-3 font-mono tabular-nums">
-                                          <span>
-                                            Recorded:{" "}
-                                            <strong className="text-slate-800">
-                                              {rec.recorded_date}
-                                            </strong>
-                                          </span>
-                                          {rec.next_due_or_followup_date && (
-                                            <span>
-                                              Next Due / Follow-Up:{" "}
-                                              <strong className="text-teal-700">
-                                                {rec.next_due_or_followup_date}
-                                              </strong>
-                                            </span>
-                                          )}
-                                        </div>
-
-                                        <button
-                                          type="button"
-                                          onClick={() => {
-                                            setActiveView("intelligence");
-                                            runAgentQueryText(
-                                              `Show the recorded details, measurements, and follow-up date for "${rec.title}" (${rec.parent_name}).`
-                                            );
-                                          }}
-                                          className="font-semibold text-teal-700 hover:underline"
-                                        >
-                                          Verify in Agent RAG →
-                                        </button>
+                                      {/* 3. Short Context */}
+                                      <div className="mt-1 truncate text-xs text-slate-400">
+                                        {rec.provider_or_doctor} ·{" "}
+                                        {rec.schedule_or_frequency ||
+                                          rec.recorded_date}
                                       </div>
                                     </div>
-                                  );
-                                })
-                              )}
+
+                                    {/* 4. Action */}
+                                    <div className="mt-3.5 flex items-center justify-between border-t border-emerald-500/15 pt-2.5 text-xs">
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          handleToggleParentHealthStatus(rec.id)
+                                        }
+                                        className="font-semibold text-slate-300 hover:text-white"
+                                      >
+                                        {isCompleted
+                                          ? "Reopen"
+                                          : "Mark Done ✓"}
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          setActiveView("intelligence");
+                                          runAgentQueryText(
+                                            `Show the recorded details, measurements, and follow-up date for "${rec.title}" (${rec.parent_name}).`
+                                          );
+                                        }}
+                                        className="font-bold text-emerald-400 hover:text-emerald-300"
+                                      >
+                                        Audit →
+                                      </button>
+                                    </div>
+                                  </div>
+                                );
+                              })}
                             </div>
                           </div>
 
-                          {/* Right 5 Columns: Upcoming Checkup Reminders + Medication Regimen + Lab Report Vault */}
-                          <div className="space-y-6 lg:col-span-5">
-                            {/* Card 1: Upcoming Checkups & Health-Related Reminders */}
-                            <div className="rounded-2xl border border-slate-200 bg-white p-6">
-                              <div className="flex items-center justify-between">
+                          {/* Right 4 Columns: Care Reminders & Lab Report Vault */}
+                          <div className="space-y-6 lg:col-span-4">
+                            <div className="rounded-3xl border border-emerald-500/20 bg-[#07130E] p-6 text-white">
+                              <div className="flex items-center justify-between border-b border-emerald-500/15 pb-3.5">
                                 <div>
-                                  <h2 className="text-base font-bold text-slate-900">
-                                    Upcoming Checkups & Health Reminders
+                                  <span className="font-mono text-[10px] font-bold tracking-widest text-emerald-400 uppercase">
+                                    FOLLOW-UP QUEUE
+                                  </span>
+                                  <h2 className="mt-0.5 text-base font-bold text-white">
+                                    Health Reminders
                                   </h2>
-                                  <p className="mt-0.5 text-xs text-slate-500">
-                                    Automated follow-up alerts, appointment
-                                    reminders, and medication refills.
-                                  </p>
                                 </div>
                                 <button
                                   type="button"
@@ -6287,28 +5912,28 @@ export function App() {
                                       (prev) => !prev
                                     )
                                   }
-                                  className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-semibold text-slate-800 hover:bg-slate-100 whitespace-nowrap"
+                                  className="rounded-xl bg-emerald-500 px-3 py-1.5 text-xs font-bold text-slate-950 hover:bg-emerald-400"
                                 >
                                   {showAddHealthReminderModal
                                     ? "Close"
-                                    : "+ New Reminder"}
+                                    : "+ Alert"}
                                 </button>
                               </div>
 
                               {showAddHealthReminderModal && (
                                 <form
                                   onSubmit={handleAddParentHealthReminder}
-                                  className="mt-3 space-y-2.5 rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-xs"
+                                  className="mt-3 space-y-2 rounded-2xl border border-emerald-500/25 bg-[#0B1E16] p-3.5 text-xs"
                                 >
                                   <input
                                     type="text"
                                     required
-                                    placeholder="Health reminder title (e.g., Fasting Blood Test at 7:30 AM)"
+                                    placeholder="Reminder title (e.g., Fasting Blood Test)"
                                     value={healthReminderTitle}
                                     onChange={(e) =>
                                       setHealthReminderTitle(e.target.value)
                                     }
-                                    className="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs"
+                                    className="w-full rounded-lg border border-emerald-500/25 bg-[#07130E] px-2.5 py-1.5 text-xs text-white"
                                   />
                                   <div className="grid grid-cols-2 gap-2">
                                     <input
@@ -6318,24 +5943,15 @@ export function App() {
                                       onChange={(e) =>
                                         setHealthReminderDueDate(e.target.value)
                                       }
-                                      className="rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 font-mono text-xs"
+                                      className="rounded-lg border border-emerald-500/25 bg-[#07130E] px-2.5 py-1.5 font-mono text-xs text-white"
                                     />
                                     <button
                                       type="submit"
-                                      className="rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-[#D4FF33] hover:bg-slate-800"
+                                      className="rounded-lg bg-emerald-500 px-3 py-1.5 text-xs font-bold text-slate-950 hover:bg-emerald-400"
                                     >
-                                      Schedule Alert
+                                      Save →
                                     </button>
                                   </div>
-                                  <input
-                                    type="text"
-                                    value={healthReminderDesc}
-                                    onChange={(e) =>
-                                      setHealthReminderDesc(e.target.value)
-                                    }
-                                    placeholder="Preparation or follow-up notes"
-                                    className="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs"
-                                  />
                                 </form>
                               )}
 
@@ -6345,27 +5961,20 @@ export function App() {
                                   return (
                                     <div
                                       key={rem.id}
-                                      className={`flex items-start justify-between gap-3 rounded-xl border p-3 text-xs ${
-                                        isDone
-                                          ? "border-slate-100 bg-slate-50/50 opacity-65"
-                                          : "border-slate-200 bg-slate-50/70"
-                                      }`}
+                                      className="flex items-center justify-between gap-3 rounded-2xl border border-emerald-500/20 bg-[#0B1E16] p-3.5 text-xs"
                                     >
-                                      <div>
+                                      <div className="min-w-0">
                                         <div
-                                          className={`font-semibold ${
+                                          className={`truncate font-bold ${
                                             isDone
                                               ? "line-through text-slate-500"
-                                              : "text-slate-900"
+                                              : "text-white"
                                           }`}
                                         >
                                           {rem.title}
                                         </div>
-                                        <p className="mt-0.5 text-[11px] text-slate-500">
-                                          {rem.description}
-                                        </p>
-                                        <div className="mt-1 font-mono text-[11px] font-semibold text-teal-700">
-                                          Due: {rem.due_date}
+                                        <div className="mt-0.5 font-mono text-xs font-bold text-emerald-400">
+                                          Due {rem.due_date}
                                         </div>
                                       </div>
                                       <button
@@ -6373,9 +5982,9 @@ export function App() {
                                         onClick={() =>
                                           handleToggleReminderStatus(rem.id)
                                         }
-                                        className="shrink-0 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-700 hover:bg-slate-100"
+                                        className="shrink-0 rounded-lg bg-emerald-500 px-2.5 py-1.5 text-[11px] font-bold text-slate-950 hover:bg-emerald-400"
                                       >
-                                        {isDone ? "Reopen" : "Done"}
+                                        {isDone ? "Reopen" : "Done →"}
                                       </button>
                                     </div>
                                   );
@@ -6383,24 +5992,22 @@ export function App() {
                               </div>
                             </div>
 
-                            {/* Card 2: Lab-Test Records & Medical Reports Vault (RAG Linked) */}
-                            <div className="rounded-2xl border border-slate-200 bg-white p-6">
-                              <div className="flex items-center justify-between">
+                            <div className="rounded-3xl border border-emerald-500/20 bg-[#07130E] p-6 text-white">
+                              <div className="flex items-center justify-between border-b border-emerald-500/15 pb-3.5">
                                 <div>
-                                  <h2 className="text-base font-bold text-slate-900">
-                                    Lab-Test Reports & Medical Vault
+                                  <span className="font-mono text-[10px] font-bold tracking-widest text-emerald-400 uppercase">
+                                    DIAGNOSTIC ARCHIVE
+                                  </span>
+                                  <h2 className="mt-0.5 text-base font-bold text-white">
+                                    Lab Reports Vault
                                   </h2>
-                                  <p className="mt-0.5 text-xs text-slate-500">
-                                    Ingested diagnostic panels and medical
-                                    certificates indexed for RAG retrieval.
-                                  </p>
                                 </div>
                                 <button
                                   type="button"
                                   onClick={() => setActiveView("documents")}
-                                  className="text-xs font-semibold text-teal-700 hover:underline"
+                                  className="text-xs font-bold text-emerald-400 hover:text-emerald-300"
                                 >
-                                  + Ingest Report
+                                  + Upload
                                 </button>
                               </div>
 
@@ -6408,35 +6015,28 @@ export function App() {
                                 {allHealthDocs.map((doc: any) => (
                                   <div
                                     key={doc.id}
-                                    className="rounded-xl border border-slate-200 bg-slate-50/60 p-3.5 text-xs"
+                                    className="flex items-center justify-between gap-3 rounded-2xl border border-emerald-500/20 bg-[#0B1E16] p-3.5 text-xs"
                                   >
-                                    <div className="flex items-start justify-between gap-2">
-                                      <div>
-                                        <div className="font-semibold text-slate-900">
-                                          {doc.title}
-                                        </div>
-                                        <div className="mt-0.5 font-mono text-[11px] text-slate-500">
-                                          {doc.document_type} ·{" "}
-                                          {doc.document_date}
-                                        </div>
+                                    <div className="min-w-0">
+                                      <div className="truncate font-bold text-white">
+                                        {doc.title}
                                       </div>
-                                      <button
-                                        type="button"
-                                        onClick={() => {
-                                          setActiveView("intelligence");
-                                          runAgentQueryText(
-                                            `What measurements and follow-up dates are recorded in "${doc.title}"?`
-                                          );
-                                        }}
-                                        className="inline-flex items-center gap-1 rounded-lg bg-slate-900 px-2.5 py-1 text-[11px] font-semibold text-[#D4FF33] hover:bg-slate-800 whitespace-nowrap"
-                                      >
-                                        <Sparkles className="h-3 w-3" />
-                                        Query RAG
-                                      </button>
+                                      <div className="mt-0.5 font-mono text-[11px] text-emerald-400">
+                                        {doc.document_date} · Verified PDF
+                                      </div>
                                     </div>
-                                    <p className="mt-2 leading-relaxed text-slate-600">
-                                      {doc.extracted_text_summary}
-                                    </p>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setActiveView("intelligence");
+                                        runAgentQueryText(
+                                          `What measurements and follow-up dates are recorded in "${doc.title}"?`
+                                        );
+                                      }}
+                                      className="shrink-0 rounded-lg border border-emerald-500/35 bg-emerald-500/10 px-2.5 py-1.5 text-[11px] font-bold text-emerald-300 hover:bg-emerald-500/20"
+                                    >
+                                      Query →
+                                    </button>
                                   </div>
                                 ))}
                               </div>
@@ -7939,7 +7539,7 @@ export function App() {
                 </div>
               )}
 
-              {/* FINANCE & HOUSEHOLD EXPENSES (DRIBBBLE — SC MODERN PRIVATE WEALTH MANAGEMENT) SHOWCASE */}
+              {/* FINANCE & HOUSEHOLD EXPENSES — PURPLE & BLACK FINANCIAL ANALYTICS TERMINAL */}
               {selectedDomain === "finance_expenses" && (
                 <div className="space-y-6">
                   {(() => {
@@ -8007,7 +7607,6 @@ export function App() {
                     const primaryPendingBill =
                       pendingBills[0] || allBills[0] || null;
 
-                    // Category allocation for SC Private Wealth Capital Allocation bar
                     const utilitiesOutflowMinor =
                       pendingBillsMinor + settledBillsMinor;
                     const groceriesOutflowMinor = allExpenses
@@ -8057,7 +7656,7 @@ export function App() {
                     const wealthAllocations = [
                       {
                         id: "UTILITIES",
-                        label: "Bills & Utilities",
+                        label: "Utilities",
                         amountMinor: utilitiesOutflowMinor,
                         sharePct: Math.max(
                           6,
@@ -8065,13 +7664,13 @@ export function App() {
                             (utilitiesOutflowMinor / allocationTotalBase) * 100
                           )
                         ),
-                        barClass: "flex-[3] bg-[#D4AF37]",
-                        dotClass: "bg-[#D4AF37]",
-                        cadence: `${allBills.length} utility accounts`,
+                        barClass: "flex-[3] bg-purple-500",
+                        dotClass: "bg-purple-400",
+                        cadence: `${allBills.length} accounts`,
                       },
                       {
                         id: "RECURRING",
-                        label: "Recurring Bills & Mandates",
+                        label: "Subscriptions",
                         amountMinor: recurringTotalMinor,
                         sharePct: Math.max(
                           5,
@@ -8079,13 +7678,13 @@ export function App() {
                             (recurringTotalMinor / allocationTotalBase) * 100
                           )
                         ),
-                        barClass: "flex-[2] bg-emerald-400",
-                        dotClass: "bg-emerald-400",
-                        cadence: `${allSubscriptions.length} active cycles`,
+                        barClass: "flex-[2] bg-fuchsia-400",
+                        dotClass: "bg-fuchsia-400",
+                        cadence: `${allSubscriptions.length} cycles`,
                       },
                       {
                         id: "GROCERIES",
-                        label: "Culinary & Grocery Provisioning",
+                        label: "Pantry & Fresh",
                         amountMinor: groceriesOutflowMinor,
                         sharePct: Math.max(
                           5,
@@ -8093,13 +7692,13 @@ export function App() {
                             (groceriesOutflowMinor / allocationTotalBase) * 100
                           )
                         ),
-                        barClass: "flex-[2] bg-teal-300",
-                        dotClass: "bg-teal-300",
-                        cadence: "Pantry & fresh harvest",
+                        barClass: "flex-[2] bg-violet-300",
+                        dotClass: "bg-violet-300",
+                        cadence: "Culinary spend",
                       },
                       {
                         id: "HOUSEHOLD_SUPPLIES",
-                        label: "Household & Maintenance Spend",
+                        label: "Operations",
                         amountMinor:
                           generalHouseholdOutflowMinor +
                           maintenanceOutflowMinor,
@@ -8112,9 +7711,9 @@ export function App() {
                               100
                           )
                         ),
-                        barClass: "flex-[3] bg-stone-300",
-                        dotClass: "bg-stone-300",
-                        cadence: `${allExpenses.length} logged vouchers`,
+                        barClass: "flex-[3] bg-purple-900",
+                        dotClass: "bg-purple-700",
+                        cadence: `${allExpenses.length} vouchers`,
                       },
                     ];
 
@@ -8136,33 +7735,32 @@ export function App() {
                         )
                       );
 
-                    // Unified Payment History & Expenditure rows combining expenses and paid utility bills
                     const unifiedExpenditureRows = [
                       ...allExpenses.map((exp: any) => ({
                         id: exp.id,
                         entryType: "EXPENSE",
                         merchant: exp.merchant_name,
                         category: exp.category || "HOUSEHOLD_SUPPLIES",
-                        description: exp.description || "Household expenditure",
+                        description: exp.description || "Household spend",
                         date: exp.incurred_on || "2026-09-28",
                         paymentMethod: exp.payment_method || "UPI",
                         isRecurring: Boolean(exp.is_recurring),
                         amountMinor: Number(exp.amount_minor || 0),
-                        statusLabel: "Settled & Recorded",
+                        statusLabel: "Settled",
                       })),
                       ...paidBills.map((bill: any) => ({
                         id: `paid-bill-${bill.id}`,
                         entryType: "UTILITY_PAYMENT",
                         merchant: bill.provider_name,
                         category: `UTILITY_${bill.utility_type}`,
-                        description: `Utility Bill Payment · Account #${bill.consumer_account_number}`,
+                        description: `Account #${bill.consumer_account_number}`,
                         date: bill.paid_at
                           ? String(bill.paid_at).slice(0, 10)
                           : bill.due_date,
-                        paymentMethod: "Approved Gate / BBPS",
+                        paymentMethod: "BBPS Gate",
                         isRecurring: true,
                         amountMinor: Number(bill.amount_due_minor || 0),
-                        statusLabel: "Paid Utility Bill",
+                        statusLabel: "Paid Bill",
                       })),
                     ]
                       .filter((row) => {
@@ -8199,7 +7797,6 @@ export function App() {
                         )
                       );
 
-                    // Payment method breakdown for spending summary
                     const upiTotalMinor = unifiedExpenditureRows
                       .filter((r) =>
                         String(r.paymentMethod).toUpperCase().includes("UPI")
@@ -8213,46 +7810,47 @@ export function App() {
                       ) - upiTotalMinor
                     );
 
+                    const activeAlertsCount =
+                      pendingBills.length +
+                      allSubscriptions.filter((s: any) => s.is_active).length +
+                      allFinanceReminders.filter(
+                        (r: any) => r.status !== "COMPLETED"
+                      ).length;
+
                     return (
                       <>
-                        {/* SECTION 1: SC MODERN PRIVATE WEALTH MANAGEMENT HERO CONSOLE */}
-                        <div className="relative overflow-hidden rounded-3xl border border-[#1E2E28] bg-[#0A1411] text-stone-100 shadow-xl">
-                          {/* Subtle Private-Banking Champagne & Emerald Radial Lighting */}
+                        {/* SECTION 1: PURPLE & BLACK TREASURY ANALYTICS TERMINAL */}
+                        <div className="relative overflow-hidden rounded-3xl border border-purple-500/25 bg-[#080510] text-white shadow-2xl">
                           <div
                             aria-hidden="true"
-                            className="pointer-events-none absolute -top-32 -right-24 h-96 w-96 rounded-full bg-[#D4AF37]/10 blur-3xl"
+                            className="pointer-events-none absolute -top-36 -right-24 h-96 w-96 rounded-full bg-purple-600/20 blur-3xl"
                           />
                           <div
                             aria-hidden="true"
-                            className="pointer-events-none absolute -bottom-32 left-1/4 h-80 w-80 rounded-full bg-emerald-500/10 blur-3xl"
+                            className="pointer-events-none absolute -bottom-32 left-1/4 h-80 w-80 rounded-full bg-fuchsia-600/15 blur-3xl"
                           />
 
-                          {/* Top Private Client Navigation & Action Bar */}
-                          <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 border-b border-white/10 px-6 py-4 lg:px-10">
-                            <div className="flex items-center gap-3.5">
-                              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/15 font-serif text-sm font-bold tracking-wider text-[#E5C76B]">
-                                SC
+                          {/* Top Command Bar */}
+                          <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 border-b border-purple-500/15 bg-[#0D071B]/90 px-6 py-4 lg:px-10">
+                            <div className="flex items-center gap-3">
+                              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-purple-400/40 bg-purple-500/15 text-purple-300">
+                                <Wallet className="h-5 w-5" />
                               </div>
                               <div>
-                                <div className="flex flex-wrap items-center gap-2 text-xs text-[#E5C76B]">
-                                  <span className="font-semibold tracking-wide">
-                                    SC Private Wealth & Household Treasury
+                                <div className="flex items-center gap-2 text-xs text-purple-300">
+                                  <span className="font-semibold tracking-wider uppercase">
+                                    Household Treasury & Analytics
                                   </span>
-                                  <span
-                                    aria-hidden="true"
-                                    className="text-stone-500"
-                                  >
-                                    ·
-                                  </span>
-                                  <span className="text-stone-400">
-                                    Tare Family Office Mandate
+                                  <span aria-hidden="true">·</span>
+                                  <span className="text-purple-300/70">
+                                    Oct 2026 Cycle
                                   </span>
                                 </div>
-                                <p className="mt-0.5 text-[11px] text-stone-400">
-                                  Bills & utilities · Household expenditure ·
-                                  Budget governance · Payment history · Due
-                                  dates & recurring bills · Financial reminders
-                                </p>
+                                <div className="text-[11px] text-slate-400">
+                                  {allBills.length} Utility Accounts ·{" "}
+                                  {allSubscriptions.length} Mandates ·{" "}
+                                  {unifiedExpenditureRows.length} Vouchers
+                                </div>
                               </div>
                             </div>
 
@@ -8263,12 +7861,12 @@ export function App() {
                                   setShowAddExpenseDrawer((prev) => !prev);
                                   setShowAddFinanceReminderDrawer(false);
                                 }}
-                                className="inline-flex items-center gap-1.5 rounded-xl bg-[#D4AF37] px-4 py-2 text-xs font-semibold text-slate-950 transition-colors hover:bg-[#E5C76B]"
+                                className="inline-flex items-center gap-1.5 rounded-xl bg-purple-500 px-4 py-2 text-xs font-semibold text-slate-950 transition-colors hover:bg-purple-400"
                               >
                                 <Plus className="h-3.5 w-3.5" />
                                 {showAddExpenseDrawer
-                                  ? "Close Expense Entry"
-                                  : "Record Expenditure"}
+                                  ? "Close Form"
+                                  : "Log Spend"}
                               </button>
 
                               <button
@@ -8279,12 +7877,12 @@ export function App() {
                                   );
                                   setShowAddExpenseDrawer(false);
                                 }}
-                                className="inline-flex items-center gap-1.5 rounded-xl border border-white/15 bg-white/5 px-3.5 py-2 text-xs font-semibold text-stone-200 transition-colors hover:bg-white/10"
+                                className="inline-flex items-center gap-1.5 rounded-xl border border-purple-500/30 bg-purple-950/50 px-3.5 py-2 text-xs font-semibold text-purple-200 transition-colors hover:bg-purple-900/60"
                               >
-                                <Bell className="h-3.5 w-3.5 text-[#E5C76B]" />
+                                <Bell className="h-3.5 w-3.5 text-purple-400" />
                                 {showAddFinanceReminderDrawer
-                                  ? "Close Reminder"
-                                  : "Set Financial Alert"}
+                                  ? "Close Alert"
+                                  : "+ Alert"}
                               </button>
 
                               <button
@@ -8298,10 +7896,10 @@ export function App() {
                                   }
                                   setActiveView("documents");
                                 }}
-                                className="inline-flex items-center gap-1.5 rounded-xl border border-white/15 bg-white/5 px-3.5 py-2 text-xs font-semibold text-stone-200 transition-colors hover:bg-white/10"
+                                className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3.5 py-2 text-xs font-semibold text-slate-200 transition-colors hover:bg-white/10"
                               >
-                                <Upload className="h-3.5 w-3.5 text-emerald-400" />
-                                Ingest Bill / Receipt
+                                <Upload className="h-3.5 w-3.5 text-purple-400" />
+                                Scan Bill
                               </button>
 
                               <button
@@ -8312,46 +7910,45 @@ export function App() {
                                     "Summarize our pending utility bills, household expenses, monthly budget, recurring bills, payment history, and financial reminders."
                                   );
                                 }}
-                                className="inline-flex items-center gap-1.5 rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3.5 py-2 text-xs font-semibold text-[#E5C76B] transition-colors hover:bg-[#D4AF37]/20"
+                                className="inline-flex items-center gap-1.5 rounded-xl border border-purple-400/35 bg-purple-500/10 px-3.5 py-2 text-xs font-semibold text-purple-300 transition-colors hover:bg-purple-500/20"
                               >
                                 <Sparkles className="h-3.5 w-3.5" />
-                                Consult Finance Agent
+                                AI Audit
                               </button>
                             </div>
                           </div>
 
-                          {/* Collapsible Private Ledger Expenditure Drawer */}
+                          {/* Collapsible Log Spend Drawer */}
                           {showAddExpenseDrawer && (
                             <form
                               onSubmit={handleAddExpense}
-                              className="relative z-10 border-b border-white/10 bg-[#0F1D19] px-6 py-5 lg:px-10"
+                              className="relative z-10 border-b border-purple-500/20 bg-[#120924] px-6 py-4 lg:px-10"
                             >
-                              <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-xs">
-                                <span className="font-serif text-sm font-normal text-[#E5C76B]">
-                                  Log Household Expenditure & Payment Voucher
+                              <div className="mb-2.5 flex items-center justify-between text-xs">
+                                <span className="font-semibold text-purple-300">
+                                  New Expense Voucher
                                 </span>
-                                <span className="text-stone-400">
-                                  Updates monthly budget utilization, spending
-                                  summaries, and payment history ledger
+                                <span className="text-slate-400">
+                                  Instant ledger update
                                 </span>
                               </div>
-                              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-6">
+                              <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-6">
                                 <input
                                   type="text"
                                   required
-                                  placeholder="Merchant / Payee (e.g., Sahyadri Organic)"
+                                  placeholder="Merchant / Payee"
                                   value={expenseMerchant}
                                   onChange={(e) =>
                                     setExpenseMerchant(e.target.value)
                                   }
-                                  className="rounded-xl border border-white/15 bg-black/40 px-3 py-2 text-xs text-white placeholder:text-stone-500 lg:col-span-2"
+                                  className="rounded-xl border border-purple-500/30 bg-black/50 px-3 py-2 text-xs text-white placeholder:text-slate-500 lg:col-span-2"
                                 />
                                 <select
                                   value={expenseCategory}
                                   onChange={(e) =>
                                     setExpenseCategory(e.target.value)
                                   }
-                                  className="rounded-xl border border-white/15 bg-[#0A1411] px-3 py-2 text-xs text-white"
+                                  className="rounded-xl border border-purple-500/30 bg-[#080510] px-3 py-2 text-xs text-white"
                                 >
                                   <option value="HOUSEHOLD_SUPPLIES">
                                     Household Supplies
@@ -8374,7 +7971,7 @@ export function App() {
                                   onChange={(e) =>
                                     setExpensePaymentMethod(e.target.value)
                                   }
-                                  className="rounded-xl border border-white/15 bg-[#0A1411] px-3 py-2 text-xs text-white"
+                                  className="rounded-xl border border-purple-500/30 bg-[#080510] px-3 py-2 text-xs text-white"
                                 >
                                   <option value="UPI">UPI Instant</option>
                                   <option value="HDFC Infinia Credit">
@@ -8393,24 +7990,24 @@ export function App() {
                                   onChange={(e) =>
                                     setExpenseAmountInr(e.target.value)
                                   }
-                                  className="rounded-xl border border-white/15 bg-black/40 px-3 py-2 font-mono text-xs text-white tabular-nums placeholder:text-stone-500"
+                                  className="rounded-xl border border-purple-500/30 bg-black/50 px-3 py-2 font-mono text-xs text-white tabular-nums placeholder:text-slate-500"
                                 />
                                 <button
                                   type="submit"
-                                  className="rounded-xl bg-[#D4AF37] px-4 py-2 text-xs font-semibold text-slate-950 hover:bg-[#E5C76B]"
+                                  className="rounded-xl bg-purple-500 px-4 py-2 text-xs font-semibold text-slate-950 hover:bg-purple-400"
                                 >
-                                  Post to Ledger
+                                  Post Spend
                                 </button>
                               </div>
-                              <div className="mt-2.5">
+                              <div className="mt-2">
                                 <input
                                   type="text"
-                                  placeholder="Expenditure memorandum / invoice reference note"
+                                  placeholder="Short note or invoice reference"
                                   value={expenseDesc}
                                   onChange={(e) =>
                                     setExpenseDesc(e.target.value)
                                   }
-                                  className="w-full rounded-xl border border-white/15 bg-black/40 px-3 py-1.5 text-xs text-stone-200 placeholder:text-stone-500"
+                                  className="w-full rounded-xl border border-purple-500/25 bg-black/40 px-3 py-1.5 text-xs text-slate-200 placeholder:text-slate-500"
                                 />
                               </div>
                             </form>
@@ -8420,28 +8017,26 @@ export function App() {
                           {showAddFinanceReminderDrawer && (
                             <form
                               onSubmit={handleAddFinanceReminder}
-                              className="relative z-10 border-b border-white/10 bg-[#0F1D19] px-6 py-5 lg:px-10"
+                              className="relative z-10 border-b border-purple-500/20 bg-[#120924] px-6 py-4 lg:px-10"
                             >
-                              <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-xs">
-                                <span className="font-serif text-sm font-normal text-[#E5C76B]">
-                                  Schedule Financial Due-Date Alert or Bill
-                                  Reminder
+                              <div className="mb-2.5 flex items-center justify-between text-xs">
+                                <span className="font-semibold text-purple-300">
+                                  Schedule Bill or Treasury Alert
                                 </span>
-                                <span className="text-stone-400">
-                                  Synchronizes with HomeIQ Proactive Engine &
-                                  Financial Reminders
+                                <span className="text-slate-400">
+                                  Due-date notification
                                 </span>
                               </div>
-                              <div className="grid grid-cols-1 gap-3 sm:grid-cols-4">
+                              <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-4">
                                 <input
                                   type="text"
                                   required
-                                  placeholder="Alert title (e.g., MSEDCL Bill Due-Date Verification)"
+                                  placeholder="Alert title (e.g., MSEDCL Tariff Check)"
                                   value={financeReminderTitle}
                                   onChange={(e) =>
                                     setFinanceReminderTitle(e.target.value)
                                   }
-                                  className="rounded-xl border border-white/15 bg-black/40 px-3 py-2 text-xs text-white placeholder:text-stone-500 sm:col-span-2"
+                                  className="rounded-xl border border-purple-500/30 bg-black/50 px-3 py-2 text-xs text-white placeholder:text-slate-500 sm:col-span-2"
                                 />
                                 <input
                                   type="date"
@@ -8450,119 +8045,124 @@ export function App() {
                                   onChange={(e) =>
                                     setFinanceReminderDueDate(e.target.value)
                                   }
-                                  className="rounded-xl border border-white/15 bg-black/40 px-3 py-2 font-mono text-xs text-white tabular-nums"
+                                  className="rounded-xl border border-purple-500/30 bg-black/50 px-3 py-2 font-mono text-xs text-white tabular-nums"
                                 />
                                 <button
                                   type="submit"
-                                  className="rounded-xl bg-[#D4AF37] px-4 py-2 text-xs font-semibold text-slate-950 hover:bg-[#E5C76B]"
+                                  className="rounded-xl bg-purple-500 px-4 py-2 text-xs font-semibold text-slate-950 hover:bg-purple-400"
                                 >
-                                  Save Financial Alert
+                                  Save Alert
                                 </button>
-                              </div>
-                              <div className="mt-2.5">
-                                <input
-                                  type="text"
-                                  value={financeReminderDesc}
-                                  onChange={(e) =>
-                                    setFinanceReminderDesc(e.target.value)
-                                  }
-                                  placeholder="Instructions or account details"
-                                  className="w-full rounded-xl border border-white/15 bg-black/40 px-3 py-1.5 text-xs text-stone-200 placeholder:text-stone-500"
-                                />
                               </div>
                             </form>
                           )}
 
-                          {/* Main 12-Column SC Private Wealth Hero Split */}
-                          <div className="relative z-10 grid grid-cols-1 gap-8 px-6 py-8 lg:grid-cols-12 lg:px-10 lg:py-10">
-                            {/* Left 7 Columns: Monthly Budget Governance & Capital Allocation */}
+                          {/* Main 12-Column Analytics Hero Split */}
+                          <div className="relative z-10 grid grid-cols-1 gap-8 px-6 py-8 lg:grid-cols-12 lg:px-10">
+                            {/* Left 7 Columns: Cashflow Velocity Chart + Allocation Bar */}
                             <div className="flex flex-col justify-between space-y-6 lg:col-span-7">
-                              <div className="space-y-2">
-                                <div className="flex flex-wrap items-center gap-2 text-xs text-[#E5C76B]">
-                                  <span>
-                                    01. Monthly Capital Allocation & Budget
-                                    Governance
-                                  </span>
-                                  <span aria-hidden="true">·</span>
-                                  <span className="text-stone-400">
-                                    FY 2026–27 · October Cycle
-                                  </span>
-                                </div>
-                                <h1 className="max-w-2xl font-serif text-3xl leading-tight font-normal tracking-tight text-white sm:text-4xl">
-                                  Household Liquidity, Budget Discipline &
-                                  Outflow Ledgers
-                                </h1>
-                                <p className="max-w-xl text-xs leading-relaxed text-stone-300 sm:text-sm">
-                                  Real-time treasury visibility across utility
-                                  tariffs, recurring household mandates, daily
-                                  expenditure, and owner-authorized bill
-                                  disbursements.
-                                </p>
-                              </div>
-
-                              {/* 3-Column Private Banking Key Balance Strip */}
-                              <div className="grid grid-cols-1 gap-6 border-y border-white/10 py-5 sm:grid-cols-3">
+                              <div className="flex flex-wrap items-end justify-between gap-4">
                                 <div>
-                                  <div className="text-xs text-stone-400">
-                                    Monthly Household Budget
+                                  <div className="text-xs font-semibold tracking-wider text-purple-400 uppercase">
+                                    Monthly Outflow Velocity
                                   </div>
-                                  <div className="mt-1 font-mono text-2xl font-semibold tabular-nums text-white">
-                                    {formatINR(budgetMinor)}
-                                  </div>
-                                  <div className="mt-1 text-[11px] text-stone-400">
-                                    Target monthly ceiling
-                                  </div>
-                                </div>
-
-                                <div>
-                                  <div className="text-xs text-stone-400">
-                                    Recorded Spend & Outflows
-                                  </div>
-                                  <div className="mt-1 font-mono text-2xl font-semibold tabular-nums text-[#E5C76B]">
+                                  <div className="mt-1 font-mono text-4xl font-bold tracking-tight tabular-nums text-white sm:text-5xl">
                                     {formatINR(effectiveSpendMinor)}
                                   </div>
-                                  <div className="mt-1 text-[11px] text-emerald-400">
-                                    {utilizationPct}% of monthly budget utilized
+                                  <div className="mt-1 flex items-center gap-2 text-xs text-slate-400">
+                                    <span>
+                                      Ceiling {formatINR(budgetMinor)}
+                                    </span>
+                                    <span aria-hidden="true">·</span>
+                                    <span className="font-semibold text-purple-300">
+                                      {utilizationPct}% Utilized
+                                    </span>
+                                    <span aria-hidden="true">·</span>
+                                    <span className="text-emerald-400">
+                                      {formatINR(remainingBudgetMinor)} Headroom
+                                    </span>
                                   </div>
                                 </div>
 
-                                <div>
-                                  <div className="text-xs text-stone-400">
-                                    Unallocated Reserve Cushion
+                                {/* Mini 6-Month Cashflow Curve SVG */}
+                                <div className="rounded-2xl border border-purple-500/20 bg-[#120A22] px-4 py-3">
+                                  <div className="flex items-center justify-between gap-6 text-[11px] text-slate-400">
+                                    <span>6-Mo Outflow Trend</span>
+                                    <span className="font-mono font-semibold text-purple-300">
+                                      -4.2% vs Avg
+                                    </span>
                                   </div>
-                                  <div className="mt-1 font-mono text-2xl font-semibold tabular-nums text-emerald-400">
-                                    {formatINR(remainingBudgetMinor)}
-                                  </div>
-                                  <div className="mt-1 text-[11px] text-stone-400">
-                                    {100 - utilizationPct}% liquidity headroom
-                                  </div>
+                                  <svg
+                                    viewBox="0 0 180 44"
+                                    className="mt-1.5 h-11 w-44 overflow-visible"
+                                  >
+                                    <defs>
+                                      <linearGradient
+                                        id="purpleSpendGrad"
+                                        x1="0"
+                                        y1="0"
+                                        x2="0"
+                                        y2="1"
+                                      >
+                                        <stop
+                                          offset="0%"
+                                          stopColor="#A855F7"
+                                          stopOpacity="0.45"
+                                        />
+                                        <stop
+                                          offset="100%"
+                                          stopColor="#A855F7"
+                                          stopOpacity="0.0"
+                                        />
+                                      </linearGradient>
+                                    </defs>
+                                    <path
+                                      d="M 4 32 Q 32 18, 60 24 T 118 14 T 176 20 L 176 42 L 4 42 Z"
+                                      fill="url(#purpleSpendGrad)"
+                                    />
+                                    <path
+                                      d="M 4 32 Q 32 18, 60 24 T 118 14 T 176 20"
+                                      fill="none"
+                                      stroke="#C084FC"
+                                      strokeWidth="2"
+                                    />
+                                    <circle
+                                      cx="118"
+                                      cy="14"
+                                      r="3"
+                                      fill="#A855F7"
+                                    />
+                                    <circle
+                                      cx="176"
+                                      cy="20"
+                                      r="3.5"
+                                      fill="#F0ABFC"
+                                    />
+                                  </svg>
                                 </div>
                               </div>
 
-                              {/* Multi-Segment Wealth Allocation Bar */}
-                              <div className="space-y-3">
+                              {/* Multi-Segment Capital Allocation Bar */}
+                              <div className="space-y-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
                                 <div className="flex items-center justify-between text-xs">
-                                  <span className="font-medium text-stone-300">
-                                    Expenditure & Obligation Distribution
+                                  <span className="font-medium text-purple-200">
+                                    Capital Allocation Split
                                   </span>
-                                  <span className="font-mono text-[11px] tabular-nums text-stone-400">
-                                    Committed + Spent:{" "}
+                                  <span className="font-mono text-[11px] tabular-nums text-slate-400">
                                     {formatINR(
                                       utilitiesOutflowMinor +
                                         recurringTotalMinor +
                                         recordedExpensesTotalMinor
-                                    )}
+                                    )}{" "}
+                                    Tracked
                                   </span>
                                 </div>
 
-                                <div className="flex h-3 w-full gap-1 overflow-hidden rounded-full bg-white/10 p-0.5">
+                                <div className="flex h-2.5 w-full gap-1 overflow-hidden rounded-full bg-white/10 p-0.5">
                                   {wealthAllocations.map((seg) => (
                                     <div
                                       key={seg.id}
                                       className={`h-full first:rounded-l-full last:rounded-r-full ${seg.barClass}`}
-                                      title={`${seg.label}: ${formatINR(
-                                        seg.amountMinor
-                                      )} (${seg.sharePct}%)`}
                                     />
                                   ))}
                                 </div>
@@ -8571,21 +8171,21 @@ export function App() {
                                   {wealthAllocations.map((seg) => (
                                     <div
                                       key={seg.id}
-                                      className="border-l border-white/15 pl-3 text-xs"
+                                      className="border-l border-purple-500/25 pl-2.5"
                                     >
-                                      <div className="flex items-center gap-1.5 text-stone-300">
+                                      <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
                                         <span
                                           className={`h-2 w-2 rounded-full ${seg.dotClass}`}
                                         />
-                                        <span className="truncate font-medium">
+                                        <span className="truncate">
                                           {seg.label}
                                         </span>
                                       </div>
-                                      <div className="mt-1 font-mono text-sm font-semibold tabular-nums text-white">
+                                      <div className="mt-0.5 font-mono text-sm font-semibold tabular-nums text-white">
                                         {formatINR(seg.amountMinor)}
                                       </div>
-                                      <div className="text-[11px] text-stone-400">
-                                        {seg.cadence}
+                                      <div className="text-[10px] text-purple-300/70">
+                                        {seg.sharePct}% · {seg.cadence}
                                       </div>
                                     </div>
                                   ))}
@@ -8593,193 +8193,181 @@ export function App() {
                               </div>
                             </div>
 
-                            {/* Right 5 Columns: Priority Utility Obligation Spotlight & Approval Gate Dispatch */}
-                            <div className="flex flex-col justify-between rounded-2xl border border-white/15 bg-[#101F1B] p-6 lg:col-span-5">
+                            {/* Right 5 Columns: Priority Utility Spotlight Card */}
+                            <div className="flex flex-col justify-between rounded-2xl border border-purple-500/30 bg-gradient-to-br from-[#160B2B] to-[#0B0616] p-6 lg:col-span-5">
                               {primaryPendingBill ? (
-                                <div className="space-y-5">
-                                  <div className="flex items-start justify-between gap-3 border-b border-white/10 pb-4">
+                                <div className="space-y-4">
+                                  <div className="flex items-start justify-between gap-3">
                                     <div>
-                                      <div className="text-xs text-[#E5C76B]">
-                                        Priority Utility Obligation · Due{" "}
-                                        {primaryPendingBill.due_date}
+                                      <div className="text-[11px] font-semibold tracking-wider text-purple-300 uppercase">
+                                        Priority Utility Due
                                       </div>
-                                      <h2 className="mt-1 font-serif text-xl font-normal text-white">
+                                      <h2 className="mt-1 text-lg font-semibold text-white">
                                         {primaryPendingBill.provider_name}
                                       </h2>
-                                      <div className="mt-0.5 text-xs text-stone-400">
-                                        {primaryPendingBill.utility_type} ·
-                                        Consumer Account #
+                                      <div className="text-xs text-slate-400">
+                                        {primaryPendingBill.utility_type} · #
                                         {
                                           primaryPendingBill.consumer_account_number
                                         }
                                       </div>
                                     </div>
                                     <div className="text-right">
-                                      <div className="font-mono text-2xl font-semibold tabular-nums text-white">
+                                      <div className="font-mono text-2xl font-bold tabular-nums text-purple-300">
                                         {formatINR(
                                           primaryPendingBill.amount_due_minor
                                         )}
                                       </div>
-                                      <div className="mt-0.5 text-[11px] font-medium text-amber-400">
-                                        {primaryPendingBill.status === "PENDING"
-                                          ? "Awaiting Settlement"
-                                          : "Settled"}
+                                      <div className="text-[11px] text-amber-400">
+                                        Due {primaryPendingBill.due_date}
                                       </div>
                                     </div>
                                   </div>
 
-                                  <div className="grid grid-cols-2 gap-4 text-xs">
+                                  <div className="grid grid-cols-2 gap-3 rounded-xl border border-white/10 bg-black/30 p-3 text-xs">
                                     <div>
-                                      <div className="text-stone-400">
-                                        Billing Cycle Window
+                                      <div className="text-[10px] text-slate-400 uppercase">
+                                        Metered Usage
                                       </div>
-                                      <div className="mt-0.5 font-mono text-stone-200 tabular-nums">
-                                        {primaryPendingBill.billing_period_start ||
-                                          "2026-08-16"}{" "}
-                                        →{" "}
-                                        {primaryPendingBill.billing_period_end ||
-                                          "2026-09-15"}
-                                      </div>
-                                    </div>
-                                    <div>
-                                      <div className="text-stone-400">
-                                        Metered Consumption
-                                      </div>
-                                      <div className="mt-0.5 font-mono text-stone-200 tabular-nums">
+                                      <div className="mt-0.5 font-mono font-semibold text-white">
                                         {primaryPendingBill.consumption_units ||
                                           "368.4"}{" "}
                                         {primaryPendingBill.consumption_unit_label ||
                                           "kWh"}
                                       </div>
                                     </div>
+                                    <div>
+                                      <div className="text-[10px] text-slate-400 uppercase">
+                                        Gate Status
+                                      </div>
+                                      <div className="mt-0.5 font-semibold text-purple-300">
+                                        {primaryPendingBill.status === "PENDING"
+                                          ? "Awaiting Approval"
+                                          : "Settled"}
+                                      </div>
+                                    </div>
                                   </div>
 
                                   {primaryPendingBill.status === "PENDING" ? (
-                                    <div className="pt-1">
-                                      <button
-                                        type="button"
-                                        onClick={() =>
-                                          handleRequestBillPayment(
-                                            primaryPendingBill.provider_name
-                                          )
-                                        }
-                                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#D4AF37] px-4 py-2.5 text-xs font-semibold text-slate-950 transition-colors hover:bg-[#E5C76B]"
-                                      >
-                                        <CreditCard className="h-4 w-4" />
-                                        Authorize Payment via Approval Gate (
-                                        {formatINR(
-                                          primaryPendingBill.amount_due_minor
-                                        )}
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        handleRequestBillPayment(
+                                          primaryPendingBill.provider_name
                                         )
-                                      </button>
-                                      <p className="mt-2 text-center text-[11px] text-stone-400">
-                                        Consequential disbursement routed
-                                        through Owner Approval Gate
-                                      </p>
-                                    </div>
+                                      }
+                                      className="flex w-full items-center justify-center gap-2 rounded-xl bg-purple-500 px-4 py-2.5 text-xs font-semibold text-slate-950 transition-colors hover:bg-purple-400"
+                                    >
+                                      <CreditCard className="h-4 w-4" />
+                                      Authorize Payment ·{" "}
+                                      {formatINR(
+                                        primaryPendingBill.amount_due_minor
+                                      )}{" "}
+                                      →
+                                    </button>
                                   ) : (
-                                    <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-2.5 text-xs text-emerald-300">
-                                      All utility bills in this cycle have been
-                                      settled and verified.
+                                    <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-center text-xs text-emerald-300">
+                                      All cycle bills settled
                                     </div>
                                   )}
                                 </div>
                               ) : null}
 
-                              {/* Bottom Treasury Pulse Footer inside Right Card */}
-                              <div className="mt-6 grid grid-cols-2 gap-4 border-t border-white/10 pt-4 text-xs">
+                              <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-3.5 text-xs">
                                 <div>
-                                  <div className="text-stone-400">
-                                    Recurring Monthly Mandates
-                                  </div>
-                                  <div className="mt-0.5 font-mono text-sm font-semibold tabular-nums text-white">
-                                    {formatINR(recurringTotalMinor)}{" "}
-                                    <span className="text-[11px] font-normal text-stone-400">
-                                      ({allSubscriptions.length} active)
-                                    </span>
-                                  </div>
+                                  <span className="text-slate-400">
+                                    UPI Outflow:
+                                  </span>{" "}
+                                  <span className="font-mono font-semibold text-white">
+                                    {formatINR(upiTotalMinor)}
+                                  </span>
                                 </div>
                                 <div>
-                                  <div className="text-stone-400">
-                                    Settled Payments & Vouchers
-                                  </div>
-                                  <div className="mt-0.5 font-mono text-sm font-semibold tabular-nums text-emerald-400">
-                                    {unifiedExpenditureRows.length} entries
-                                  </div>
+                                  <span className="text-slate-400">
+                                    Card/BBPS:
+                                  </span>{" "}
+                                  <span className="font-mono font-semibold text-purple-300">
+                                    {formatINR(cardAndBankMinor)}
+                                  </span>
                                 </div>
                               </div>
                             </div>
                           </div>
                         </div>
 
-                        {/* SECTION 2: 4-COLUMN EXECUTIVE WEALTH & EXPENSE SUMMARY STRIP */}
+                        {/* SECTION 2: 4-CARD ULTRA-CLEAN KPI PULSE (Title → Value → Short Context → Action) */}
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-                            <div className="text-xs font-medium text-slate-500">
-                              01. Monthly Budget & Spend
+                          <div className="rounded-2xl border border-purple-500/20 bg-[#0D0818] p-5 text-white">
+                            <div className="text-xs text-purple-300/80">
+                              Monthly Spend
                             </div>
-                            <div className="mt-2 font-mono text-2xl font-semibold tabular-nums text-slate-900">
+                            <div className="mt-1.5 font-mono text-2xl font-bold tabular-nums">
                               {formatINR(effectiveSpendMinor)}
                             </div>
-                            <div className="mt-2 flex items-center justify-between border-t border-slate-100 pt-2.5 text-[11px] text-slate-500">
-                              <span>Ceiling: {formatINR(budgetMinor)}</span>
-                              <span className="font-mono font-semibold text-emerald-700">
-                                {utilizationPct}% utilized
-                              </span>
+                            <div className="mt-2 flex items-center justify-between border-t border-white/10 pt-2.5 text-[11px] text-slate-400">
+                              <span>{utilizationPct}% of budget</span>
+                              <button
+                                type="button"
+                                onClick={() => setShowAddExpenseDrawer(true)}
+                                className="font-semibold text-purple-300 hover:underline"
+                              >
+                                Log Spend →
+                              </button>
                             </div>
                           </div>
 
-                          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-                            <div className="text-xs font-medium text-slate-500">
-                              02. Bills, Utilities & Due Dates
+                          <div className="rounded-2xl border border-purple-500/20 bg-[#0D0818] p-5 text-white">
+                            <div className="text-xs text-purple-300/80">
+                              Utility Dues
                             </div>
-                            <div className="mt-2 font-mono text-2xl font-semibold tabular-nums text-slate-900">
+                            <div className="mt-1.5 font-mono text-2xl font-bold tabular-nums text-amber-300">
                               {formatINR(pendingBillsMinor)}
                             </div>
-                            <div className="mt-2 flex items-center justify-between border-t border-slate-100 pt-2.5 text-[11px] text-slate-500">
+                            <div className="mt-2 flex items-center justify-between border-t border-white/10 pt-2.5 text-[11px] text-slate-400">
                               <span>
-                                {pendingBills.length} Pending ·{" "}
-                                {paidBills.length} Paid
+                                {pendingBills.length} pending ·{" "}
+                                {paidBills.length} paid
                               </span>
-                              <span className="font-mono font-semibold text-amber-800">
-                                Due{" "}
-                                {primaryPendingBill?.due_date || "2026-10-12"}
-                              </span>
+                              {primaryPendingBill && (
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    handleRequestBillPayment(
+                                      primaryPendingBill.provider_name
+                                    )
+                                  }
+                                  className="font-semibold text-purple-300 hover:underline"
+                                >
+                                  Pay Now →
+                                </button>
+                              )}
                             </div>
                           </div>
 
-                          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-                            <div className="text-xs font-medium text-slate-500">
-                              03. Recurring Bills & Mandates
+                          <div className="rounded-2xl border border-purple-500/20 bg-[#0D0818] p-5 text-white">
+                            <div className="text-xs text-purple-300/80">
+                              Recurring Mandates
                             </div>
-                            <div className="mt-2 font-mono text-2xl font-semibold tabular-nums text-slate-900">
+                            <div className="mt-1.5 font-mono text-2xl font-bold tabular-nums">
                               {formatINR(recurringTotalMinor)}
                             </div>
-                            <div className="mt-2 flex items-center justify-between border-t border-slate-100 pt-2.5 text-[11px] text-slate-500">
+                            <div className="mt-2 flex items-center justify-between border-t border-white/10 pt-2.5 text-[11px] text-slate-400">
                               <span>
-                                {allSubscriptions.length} Active Cycle(s)
+                                {allSubscriptions.length} active cycles
                               </span>
-                              <span className="font-mono text-slate-700">
-                                Auto-Renewal Active
-                              </span>
+                              <span className="text-purple-300">Auto-Pay</span>
                             </div>
                           </div>
 
-                          <div className="rounded-2xl border border-slate-200 bg-white p-5">
-                            <div className="text-xs font-medium text-slate-500">
-                              04. Financial Reminders & Alerts
+                          <div className="rounded-2xl border border-purple-500/20 bg-[#0D0818] p-5 text-white">
+                            <div className="text-xs text-purple-300/80">
+                              Payment Alerts
                             </div>
-                            <div className="mt-2 font-mono text-2xl font-semibold tabular-nums text-slate-900">
-                              {pendingBills.length +
-                                allSubscriptions.filter((s: any) => s.is_active)
-                                  .length +
-                                allFinanceReminders.filter(
-                                  (r: any) => r.status !== "COMPLETED"
-                                ).length}{" "}
-                              Active
+                            <div className="mt-1.5 font-mono text-2xl font-bold tabular-nums text-purple-300">
+                              {activeAlertsCount} Active
                             </div>
-                            <div className="mt-2 flex items-center justify-between border-t border-slate-100 pt-2.5 text-[11px] text-slate-500">
-                              <span>Due-Date & Bill Alerts</span>
+                            <div className="mt-2 flex items-center justify-between border-t border-white/10 pt-2.5 text-[11px] text-slate-400">
+                              <span>Next due {primaryPendingBill?.due_date || "Oct 12"}</span>
                               <button
                                 type="button"
                                 onClick={() =>
@@ -8787,36 +8375,27 @@ export function App() {
                                     (prev) => !prev
                                   )
                                 }
-                                className="font-semibold text-slate-900 hover:underline"
+                                className="font-semibold text-purple-300 hover:underline"
                               >
-                                + Schedule Alert
+                                + Alert →
                               </button>
                             </div>
                           </div>
                         </div>
 
-                        {/* SECTION 3: 12-COLUMN SPLIT — BILLS, UTILITIES & RECURRING MANDATES (7 COLS) + FINANCIAL REMINDERS & SPENDING SUMMARY (5 COLS) */}
+                        {/* SECTION 3: 12-COLUMN SPLIT — UTILITY STATEMENTS & MANDATES (7 COLS) + ALERTS (5 COLS) */}
                         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-                          {/* Left 7 Columns: Utility Bills, Due Dates & Recurring Bills */}
-                          <div className="space-y-6 rounded-2xl border border-slate-200 bg-white p-6 lg:col-span-7">
-                            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
-                              <div>
-                                <h2 className="font-serif text-lg font-normal text-slate-900">
-                                  01. Utility Bills, Due Dates & Payment
-                                  Governance
-                                </h2>
-                                <p className="mt-0.5 text-xs text-slate-500">
-                                  Electricity, natural gas, and municipal
-                                  utility statements with due dates and payment
-                                  authorization.
-                                </p>
-                              </div>
+                          <div className="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 lg:col-span-7">
+                            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3.5">
+                              <h2 className="text-base font-bold text-slate-900">
+                                Utility Bills & Tariff Statements
+                              </h2>
 
                               <div className="flex items-center gap-1 rounded-xl bg-slate-100 p-1">
                                 {[
-                                  { id: "ALL", label: "All Bills" },
-                                  { id: "PENDING", label: "Pending Dues" },
-                                  { id: "PAID", label: "Paid History" },
+                                  { id: "ALL", label: "All" },
+                                  { id: "PENDING", label: "Pending" },
+                                  { id: "PAID", label: "Paid" },
                                 ].map((tab) => (
                                   <button
                                     key={tab.id}
@@ -8826,7 +8405,7 @@ export function App() {
                                     }
                                     className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition-colors ${
                                       financeBillStatusFilter === tab.id
-                                        ? "bg-white text-slate-900 shadow-xs"
+                                        ? "bg-[#0D0818] text-purple-300"
                                         : "text-slate-600 hover:text-slate-900"
                                     }`}
                                   >
@@ -8836,126 +8415,88 @@ export function App() {
                               </div>
                             </div>
 
-                            {/* Utility Bills List */}
-                            <div className="space-y-3">
-                              {filteredBillsList.length === 0 ? (
-                                <div className="rounded-xl border border-dashed border-slate-200 p-6 text-center text-xs text-slate-500">
-                                  No utility bills match the selected status
-                                  filter.
-                                </div>
-                              ) : (
-                                filteredBillsList.map((bill: any) => {
-                                  const isPaid = bill.status === "PAID";
-                                  return (
-                                    <div
-                                      key={bill.id}
-                                      className="flex flex-col justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50/40 p-4 text-xs sm:flex-row sm:items-center"
-                                    >
-                                      <div className="space-y-1">
-                                        <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
-                                          <span className="font-semibold text-slate-800">
-                                            {bill.utility_type}
-                                          </span>
-                                          <span aria-hidden="true">·</span>
-                                          <span className="font-mono">
-                                            Account #
-                                            {bill.consumer_account_number}
-                                          </span>
-                                          <span aria-hidden="true">·</span>
-                                          <span
-                                            className={
-                                              isPaid
-                                                ? "font-semibold text-emerald-700"
-                                                : "font-semibold text-amber-800"
-                                            }
-                                          >
-                                            {isPaid
-                                              ? `Paid${
-                                                  bill.paid_at
-                                                    ? ` on ${String(
-                                                        bill.paid_at
-                                                      ).slice(0, 10)}`
-                                                    : ""
-                                                }`
-                                              : `Pending · Due ${bill.due_date}`}
-                                          </span>
-                                        </div>
-                                        <div className="text-sm font-semibold text-slate-900">
-                                          {bill.provider_name}
-                                        </div>
-                                        <div className="text-[11px] text-slate-500">
-                                          Billing Period:{" "}
-                                          {bill.billing_period_start ||
-                                            "2026-08-16"}{" "}
-                                          to{" "}
-                                          {bill.billing_period_end ||
-                                            "2026-09-15"}
-                                          {bill.consumption_units
-                                            ? ` · Metered Usage: ${bill.consumption_units} ${
-                                                bill.consumption_unit_label ||
-                                                "units"
-                                              }`
-                                            : ""}
-                                        </div>
+                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                              {filteredBillsList.map((bill: any) => {
+                                const isPaid = bill.status === "PAID";
+                                return (
+                                  <div
+                                    key={bill.id}
+                                    className="flex flex-col justify-between rounded-xl border border-slate-200 bg-slate-50/50 p-4 text-xs"
+                                  >
+                                    <div>
+                                      <div className="flex items-center justify-between text-[11px] text-slate-500">
+                                        <span>{bill.utility_type}</span>
+                                        <span
+                                          className={
+                                            isPaid
+                                              ? "font-semibold text-emerald-700"
+                                              : "font-semibold text-amber-700"
+                                          }
+                                        >
+                                          {isPaid
+                                            ? "Paid"
+                                            : `Due ${bill.due_date}`}
+                                        </span>
                                       </div>
-
-                                      <div className="flex items-center justify-between gap-3 sm:flex-col sm:items-end">
-                                        <div className="font-mono text-base font-semibold tabular-nums text-slate-900">
-                                          {formatINR(bill.amount_due_minor)}
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                          {!isPaid && (
-                                            <button
-                                              type="button"
-                                              onClick={() =>
-                                                handleRequestBillPayment(
-                                                  bill.provider_name
-                                                )
-                                              }
-                                              className="rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-[#E5C76B] hover:bg-slate-800"
-                                            >
-                                              Pay Bill
-                                            </button>
-                                          )}
-                                          <button
-                                            type="button"
-                                            onClick={() => {
-                                              setActiveView("intelligence");
-                                              runAgentQueryText(
-                                                `What is the due date, consumption usage, and payment status for our ${bill.provider_name} (${bill.utility_type}) bill?`
-                                              );
-                                            }}
-                                            className="text-xs font-semibold text-slate-600 hover:text-slate-900 hover:underline"
-                                          >
-                                            Audit →
-                                          </button>
-                                        </div>
+                                      <div className="mt-1 text-sm font-bold text-slate-900">
+                                        {bill.provider_name}
+                                      </div>
+                                      <div className="mt-1 font-mono text-lg font-bold tabular-nums text-slate-900">
+                                        {formatINR(bill.amount_due_minor)}
                                       </div>
                                     </div>
-                                  );
-                                })
-                              )}
+
+                                    <div className="mt-3 flex items-center justify-between border-t border-slate-200/70 pt-2.5 text-[11px] text-slate-500">
+                                      <span>
+                                        #{bill.consumer_account_number}
+                                        {bill.consumption_units
+                                          ? ` · ${bill.consumption_units} ${bill.consumption_unit_label || "u"}`
+                                          : ""}
+                                      </span>
+                                      {!isPaid ? (
+                                        <button
+                                          type="button"
+                                          onClick={() =>
+                                            handleRequestBillPayment(
+                                              bill.provider_name
+                                            )
+                                          }
+                                          className="rounded-lg bg-[#0D0818] px-2.5 py-1 font-semibold text-purple-300 hover:bg-purple-950"
+                                        >
+                                          Pay →
+                                        </button>
+                                      ) : (
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            setActiveView("intelligence");
+                                            runAgentQueryText(
+                                              `Audit ${bill.provider_name} utility bill.`
+                                            );
+                                          }}
+                                          className="font-semibold text-purple-700 hover:underline"
+                                        >
+                                          Audit →
+                                        </button>
+                                      )}
+                                    </div>
+                                  </div>
+                                );
+                              })}
                             </div>
 
-                            {/* Recurring Bills & Active Subscriptions */}
-                            <div className="border-t border-slate-100 pt-5">
+                            {/* Recurring Subscriptions Compact Grid */}
+                            <div className="border-t border-slate-100 pt-4">
                               <div className="flex items-center justify-between">
-                                <div>
-                                  <h3 className="font-serif text-base font-normal text-slate-900">
-                                    02. Recurring Bills & Household Mandates
-                                  </h3>
-                                  <p className="mt-0.5 text-xs text-slate-500">
-                                    Standing monthly and annual household
-                                    commitments and renewal dates.
-                                  </p>
-                                </div>
-                                <span className="font-mono text-xs font-semibold tabular-nums text-slate-700">
-                                  Total: {formatINR(recurringTotalMinor)} /
-                                  cycle
+                                <h3 className="text-sm font-bold text-slate-900">
+                                  Recurring Mandates
+                                </h3>
+                                <span className="font-mono text-xs font-semibold text-purple-700">
+                                  {formatINR(recurringTotalMinor)} / cycle
                                 </span>
                               </div>
 
-                              <div className="mt-3 divide-y divide-slate-100 rounded-xl border border-slate-200">
+                              <div className="mt-3 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
                                 {allSubscriptions
                                   .filter((sub: any) =>
                                     matchesSearch(
@@ -8968,26 +8509,17 @@ export function App() {
                                   .map((sub: any) => (
                                     <div
                                       key={sub.id}
-                                      className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 text-xs"
+                                      className="rounded-xl border border-slate-200 p-3 text-xs"
                                     >
-                                      <div>
-                                        <div className="font-semibold text-slate-900">
-                                          {sub.service_name}
-                                        </div>
-                                        <div className="mt-0.5 text-[11px] text-slate-500">
-                                          {sub.vendor_name ||
-                                            "Standing Household Mandate"}{" "}
-                                          · {sub.billing_cycle} · Next Due:{" "}
-                                          <span className="font-mono text-slate-700">
-                                            {sub.next_renewal_date}
-                                          </span>
-                                          {sub.auto_renew
-                                            ? " · Auto-Debit Enabled"
-                                            : ""}
-                                        </div>
+                                      <div className="truncate font-semibold text-slate-900">
+                                        {sub.service_name}
                                       </div>
-                                      <div className="font-mono text-sm font-semibold tabular-nums text-slate-900">
+                                      <div className="mt-1 font-mono text-base font-bold tabular-nums text-slate-900">
                                         {formatINR(sub.amount_minor)}
+                                      </div>
+                                      <div className="mt-1 text-[11px] text-slate-500">
+                                        {sub.billing_cycle} ·{" "}
+                                        {sub.next_renewal_date}
                                       </div>
                                     </div>
                                   ))}
@@ -8995,226 +8527,111 @@ export function App() {
                             </div>
                           </div>
 
-                          {/* Right 5 Columns: Financial Reminders & Spending Summaries */}
-                          <div className="space-y-6 lg:col-span-5">
-                            {/* Financial Reminders & Due-Date Alerts Card */}
-                            <div className="rounded-2xl border border-slate-200 bg-white p-6">
-                              <div className="flex items-center justify-between border-b border-slate-100 pb-3.5">
-                                <div>
-                                  <h2 className="font-serif text-lg font-normal text-slate-900">
-                                    03. Financial Reminders & Due Dates
-                                  </h2>
-                                  <p className="mt-0.5 text-xs text-slate-500">
-                                    Upcoming utility bill deadlines, recurring
-                                    renewals, and custom treasury alerts.
-                                  </p>
-                                </div>
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    setShowAddFinanceReminderDrawer(
-                                      (prev) => !prev
-                                    )
-                                  }
-                                  className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-semibold text-slate-800 hover:bg-slate-100"
-                                >
-                                  + Alert
-                                </button>
-                              </div>
-
-                              <div className="mt-4 space-y-2.5">
-                                {/* Pending Utility Bill Due Alerts */}
-                                {pendingBills.map((b: any) => (
-                                  <div
-                                    key={`fin-rem-bill-${b.id}`}
-                                    className="flex items-center justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50/50 px-3.5 py-2.5 text-xs"
-                                  >
-                                    <div>
-                                      <div className="font-semibold text-slate-900">
-                                        Utility Bill Due: {b.provider_name}
-                                      </div>
-                                      <div className="mt-0.5 text-[11px] text-slate-600">
-                                        {b.utility_type} · Account #
-                                        {b.consumer_account_number} ·{" "}
-                                        <span className="font-mono font-semibold text-amber-900">
-                                          {formatINR(b.amount_due_minor)}
-                                        </span>
-                                      </div>
-                                    </div>
-                                    <div className="text-right">
-                                      <div className="font-mono text-[11px] font-semibold text-amber-900">
-                                        Due {b.due_date}
-                                      </div>
-                                      <button
-                                        type="button"
-                                        onClick={() =>
-                                          handleRequestBillPayment(
-                                            b.provider_name
-                                          )
-                                        }
-                                        className="mt-1 text-[11px] font-semibold text-slate-900 hover:underline"
-                                      >
-                                        Pay Now →
-                                      </button>
-                                    </div>
-                                  </div>
-                                ))}
-
-                                {/* Active Subscription Renewal Alerts */}
-                                {allSubscriptions
-                                  .filter((s: any) => s.is_active)
-                                  .map((s: any) => (
-                                    <div
-                                      key={`fin-rem-sub-${s.id}`}
-                                      className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50/60 px-3.5 py-2.5 text-xs"
-                                    >
-                                      <div>
-                                        <div className="font-semibold text-slate-900">
-                                          Recurring Renewal: {s.service_name}
-                                        </div>
-                                        <div className="mt-0.5 text-[11px] text-slate-500">
-                                          {s.billing_cycle} cycle ·{" "}
-                                          <span className="font-mono font-semibold text-slate-800">
-                                            {formatINR(s.amount_minor)}
-                                          </span>
-                                        </div>
-                                      </div>
-                                      <span className="font-mono text-[11px] text-slate-600">
-                                        Renews {s.next_renewal_date}
-                                      </span>
-                                    </div>
-                                  ))}
-
-                                {/* Persisted Custom Finance Reminders */}
-                                {allFinanceReminders.map((rem: any) => {
-                                  const isDone = rem.status === "COMPLETED";
-                                  return (
-                                    <div
-                                      key={rem.id}
-                                      className="flex items-start justify-between gap-3 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs"
-                                    >
-                                      <div>
-                                        <div
-                                          className={`font-semibold ${
-                                            isDone
-                                              ? "line-through text-slate-400"
-                                              : "text-slate-900"
-                                          }`}
-                                        >
-                                          {rem.title}
-                                        </div>
-                                        <div className="mt-0.5 text-[11px] text-slate-500">
-                                          {rem.description}
-                                        </div>
-                                        <div className="mt-1 font-mono text-[11px] text-slate-500">
-                                          Due:{" "}
-                                          {String(
-                                            rem.due_at || rem.due_date || ""
-                                          ).slice(0, 10)}
-                                        </div>
-                                      </div>
-                                      <button
-                                        type="button"
-                                        onClick={() =>
-                                          handleToggleReminderStatus(rem.id)
-                                        }
-                                        className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-semibold text-slate-700 hover:bg-slate-100"
-                                      >
-                                        {isDone ? "Reopen" : "Done"}
-                                      </button>
-                                    </div>
-                                  );
-                                })}
-                              </div>
+                          {/* Right 5 Columns: Due-Date Timeline & Alerts */}
+                          <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6 lg:col-span-5">
+                            <div className="flex items-center justify-between border-b border-slate-100 pb-3.5">
+                              <h2 className="text-base font-bold text-slate-900">
+                                Due-Date Timeline & Alerts
+                              </h2>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setShowAddFinanceReminderDrawer(
+                                    (prev) => !prev
+                                  )
+                                }
+                                className="rounded-lg bg-[#0D0818] px-2.5 py-1 text-xs font-semibold text-purple-300 hover:bg-purple-950"
+                              >
+                                + Alert
+                              </button>
                             </div>
 
-                            {/* Spending Summary & Channel Analytics Card */}
-                            <div className="rounded-2xl border border-slate-200 bg-white p-6">
-                              <h2 className="font-serif text-lg font-normal text-slate-900">
-                                04. Spending Summary & Settlement Channels
-                              </h2>
-                              <p className="mt-0.5 text-xs text-slate-500">
-                                Consolidated household expenditure by payment
-                                rail and budget category.
-                              </p>
+                            <div className="space-y-2.5">
+                              {pendingBills.map((b: any) => (
+                                <div
+                                  key={`fin-rem-bill-${b.id}`}
+                                  className="flex items-center justify-between gap-3 rounded-xl border border-purple-200 bg-purple-50/50 px-3.5 py-2.5 text-xs"
+                                >
+                                  <div>
+                                    <div className="font-semibold text-slate-900">
+                                      {b.provider_name}
+                                    </div>
+                                    <div className="font-mono text-sm font-bold text-purple-900">
+                                      {formatINR(b.amount_due_minor)}
+                                    </div>
+                                    <div className="text-[11px] text-slate-500">
+                                      Due {b.due_date} · {b.utility_type}
+                                    </div>
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      handleRequestBillPayment(b.provider_name)
+                                    }
+                                    className="font-semibold text-purple-700 hover:underline"
+                                  >
+                                    Pay →
+                                  </button>
+                                </div>
+                              ))}
 
-                              <div className="mt-4 space-y-3 border-t border-slate-100 pt-4 text-xs">
-                                <div className="flex items-center justify-between">
-                                  <span className="text-slate-600">
-                                    UPI & Instant Merchant Settlements
-                                  </span>
-                                  <span className="font-mono font-semibold tabular-nums text-slate-900">
-                                    {formatINR(upiTotalMinor)}
-                                  </span>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                  <span className="text-slate-600">
-                                    Card, NEFT & Utility BillPay Rails
-                                  </span>
-                                  <span className="font-mono font-semibold tabular-nums text-slate-900">
-                                    {formatINR(cardAndBankMinor)}
-                                  </span>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                  <span className="text-slate-600">
-                                    Standing Recurring Subscriptions
-                                  </span>
-                                  <span className="font-mono font-semibold tabular-nums text-slate-900">
-                                    {formatINR(recurringTotalMinor)}
-                                  </span>
-                                </div>
-                                <div className="flex items-center justify-between border-t border-slate-200 pt-3 font-semibold text-slate-900">
-                                  <span>
-                                    Total Tracked Outflow + Pending Bills
-                                  </span>
-                                  <span className="font-mono text-sm tabular-nums">
-                                    {formatINR(
-                                      recordedExpensesTotalMinor +
-                                        settledBillsMinor +
-                                        pendingBillsMinor
-                                    )}
-                                  </span>
-                                </div>
-                              </div>
+                              {allFinanceReminders.map((rem: any) => {
+                                const isDone = rem.status === "COMPLETED";
+                                return (
+                                  <div
+                                    key={rem.id}
+                                    className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 px-3.5 py-2.5 text-xs"
+                                  >
+                                    <div>
+                                      <div
+                                        className={`font-semibold ${
+                                          isDone
+                                            ? "line-through text-slate-400"
+                                            : "text-slate-900"
+                                        }`}
+                                      >
+                                        {rem.title}
+                                      </div>
+                                      <div className="text-[11px] text-slate-500">
+                                        Due{" "}
+                                        {String(
+                                          rem.due_at || rem.due_date || ""
+                                        ).slice(0, 10)}
+                                      </div>
+                                    </div>
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        handleToggleReminderStatus(rem.id)
+                                      }
+                                      className="font-semibold text-purple-700 hover:underline"
+                                    >
+                                      {isDone ? "Reopen" : "Done →"}
+                                    </button>
+                                  </div>
+                                );
+                              })}
                             </div>
                           </div>
                         </div>
 
-                        {/* SECTION 4: FULL-WIDTH HOUSEHOLD EXPENDITURE TRACKING & PAYMENT HISTORY LEDGER */}
+                        {/* SECTION 4: STREAMLINED LEDGER TABLE */}
                         <div className="rounded-2xl border border-slate-200 bg-white p-6">
-                          <div className="flex flex-col justify-between gap-4 border-b border-slate-100 pb-4 lg:flex-row lg:items-center">
-                            <div>
-                              <h2 className="font-serif text-lg font-normal text-slate-900">
-                                05. Household Expenditure, Expense Tracking &
-                                Payment History ({unifiedExpenditureRows.length}
-                                )
-                              </h2>
-                              <p className="mt-0.5 text-xs text-slate-500">
-                                Chronological audit trail of logged household
-                                expenses, merchant vouchers, and settled utility
-                                payments.
-                              </p>
-                            </div>
+                          <div className="flex flex-col justify-between gap-3 border-b border-slate-100 pb-4 lg:flex-row lg:items-center">
+                            <h2 className="text-base font-bold text-slate-900">
+                              Expenditure & Settlement Ledger (
+                              {unifiedExpenditureRows.length})
+                            </h2>
 
-                            {/* Category Filter Buttons */}
                             <div className="flex flex-wrap items-center gap-1.5">
                               {[
-                                { id: "ALL", label: "All Expenditure" },
-                                {
-                                  id: "GROCERIES",
-                                  label: "Groceries & Pantry",
-                                },
-                                {
-                                  id: "UTILITIES",
-                                  label: "Utilities & Paid Bills",
-                                },
-                                {
-                                  id: "MAINTENANCE",
-                                  label: "Maintenance & Service",
-                                },
+                                { id: "ALL", label: "All" },
+                                { id: "GROCERIES", label: "Groceries" },
+                                { id: "UTILITIES", label: "Utilities" },
+                                { id: "MAINTENANCE", label: "Maintenance" },
                                 {
                                   id: "HOUSEHOLD_SUPPLIES",
-                                  label: "Household Supplies",
+                                  label: "Supplies",
                                 },
                               ].map((cat) => (
                                 <button
@@ -9223,10 +8640,10 @@ export function App() {
                                   onClick={() =>
                                     setFinanceExpenseCategoryFilter(cat.id)
                                   }
-                                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
+                                  className={`rounded-lg px-3 py-1 text-xs font-semibold transition-colors ${
                                     financeExpenseCategoryFilter === cat.id
-                                      ? "bg-[#0A1411] text-[#E5C76B]"
-                                      : "bg-slate-100 text-slate-600 hover:bg-slate-200/70 hover:text-slate-900"
+                                      ? "bg-[#0D0818] text-purple-300"
+                                      : "bg-slate-100 text-slate-600 hover:text-slate-900"
                                   }`}
                                 >
                                   {cat.label}
@@ -9235,68 +8652,20 @@ export function App() {
                             </div>
                           </div>
 
-                          {/* Inline Quick-Log Expenditure Form */}
-                          <form
-                            onSubmit={handleAddExpense}
-                            className="mt-4 grid grid-cols-1 gap-2.5 rounded-xl border border-slate-200 bg-slate-50/70 p-3.5 sm:grid-cols-6"
-                          >
-                            <input
-                              type="text"
-                              required
-                              placeholder="Merchant or Payee Name"
-                              value={expenseMerchant}
-                              onChange={(e) =>
-                                setExpenseMerchant(e.target.value)
-                              }
-                              className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs sm:col-span-2"
-                            />
-                            <input
-                              type="text"
-                              placeholder="Expenditure note or invoice ref"
-                              value={expenseDesc}
-                              onChange={(e) => setExpenseDesc(e.target.value)}
-                              className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs sm:col-span-2"
-                            />
-                            <input
-                              type="number"
-                              required
-                              min="1"
-                              placeholder="Amount (₹)"
-                              value={expenseAmountInr}
-                              onChange={(e) =>
-                                setExpenseAmountInr(e.target.value)
-                              }
-                              className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 font-mono text-xs tabular-nums"
-                            />
-                            <button
-                              type="submit"
-                              className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#0A1411] px-3 py-1.5 text-xs font-semibold text-[#E5C76B] hover:bg-slate-900"
-                            >
-                              <Plus className="h-3.5 w-3.5" />
-                              Log Spend
-                            </button>
-                          </form>
-
-                          {/* Structured Payment History & Expenditure Table */}
                           <div className="mt-4 overflow-x-auto">
                             <table className="w-full text-left text-xs">
                               <thead>
                                 <tr className="border-b border-slate-200 text-slate-500">
                                   <th className="pb-2.5 font-semibold">Date</th>
                                   <th className="pb-2.5 font-semibold">
-                                    Merchant / Payee
+                                    Merchant
                                   </th>
                                   <th className="pb-2.5 font-semibold">
-                                    Category & Memorandum
+                                    Category
                                   </th>
-                                  <th className="pb-2.5 font-semibold">
-                                    Payment Rail
-                                  </th>
-                                  <th className="pb-2.5 font-semibold">
-                                    Status
-                                  </th>
+                                  <th className="pb-2.5 font-semibold">Rail</th>
                                   <th className="pb-2.5 text-right font-semibold">
-                                    Amount (₹)
+                                    Amount
                                   </th>
                                 </tr>
                               </thead>
@@ -9304,28 +8673,21 @@ export function App() {
                                 {unifiedExpenditureRows.map((row) => (
                                   <tr
                                     key={row.id}
-                                    className="hover:bg-slate-50/80"
+                                    className="hover:bg-purple-50/30"
                                   >
-                                    <td className="py-3 pr-4 font-mono whitespace-nowrap tabular-nums text-slate-600">
+                                    <td className="py-2.5 pr-4 font-mono whitespace-nowrap tabular-nums text-slate-500">
                                       {row.date}
                                     </td>
-                                    <td className="py-3 pr-4 font-semibold text-slate-900">
+                                    <td className="py-2.5 pr-4 font-semibold text-slate-900">
                                       {row.merchant}
                                     </td>
-                                    <td className="py-3 pr-4 text-slate-600">
-                                      <span className="font-medium text-slate-800">
-                                        {row.category}
-                                      </span>{" "}
-                                      · {row.description}
+                                    <td className="py-2.5 pr-4 text-slate-600">
+                                      {row.category} · {row.description}
                                     </td>
-                                    <td className="py-3 pr-4 text-slate-600">
+                                    <td className="py-2.5 pr-4 text-slate-500">
                                       {row.paymentMethod}
-                                      {row.isRecurring ? " · Recurring" : ""}
                                     </td>
-                                    <td className="py-3 pr-4 font-medium text-emerald-700">
-                                      {row.statusLabel}
-                                    </td>
-                                    <td className="py-3 text-right font-mono font-semibold whitespace-nowrap tabular-nums text-slate-900">
+                                    <td className="py-2.5 text-right font-mono font-bold whitespace-nowrap tabular-nums text-slate-900">
                                       {formatINR(row.amountMinor)}
                                     </td>
                                   </tr>
@@ -9340,890 +8702,530 @@ export function App() {
                 </div>
               )}
 
-              {/* Assets, Vehicles & Maintenance Table (Shown in All Domains overview) */}
+              {/* HOMEPAGE — CLEAN RECTANGULAR BLACK, GRAY & WHITE OVERVIEW */}
               {selectedDomain === "all" && (
-                <div className="rounded-xl border border-slate-200 bg-white p-5">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <h3 className="text-sm font-bold text-slate-900">
-                      Assets, Vehicles & Total Cost of Ownership
-                    </h3>
-                    <div className="flex items-center gap-3">
-                      <button
-                        type="button"
-                        onClick={() => handleSelectDomain("vehicle_mobility")}
-                        className="text-xs font-semibold text-red-600 hover:underline"
-                      >
-                        Malen Auto Workshop →
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setActiveView("documents")}
-                        className="text-xs font-semibold text-slate-600 hover:text-slate-900"
-                      >
-                        + Upload Warranty or Invoice
-                      </button>
-                    </div>
-                  </div>
+                <div className="space-y-6">
+                  {(() => {
+                    const totalEstateTcoMinor = assets.reduce(
+                      (acc, a) => acc + Number(a.tco?.total_tco_minor || 0),
+                      0
+                    );
+                    const lowStockCount = inventory.filter(
+                      (i) =>
+                        i.stock_status === "LOW_STOCK" ||
+                        i.stock_status === "OUT_OF_STOCK"
+                    ).length;
+                    const laundryDueCount = clothing.filter(
+                      (c) => c.needs_laundry
+                    ).length;
+                    const pendingMaintCount = (
+                      warrantiesData.maintenance_records || []
+                    ).filter((m: any) => m.status !== "COMPLETED").length;
+                    const pendingBillsCount = (billsData.items || []).filter(
+                      (b: any) => b.status === "PENDING"
+                    ).length;
+                    const upcomingTripsCount = (
+                      travelRecordsData.items || []
+                    ).filter((t: any) => t.status === "UPCOMING").length;
+                    const parentsDueCount = (
+                      parentsHealthData.items || []
+                    ).filter((p: any) => p.status !== "COMPLETED").length;
 
-                  <div className="mt-4 overflow-x-auto">
-                    <table className="w-full text-left text-xs">
-                      <thead>
-                        <tr className="border-b border-slate-200 text-slate-500">
-                          <th className="pb-2.5 font-semibold">Asset</th>
-                          <th className="pb-2.5 font-semibold">Location</th>
-                          <th className="pb-2.5 font-semibold">Status</th>
-                          <th className="pb-2.5 text-right font-semibold">
-                            Purchase
-                          </th>
-                          <th className="pb-2.5 text-right font-semibold">
-                            Maintenance
-                          </th>
-                          <th className="pb-2.5 text-right font-semibold">
-                            Total Cost
-                          </th>
-                          <th className="pb-2.5 pl-4 font-semibold">
-                            Coverage & Service
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100">
-                        {assets
-                          .filter((a) =>
-                            matchesSearch(
-                              a.name,
-                              a.brand,
-                              a.model_number,
-                              a.location_room,
-                              a.status,
-                              a.category,
-                              a.vehicle?.registration_number,
-                              a.warranty?.provider_name
-                            )
-                          )
-                          .map((asset) => (
-                            <tr key={asset.id} className="hover:bg-slate-50/80">
-                              <td className="py-3 pr-4">
-                                <div className="font-semibold text-slate-900">
-                                  {asset.name}
-                                </div>
-                                <div className="text-[11px] text-slate-500">
-                                  {asset.brand} · {asset.model_number}
-                                </div>
-                              </td>
-                              <td className="py-3 pr-4 text-slate-600">
-                                {asset.location_room}
-                              </td>
-                              <td className="py-3 pr-4">
-                                <span
-                                  className={`font-medium ${
-                                    asset.status === "OPERATIONAL"
-                                      ? "text-emerald-700"
-                                      : "text-amber-700"
-                                  }`}
-                                >
-                                  {asset.status === "OPERATIONAL"
-                                    ? "Operational"
-                                    : "Maintenance Due"}
-                                </span>
-                              </td>
-                              <td className="py-3 pr-4 text-right font-mono tabular-nums text-slate-700">
-                                {formatINR(asset.tco?.purchase_price_minor)}
-                              </td>
-                              <td className="py-3 pr-4 text-right font-mono tabular-nums text-slate-700">
-                                {formatINR(asset.tco?.maintenance_cost_minor)}
-                              </td>
-                              <td className="py-3 pr-4 text-right font-mono font-bold tabular-nums text-slate-900">
-                                {formatINR(asset.tco?.total_tco_minor)}
-                              </td>
-                              <td className="py-3 pl-4 text-slate-600">
-                                {asset.warranty ? (
-                                  <span>
-                                    Warranty until {asset.warranty.end_date}
-                                  </span>
-                                ) : asset.vehicle ? (
-                                  <span>
-                                    {asset.vehicle.registration_number} ·{" "}
-                                    {asset.vehicle.odometer_km.toLocaleString(
-                                      "en-IN"
-                                    )}{" "}
-                                    km
-                                  </span>
-                                ) : asset.appliance ? (
-                                  <span>
-                                    Next service{" "}
-                                    {asset.appliance.next_service_due_on}
-                                  </span>
-                                ) : (
-                                  "—"
-                                )}
-                              </td>
-                            </tr>
-                          ))}
-                      </tbody>
-                    </table>
-                  </div>
+                    const domainCards: Array<{
+                      id: DomainFilterId;
+                      title: string;
+                      value: string;
+                      context: string;
+                      statusText: string;
+                    }> = [
+                      {
+                        id: "kitchen_grocery",
+                        title: "Kitchen & Grocery",
+                        value: `${inventory.length} Items`,
+                        context: `${lowStockCount} low stock · Pantry & staples`,
+                        statusText:
+                          lowStockCount > 0
+                            ? `${lowStockCount} Low`
+                            : "Stocked",
+                      },
+                      {
+                        id: "laundry_clothing",
+                        title: "Laundry & Clothing",
+                        value: `${clothing.length} Garments`,
+                        context: `${laundryDueCount} in wash queue · Care profiles`,
+                        statusText:
+                          laundryDueCount > 0
+                            ? `${laundryDueCount} Queued`
+                            : "All Clean",
+                      },
+                      {
+                        id: "home_maintenance",
+                        title: "Home Maintenance",
+                        value: `${
+                          (warrantiesData.maintenance_records || []).length
+                        } Orders`,
+                        context: `${pendingMaintCount} scheduled · Appliances & HVAC`,
+                        statusText:
+                          pendingMaintCount > 0
+                            ? `${pendingMaintCount} Due`
+                            : "Up to Date",
+                      },
+                      {
+                        id: "finance_expenses",
+                        title: "Finance & Expenses",
+                        value: formatINR(spendMinor),
+                        context: `${pendingBillsCount} pending bills · ${budgetUtilizationPct}% of budget`,
+                        statusText:
+                          pendingBillsCount > 0
+                            ? `${pendingBillsCount} Unpaid`
+                            : "Settled",
+                      },
+                      {
+                        id: "vehicle_mobility",
+                        title: "Vehicle & Mobility",
+                        value: formatINR(totalEstateTcoMinor),
+                        context: `${
+                          assets.filter((a) => a.vehicle).length
+                        } active EV · Service & fleet TCO`,
+                        statusText: "Active",
+                      },
+                      {
+                        id: "documents_warranty",
+                        title: "Documents & Warranty",
+                        value: `${documents.length} Documents`,
+                        context: `${
+                          (warrantiesData.items || []).length
+                        } warranties · ${
+                          (warrantiesData.insurance_policies || []).length
+                        } policies`,
+                        statusText: "Indexed",
+                      },
+                      {
+                        id: "parents_health",
+                        title: "Parents' Health",
+                        value: `${
+                          (parentsHealthData.items || []).length
+                        } Records`,
+                        context: `${parentsDueCount} checkups & meds due`,
+                        statusText:
+                          parentsDueCount > 0
+                            ? `${parentsDueCount} Due`
+                            : "On Track",
+                      },
+                      {
+                        id: "travel_records",
+                        title: "Travel",
+                        value: `${
+                          (travelRecordsData.items || []).length
+                        } Trips`,
+                        context: `${upcomingTripsCount} upcoming · Confirmed bookings`,
+                        statusText:
+                          upcomingTripsCount > 0
+                            ? `${upcomingTripsCount} Upcoming`
+                            : "Logged",
+                      },
+                    ];
 
-                  {showDomainSection("home_maintenance") &&
-                    warrantiesData.maintenance_records.length > 0 && (
-                      <div className="mt-5 border-t border-slate-100 pt-4">
-                        <div className="text-xs font-bold text-slate-800">
-                          Maintenance & Service Schedule
-                        </div>
-                        <div className="mt-2.5 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                          {warrantiesData.maintenance_records
-                            .filter((m: any) =>
-                              matchesSearch(
-                                m.title,
-                                m.description,
-                                m.status,
-                                m.technician_or_vendor,
-                                m.scheduled_for
-                              )
-                            )
-                            .map((m: any) => (
-                              <div
-                                key={m.id}
-                                className="flex flex-col justify-between rounded-lg border border-slate-200 bg-slate-50/50 p-3.5 text-xs"
+                    return (
+                      <>
+                        {/* TOP SUMMARY HEADER — BLACK, GRAY & WHITE RECTANGULAR */}
+                        <div className="rounded-lg border border-zinc-900 bg-zinc-950 p-6 text-white">
+                          <div className="flex flex-col justify-between gap-4 border-b border-zinc-800 pb-5 sm:flex-row sm:items-center">
+                            <div>
+                              <h1 className="text-xl font-bold tracking-tight text-white">
+                                HomeIQ Overview
+                              </h1>
+                              <p className="mt-1 text-xs text-zinc-400">
+                                Unified household status across all domains
+                              </p>
+                            </div>
+                            <div className="flex flex-wrap items-center gap-2">
+                              <button
+                                type="button"
+                                onClick={() => setActiveView("documents")}
+                                className="inline-flex items-center gap-2 rounded-md bg-white px-3.5 py-2 text-xs font-semibold text-zinc-950 transition-colors hover:bg-zinc-200"
                               >
-                                <div>
-                                  <div className="flex items-start justify-between gap-2">
-                                    <span className="font-semibold text-slate-900">
-                                      {m.title}
-                                    </span>
-                                    <span
-                                      className={`shrink-0 font-medium ${
-                                        m.status === "COMPLETED"
-                                          ? "text-emerald-700"
-                                          : "text-amber-700"
-                                      }`}
-                                    >
-                                      {m.status === "COMPLETED"
-                                        ? "Completed"
-                                        : "Scheduled"}
-                                    </span>
+                                <Upload className="h-3.5 w-3.5" />
+                                <span>Ingest Document</span>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setActiveView("intelligence")}
+                                className="inline-flex items-center gap-2 rounded-md border border-zinc-700 bg-zinc-900 px-3.5 py-2 text-xs font-semibold text-zinc-100 transition-colors hover:bg-zinc-800"
+                              >
+                                <Sparkles className="h-3.5 w-3.5" />
+                                <span>Ask Multi-Agent</span>
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* 4 Rectangular KPI Cards */}
+                          <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                            <div className="rounded-md border border-zinc-800 bg-zinc-900/70 p-4">
+                              <div className="text-xs text-zinc-400">
+                                Monthly Spend
+                              </div>
+                              <div className="mt-1 font-mono text-xl font-bold tabular-nums text-white">
+                                {formatINR(spendMinor)}
+                              </div>
+                              <div className="mt-1 text-[11px] text-zinc-400">
+                                {budgetUtilizationPct}% of{" "}
+                                {formatINR(budgetMinor)} budget
+                              </div>
+                            </div>
+
+                            <div className="rounded-md border border-zinc-800 bg-zinc-900/70 p-4">
+                              <div className="text-xs text-zinc-400">
+                                Pending Utility Bills
+                              </div>
+                              <div className="mt-1 font-mono text-xl font-bold tabular-nums text-white">
+                                {pendingBillsCount} Pending
+                              </div>
+                              <div className="mt-1 text-[11px] text-zinc-400">
+                                {formatINR(
+                                  summary?.metrics?.pending_bills_amount_minor
+                                )}{" "}
+                                total due
+                              </div>
+                            </div>
+
+                            <div className="rounded-md border border-zinc-800 bg-zinc-900/70 p-4">
+                              <div className="text-xs text-zinc-400">
+                                Indexed Documents
+                              </div>
+                              <div className="mt-1 font-mono text-xl font-bold tabular-nums text-white">
+                                {documents.length} Files
+                              </div>
+                              <div className="mt-1 text-[11px] text-zinc-400">
+                                {(warrantiesData.items || []).length} warranties ·{" "}
+                                {(warrantiesData.insurance_policies || []).length}{" "}
+                                policies
+                              </div>
+                            </div>
+
+                            <div className="rounded-md border border-zinc-800 bg-zinc-900/70 p-4">
+                              <div className="text-xs text-zinc-400">
+                                Approval Gate
+                              </div>
+                              <div className="mt-1 font-mono text-xl font-bold tabular-nums text-white">
+                                {pendingApprovalsCount} Queued
+                              </div>
+                              <div className="mt-1 text-[11px] text-zinc-400">
+                                Owner sign-off active
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* HOUSEHOLD DOMAINS — RECTANGULAR BLACK, GRAY & WHITE GRID */}
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <h2 className="text-base font-bold text-zinc-900">
+                              Household Domains
+                            </h2>
+                            <span className="text-xs text-zinc-500">
+                              Select a domain to open its workspace
+                            </span>
+                          </div>
+
+                          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                            {domainCards.map((dom) => {
+                              const navSpec = SEVEN_DOMAIN_NAV.find(
+                                (d) => d.id === dom.id
+                              );
+                              const DomIcon = navSpec?.icon || Layers;
+                              return (
+                                <div
+                                  key={`home-domain-${dom.id}`}
+                                  className="flex flex-col justify-between rounded-lg border border-zinc-200 bg-white p-5 transition-all hover:border-zinc-900 hover:shadow-sm"
+                                >
+                                  <div>
+                                    <div className="flex items-center justify-between">
+                                      <div className="flex h-9 w-9 items-center justify-center rounded-md bg-zinc-950 text-white">
+                                        <DomIcon className="h-4 w-4" />
+                                      </div>
+                                      <span className="text-xs font-medium text-zinc-500">
+                                        {dom.statusText}
+                                      </span>
+                                    </div>
+
+                                    <h3 className="mt-4 text-sm font-semibold text-zinc-900">
+                                      {dom.title}
+                                    </h3>
+                                    <div className="mt-1 font-mono text-2xl font-bold tabular-nums text-zinc-950">
+                                      {dom.value}
+                                    </div>
+                                    <div className="mt-1 text-xs text-zinc-500">
+                                      {dom.context}
+                                    </div>
                                   </div>
-                                  <p className="mt-1 text-slate-600">
-                                    {m.description}
-                                  </p>
-                                </div>
-                                <div className="mt-3 flex items-center justify-between border-t border-slate-200/70 pt-2.5 text-[11px] text-slate-500">
-                                  <span>
-                                    {m.scheduled_for} ·{" "}
-                                    <span className="font-mono tabular-nums text-slate-700">
-                                      {formatINR(
-                                        Number(m.labor_cost_minor) +
-                                          Number(m.parts_cost_minor)
-                                      )}
-                                    </span>
-                                  </span>
-                                  {m.status !== "COMPLETED" && (
+
+                                  <div className="mt-5 flex items-center gap-2 border-t border-zinc-100 pt-3.5">
                                     <button
                                       type="button"
-                                      onClick={() =>
-                                        handleCompleteMaintenance(m.id)
-                                      }
-                                      className="inline-flex items-center gap-1 rounded-md bg-slate-900 px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-slate-800"
+                                      onClick={() => handleSelectDomain(dom.id)}
+                                      className="flex flex-1 items-center justify-between rounded-md bg-zinc-950 px-3.5 py-2 text-xs font-semibold text-white transition-colors hover:bg-zinc-800"
                                     >
-                                      <Check className="h-3 w-3" />
-                                      Mark Completed
+                                      <span>Open</span>
+                                      <ArrowRight className="h-3.5 w-3.5" />
                                     </button>
-                                  )}
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setActiveView("intelligence");
+                                        runAgentQueryText(
+                                          navSpec?.defaultQuery ||
+                                            "Summarize this domain."
+                                        );
+                                      }}
+                                      title="Ask Agent"
+                                      className="rounded-md border border-zinc-200 bg-zinc-50 px-2.5 py-2 text-xs font-medium text-zinc-700 hover:border-zinc-900 hover:bg-zinc-100 hover:text-zinc-950"
+                                    >
+                                      <Sparkles className="h-3.5 w-3.5" />
+                                    </button>
+                                  </div>
                                 </div>
-                              </div>
-                            ))}
+                              );
+                            })}
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      </>
+                    );
+                  })()}
                 </div>
               )}
 
-              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                {/* Kitchen Pantry & Laundry Care (Shown in All Domains overview; dedicated tabs use their bespoke showcases above) */}
-                {selectedDomain === "all" && (
-                  <div className="rounded-xl border border-slate-200 bg-white p-5">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-sm font-bold text-slate-900">
-                        Kitchen Pantry & Garment Care
+              {/* HOMEPAGE — SIMPLIFIED RECTANGULAR PRIORITY ACTIONS & ASSETS */}
+              {selectedDomain === "all" && (
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                  {/* Left Column: Priority Household Actions (Bills, Maintenance & Pantry) */}
+                  <div className="rounded-lg border border-zinc-200 bg-white p-5">
+                    <div className="flex items-center justify-between border-b border-zinc-100 pb-3">
+                      <h3 className="text-sm font-bold text-zinc-900">
+                        Priority Actions & Due Items
                       </h3>
-                      <div className="flex items-center gap-3">
-                        <button
-                          type="button"
-                          onClick={() => handleSelectDomain("kitchen_grocery")}
-                          className="text-xs font-semibold text-amber-700 hover:underline"
-                        >
-                          Culinary Showcase →
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleSelectDomain("laundry_clothing")}
-                          className="text-xs font-semibold text-blue-600 hover:underline"
-                        >
-                          Laundry Valet →
-                        </button>
-                      </div>
+                      <span className="text-xs text-zinc-500">
+                        Bills · Maintenance · Stock
+                      </span>
                     </div>
 
-                    {showDomainSection("kitchen_grocery") && (
-                      <form
-                        onSubmit={handleAddInventoryItem}
-                        className="mt-3 grid grid-cols-1 gap-2.5 rounded-lg border border-slate-200 bg-slate-50 p-3 sm:grid-cols-4"
-                      >
-                        <input
-                          type="text"
-                          required
-                          placeholder="Add pantry item (e.g., Basmati Rice)"
-                          value={newItemName}
-                          onChange={(e) => setNewItemName(e.target.value)}
-                          className="rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-xs sm:col-span-2"
-                        />
-                        <input
-                          type="number"
-                          step="0.5"
-                          required
-                          placeholder="Qty"
-                          value={newItemQty}
-                          onChange={(e) => setNewItemQty(e.target.value)}
-                          className="rounded-md border border-slate-300 bg-white px-2.5 py-1.5 font-mono text-xs tabular-nums"
-                        />
-                        <button
-                          type="submit"
-                          className="inline-flex items-center justify-center gap-1 rounded-md bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800"
-                        >
-                          <Plus className="h-3.5 w-3.5" />
-                          Add Item
-                        </button>
-                        <div className="flex items-center gap-2 text-[11px] text-slate-500 sm:col-span-4">
-                          <span>Reorder Threshold:</span>
-                          <input
-                            type="number"
-                            step="0.5"
-                            value={newItemThreshold}
-                            onChange={(e) =>
-                              setNewItemThreshold(e.target.value)
-                            }
-                            className="w-20 rounded border border-slate-300 bg-white px-2 py-0.5 font-mono text-xs tabular-nums"
-                          />
-                          <span>Unit:</span>
-                          <select
-                            value={newItemUnit}
-                            onChange={(e) => setNewItemUnit(e.target.value)}
-                            className="rounded border border-slate-300 bg-white px-2 py-0.5 text-xs"
-                          >
-                            <option value="KILOGRAM">kg</option>
-                            <option value="LITER">L</option>
-                            <option value="PIECE">pcs</option>
-                          </select>
-                        </div>
-                      </form>
-                    )}
-
                     <div className="mt-4 space-y-2.5">
-                      {showDomainSection("kitchen_grocery") &&
-                        inventory
-                          .filter((item) =>
+                      {billsData.items
+                        .filter((bill) =>
+                          matchesSearch(
+                            bill.provider_name,
+                            bill.utility_type,
+                            bill.status,
+                            bill.due_date
+                          )
+                        )
+                        .map((bill) => (
+                          <div
+                            key={bill.id}
+                            className="flex items-center justify-between gap-3 rounded-md border border-zinc-200 bg-zinc-50/60 px-3.5 py-2.5 text-xs"
+                          >
+                            <div>
+                              <div className="font-semibold text-zinc-900">
+                                {bill.provider_name}
+                              </div>
+                              <div className="text-[11px] text-zinc-500">
+                                {bill.utility_type} · Due {bill.due_date} ·{" "}
+                                {bill.status}
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2.5">
+                              <span className="font-mono font-bold tabular-nums text-zinc-900">
+                                {formatINR(bill.amount_due_minor)}
+                              </span>
+                              {bill.status === "PENDING" && (
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    handleRequestBillPayment(bill.provider_name)
+                                  }
+                                  className="rounded-md bg-zinc-950 px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-zinc-800"
+                                >
+                                  Pay Bill
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+
+                      {warrantiesData.maintenance_records
+                        .filter((m: any) =>
+                          matchesSearch(
+                            m.title,
+                            m.status,
+                            m.technician_or_vendor,
+                            m.scheduled_for
+                          )
+                        )
+                        .map((m: any) => (
+                          <div
+                            key={m.id}
+                            className="flex items-center justify-between gap-3 rounded-md border border-zinc-200 bg-zinc-50/60 px-3.5 py-2.5 text-xs"
+                          >
+                            <div>
+                              <div className="font-semibold text-zinc-900">
+                                {m.title}
+                              </div>
+                              <div className="text-[11px] text-zinc-500">
+                                {m.scheduled_for} · {m.technician_or_vendor}
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2.5">
+                              <span className="font-mono font-semibold tabular-nums text-zinc-900">
+                                {formatINR(
+                                  Number(m.labor_cost_minor) +
+                                    Number(m.parts_cost_minor)
+                                )}
+                              </span>
+                              {m.status !== "COMPLETED" && (
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    handleCompleteMaintenance(m.id)
+                                  }
+                                  className="rounded-md border border-zinc-300 bg-white px-2.5 py-1 text-[11px] font-semibold text-zinc-900 hover:bg-zinc-100"
+                                >
+                                  Complete
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+
+                      {inventory
+                        .filter(
+                          (item) =>
+                            (item.stock_status === "LOW_STOCK" ||
+                              item.stock_status === "OUT_OF_STOCK") &&
                             matchesSearch(
                               item.name,
                               item.category,
-                              item.storage_location,
-                              item.stock_status,
-                              item.unit
+                              item.storage_location
                             )
-                          )
-                          .map((item) => {
-                            const isLow =
-                              item.stock_status === "LOW_STOCK" ||
-                              item.stock_status === "OUT_OF_STOCK";
-                            return (
-                              <div
-                                key={item.id}
-                                className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-200 px-3.5 py-2.5 text-xs"
-                              >
-                                <div>
-                                  <div className="font-semibold text-slate-900">
-                                    {item.name}
-                                  </div>
-                                  <div className="text-[11px] text-slate-500">
-                                    {item.storage_location} ·{" "}
-                                    <span
-                                      className={
-                                        isLow
-                                          ? "font-semibold text-rose-700"
-                                          : "text-emerald-700"
-                                      }
-                                    >
-                                      {isLow ? "Low Stock" : "In Stock"}
-                                    </span>
-                                  </div>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <span className="font-mono text-xs font-semibold tabular-nums text-slate-900">
-                                    {Number(item.quantity_on_hand).toFixed(1)}{" "}
-                                    {item.unit}
-                                  </span>
-                                  <div className="flex items-center gap-1">
-                                    <button
-                                      type="button"
-                                      onClick={() =>
-                                        handleAdjustInventory(item.id, -0.5)
-                                      }
-                                      title="Decrease quantity"
-                                      className="rounded border border-slate-200 bg-slate-50 p-1 text-slate-600 hover:bg-slate-100"
-                                    >
-                                      <Minus className="h-3 w-3" />
-                                    </button>
-                                    <button
-                                      type="button"
-                                      onClick={() =>
-                                        handleAdjustInventory(item.id, 1.0)
-                                      }
-                                      title="Increase quantity"
-                                      className="rounded border border-slate-200 bg-slate-50 p-1 text-slate-600 hover:bg-slate-100"
-                                    >
-                                      <Plus className="h-3 w-3" />
-                                    </button>
-                                    {isLow && (
-                                      <button
-                                        type="button"
-                                        onClick={() =>
-                                          handleAdjustInventory(
-                                            item.id,
-                                            undefined,
-                                            5.0
-                                          )
-                                        }
-                                        className="ml-1 rounded bg-slate-900 px-2 py-1 text-[11px] font-semibold text-white hover:bg-slate-800"
-                                      >
-                                        Restock
-                                      </button>
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                            );
-                          })}
-
-                      {showDomainSection("laundry_clothing") &&
-                        clothing
-                          .filter((c) =>
-                            matchesSearch(
-                              c.name,
-                              c.fabric_type,
-                              c.care_instruction,
-                              c.brand,
-                              c.color
-                            )
-                          )
-                          .map((c) => (
-                            <div
-                              key={c.id}
-                              className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-200 bg-slate-50/50 px-3.5 py-2.5 text-xs"
-                            >
-                              <div>
-                                <div className="font-semibold text-slate-900">
-                                  {c.name}
-                                </div>
-                                <div className="text-[11px] text-slate-500">
-                                  {c.fabric_type} · {c.care_instruction} (Max{" "}
-                                  {c.max_wash_temp_c}°C) ·{" "}
-                                  <span
-                                    className={
-                                      c.needs_laundry
-                                        ? "font-semibold text-amber-700"
-                                        : "text-emerald-700"
-                                    }
-                                  >
-                                    {c.needs_laundry
-                                      ? "Needs Wash"
-                                      : "Clean & Ready"}
-                                  </span>
-                                </div>
-                              </div>
-                              <button
-                                type="button"
-                                onClick={() => handleToggleLaundry(c.id)}
-                                className="rounded-md border border-slate-300 bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-800 hover:bg-slate-100"
-                              >
-                                {c.needs_laundry
-                                  ? "Mark Clean"
-                                  : "Queue Laundry"}
-                              </button>
-                            </div>
-                          ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Unified Finance & Household Expenses (Shown in All Domains overview; dedicated tab uses SC Private Wealth showcase above) */}
-                {selectedDomain === "all" && (
-                  <div className="rounded-xl border border-slate-200 bg-white p-5">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <div>
-                        <h3 className="text-sm font-bold text-slate-900">
-                          Finance & Household Expenses
-                        </h3>
-                        {showDomainSection("finance_expenses") && (
-                          <p className="mt-0.5 text-[11px] text-slate-500">
-                            Bills & utilities, household expenditure, budget
-                            management, payments & payment history, due dates,
-                            recurring bills, expense tracking, spending
-                            summaries, and financial reminders.
-                          </p>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleSelectDomain("finance_expenses")
-                          }
-                          className="text-xs font-semibold text-emerald-800 hover:underline"
-                        >
-                          SC Private Wealth Treasury →
-                        </button>
-                        {showDomainSection("finance_expenses") && (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setActiveView("intelligence");
-                              runAgentQueryText(
-                                "Summarize our pending utility bills, household expenses, monthly budget, recurring bills, payment history, and financial reminders."
-                              );
-                            }}
-                            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-800 hover:bg-slate-100"
+                        )
+                        .map((item) => (
+                          <div
+                            key={item.id}
+                            className="flex items-center justify-between gap-3 rounded-md border border-zinc-200 bg-zinc-50/60 px-3.5 py-2.5 text-xs"
                           >
-                            <Sparkles className="h-3.5 w-3.5 text-amber-500" />
-                            Ask Finance Agent
-                          </button>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="mt-3 space-y-3">
-                      {showDomainSection("finance_expenses") && (
-                        <>
-                          {/* Spending Summary & Budget Management Strip */}
-                          <div className="grid grid-cols-1 gap-2.5 rounded-xl border border-slate-200 bg-slate-50/70 p-3 sm:grid-cols-3">
                             <div>
-                              <div className="text-[11px] font-medium text-slate-500">
-                                Monthly Budget & Spend Summary
+                              <div className="font-semibold text-zinc-900">
+                                {item.name}
                               </div>
-                              <div className="mt-0.5 font-mono text-xs font-bold tabular-nums text-slate-900">
-                                {formatINR(spendMinor)} /{" "}
-                                {formatINR(budgetMinor)}
-                              </div>
-                              <div className="text-[11px] text-slate-500">
-                                {budgetUtilizationPct}% utilized ·{" "}
-                                {formatINR(Math.max(0, budgetMinor - spendMinor))}{" "}
-                                remaining
+                              <div className="text-[11px] text-zinc-500">
+                                Low Stock ·{" "}
+                                {Number(item.quantity_on_hand).toFixed(1)}{" "}
+                                {item.unit} remaining
                               </div>
                             </div>
-                            <div>
-                              <div className="text-[11px] font-medium text-slate-500">
-                                Pending Bills & Due Dates
-                              </div>
-                              <div className="mt-0.5 font-mono text-xs font-bold tabular-nums text-amber-700">
-                                {formatINR(
-                                  summary?.metrics?.pending_bills_amount_minor
-                                )}
-                              </div>
-                              <div className="text-[11px] text-slate-500">
-                                {summary?.metrics?.pending_bills_count ?? 0}{" "}
-                                unpaid utility bill(s)
-                              </div>
-                            </div>
-                            <div>
-                              <div className="text-[11px] font-medium text-slate-500">
-                                Recurring Bills & Subscriptions
-                              </div>
-                              <div className="mt-0.5 font-mono text-xs font-bold tabular-nums text-slate-900">
-                                {formatINR(
-                                  billsData.subscriptions.reduce(
-                                    (acc, s) => acc + Number(s.amount_minor || 0),
-                                    0
-                                  )
-                                )}
-                              </div>
-                              <div className="text-[11px] text-slate-500">
-                                {billsData.subscriptions.length} active
-                                recurring cycle(s)
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Utility Bills, Due Dates & Payments */}
-                          <div className="pt-1 text-xs font-bold text-slate-700">
-                            Utility Bills, Due Dates & Payment Status
-                          </div>
-                          {billsData.items
-                            .filter((bill) =>
-                              matchesSearch(
-                                bill.provider_name,
-                                bill.utility_type,
-                                bill.consumer_account_number,
-                                bill.status,
-                                bill.due_date
-                              )
-                            )
-                            .map((bill) => (
-                              <div
-                                key={bill.id}
-                                className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-200 px-3.5 py-2.5 text-xs"
-                              >
-                                <div>
-                                  <div className="font-semibold text-slate-900">
-                                    {bill.provider_name} · {bill.utility_type}
-                                  </div>
-                                  <div className="text-[11px] text-slate-500">
-                                    Account #{bill.consumer_account_number} · Due{" "}
-                                    {bill.due_date}
-                                    {bill.consumption_units
-                                      ? ` · ${bill.consumption_units} ${bill.consumption_unit_label || "units"}`
-                                      : ""}{" "}
-                                    ·{" "}
-                                    <span
-                                      className={
-                                        bill.status === "PAID"
-                                          ? "font-semibold text-emerald-700"
-                                          : "font-semibold text-amber-700"
-                                      }
-                                    >
-                                      {bill.status}
-                                    </span>
-                                    {bill.paid_at && (
-                                      <span className="ml-1 text-slate-400">
-                                        (Paid {String(bill.paid_at).slice(0, 10)})
-                                      </span>
-                                    )}
-                                  </div>
-                                </div>
-                                <div className="flex items-center gap-2.5">
-                                  <span className="font-mono font-bold tabular-nums text-slate-900">
-                                    {formatINR(bill.amount_due_minor)}
-                                  </span>
-                                  {bill.status === "PENDING" && (
-                                    <button
-                                      type="button"
-                                      onClick={() =>
-                                        handleRequestBillPayment(
-                                          bill.provider_name
-                                        )
-                                      }
-                                      className="rounded-md bg-slate-900 px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-slate-800"
-                                    >
-                                      Pay Bill
-                                    </button>
-                                  )}
-                                </div>
-                              </div>
-                            ))}
-
-                          {/* Recurring Bills & Active Subscriptions */}
-                          <div className="pt-2 text-xs font-bold text-slate-700">
-                            Recurring Bills & Subscriptions
-                          </div>
-                          {billsData.subscriptions
-                            .filter((sub) =>
-                              matchesSearch(
-                                sub.service_name,
-                                sub.vendor_name,
-                                sub.billing_cycle,
-                                sub.next_renewal_date
-                              )
-                            )
-                            .map((sub) => (
-                              <div
-                                key={sub.id}
-                                className="flex items-center justify-between rounded-lg border border-slate-100 bg-slate-50 px-3.5 py-2 text-xs"
-                              >
-                                <div>
-                                  <span className="font-semibold text-slate-800">
-                                    {sub.service_name}
-                                  </span>
-                                  <span className="ml-2 text-[11px] text-slate-500">
-                                    {sub.billing_cycle} · Due/Renews{" "}
-                                    {sub.next_renewal_date}
-                                  </span>
-                                </div>
-                                <span className="font-mono font-semibold tabular-nums text-slate-900">
-                                  {formatINR(sub.amount_minor)}
-                                </span>
-                              </div>
-                            ))}
-
-                          {/* Expense Tracking, Expenditure & Payment History */}
-                          <div className="pt-2 text-xs font-bold text-slate-700">
-                            Expense Tracking & Payment History
-                          </div>
-                          <form
-                            onSubmit={handleAddExpense}
-                            className="grid grid-cols-1 gap-2 rounded-lg border border-slate-200 bg-slate-50 p-2.5 sm:grid-cols-4"
-                          >
-                            <input
-                              type="text"
-                              required
-                              placeholder="Merchant / Payee"
-                              value={expenseMerchant}
-                              onChange={(e) =>
-                                setExpenseMerchant(e.target.value)
-                              }
-                              className="rounded border border-slate-300 bg-white px-2.5 py-1 text-xs"
-                            />
-                            <input
-                              type="text"
-                              placeholder="Expenditure note"
-                              value={expenseDesc}
-                              onChange={(e) => setExpenseDesc(e.target.value)}
-                              className="rounded border border-slate-300 bg-white px-2.5 py-1 text-xs"
-                            />
-                            <input
-                              type="number"
-                              required
-                              min="1"
-                              placeholder="Amount (₹)"
-                              value={expenseAmountInr}
-                              onChange={(e) =>
-                                setExpenseAmountInr(e.target.value)
-                              }
-                              className="rounded border border-slate-300 bg-white px-2.5 py-1 font-mono text-xs tabular-nums"
-                            />
-                            <button
-                              type="submit"
-                              className="inline-flex items-center justify-center gap-1 rounded bg-slate-900 px-2.5 py-1 text-xs font-semibold text-white hover:bg-slate-800"
-                            >
-                              <Plus className="h-3 w-3" />
-                              Log Spend
-                            </button>
-                          </form>
-
-                          {billsData.expenses
-                            .filter((exp) =>
-                              matchesSearch(
-                                exp.merchant_name,
-                                exp.description,
-                                exp.category,
-                                exp.payment_method,
-                                exp.incurred_on
-                              )
-                            )
-                            .slice(0, 6)
-                            .map((exp) => (
-                              <div
-                                key={exp.id}
-                                className="flex items-center justify-between rounded-lg border border-slate-100 px-3.5 py-2 text-xs"
-                              >
-                                <div>
-                                  <div className="font-medium text-slate-800">
-                                    {exp.merchant_name}{" "}
-                                    <span className="text-[11px] font-normal text-slate-500">
-                                      · {exp.category}
-                                    </span>
-                                  </div>
-                                  <div className="text-[11px] text-slate-500">
-                                    {exp.description} · Paid on{" "}
-                                    {exp.incurred_on} via{" "}
-                                    {exp.payment_method || "UPI"}
-                                    {exp.is_recurring ? " · Recurring" : ""}
-                                  </div>
-                                </div>
-                                <span className="font-mono font-semibold tabular-nums text-slate-900">
-                                  {formatINR(exp.amount_minor)}
-                                </span>
-                              </div>
-                            ))}
-
-                          {/* Financial Reminders */}
-                          <div className="pt-2 text-xs font-bold text-slate-700">
-                            Financial Reminders & Due-Date Alerts
-                          </div>
-                          <div className="space-y-1.5">
-                            {billsData.items
-                              .filter((b) => b.status === "PENDING")
-                              .map((b) => (
-                                <div
-                                  key={`rem-bill-${b.id}`}
-                                  className="flex items-center justify-between rounded-lg border border-amber-200 bg-amber-50/60 px-3 py-2 text-xs text-amber-950"
-                                >
-                                  <span>
-                                    Upcoming utility bill due:{" "}
-                                    <strong>{b.provider_name}</strong> (
-                                    {formatINR(b.amount_due_minor)})
-                                  </span>
-                                  <span className="font-mono text-[11px] font-semibold">
-                                    Due {b.due_date}
-                                  </span>
-                                </div>
-                              ))}
-                            {billsData.subscriptions
-                              .filter((s) => s.is_active)
-                              .map((s) => (
-                                <div
-                                  key={`rem-sub-${s.id}`}
-                                  className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700"
-                                >
-                                  <span>
-                                    Recurring renewal:{" "}
-                                    <strong>{s.service_name}</strong> (
-                                    {formatINR(s.amount_minor)})
-                                  </span>
-                                  <span className="font-mono text-[11px] text-slate-500">
-                                    Renews {s.next_renewal_date}
-                                  </span>
-                                </div>
-                              ))}
-                          </div>
-                        </>
-                      )}
-
-                      {showDomainSection("documents_warranty") && (
-                        <>
-                          <div className="pt-2 text-xs font-bold text-slate-700">
-                            Warranties & Insurance Policies
-                          </div>
-                          {warrantiesData.items
-                            .filter((w: any) =>
-                              matchesSearch(
-                                w.provider_name,
-                                w.contract_or_policy_number,
-                                w.status,
-                                w.warranty_type,
-                                w.end_date
-                              )
-                            )
-                            .map((w: any) => (
-                              <div
-                                key={w.id}
-                                className="flex items-center justify-between rounded-lg border border-slate-100 px-3.5 py-2 text-xs"
-                              >
-                                <div>
-                                  <div className="font-semibold text-slate-900">
-                                    {w.provider_name}
-                                  </div>
-                                  <div className="text-[11px] text-slate-500">
-                                    Policy #{w.contract_or_policy_number} ·
-                                    Valid until {w.end_date}
-                                  </div>
-                                </div>
-                                <span className="text-[11px] font-semibold text-amber-700">
-                                  {w.status}
-                                </span>
-                              </div>
-                            ))}
-                          {warrantiesData.insurance_policies
-                            .filter((p: any) =>
-                              matchesSearch(
-                                p.insurer_name,
-                                p.policy_number,
-                                p.policy_type,
-                                p.expires_on
-                              )
-                            )
-                            .map((p: any) => (
-                              <div
-                                key={p.id}
-                                className="flex items-center justify-between rounded-lg border border-slate-100 px-3.5 py-2 text-xs"
-                              >
-                                <div>
-                                  <div className="font-semibold text-slate-900">
-                                    {p.insurer_name}
-                                  </div>
-                                  <div className="text-[11px] text-slate-500">
-                                    Policy #{p.policy_number} · Expires{" "}
-                                    {p.expires_on}
-                                  </div>
-                                </div>
-                                <span className="font-mono font-semibold tabular-nums text-slate-900">
-                                  {formatINR(p.coverage_limit_minor)}
-                                </span>
-                              </div>
-                            ))}
-                        </>
-                      )}
-
-                      {showDomainSection("parents_health") && (
-                        <>
-                          <div className="flex items-center justify-between pt-2">
-                            <span className="text-xs font-bold text-slate-700">
-                              Parents' Health Monitoring (Checkups, Labs &
-                              Vitals)
-                            </span>
                             <button
                               type="button"
                               onClick={() =>
-                                handleSelectDomain("parents_health")
+                                handleAdjustInventory(item.id, undefined, 5.0)
                               }
-                              className="text-xs font-semibold text-teal-700 hover:underline"
+                              className="rounded-md bg-zinc-950 px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-zinc-800"
                             >
-                              PowerPeak Health Monitor →
+                              Restock
                             </button>
                           </div>
-                          {(parentsHealthData.items || [])
-                            .slice(0, 3)
-                            .map((hr: any) => (
-                              <div
-                                key={hr.id}
-                                className="flex items-center justify-between rounded-lg border border-slate-100 px-3.5 py-2 text-xs"
-                              >
-                                <div>
-                                  <div className="font-semibold text-slate-900">
-                                    {hr.title}
-                                  </div>
-                                  <div className="text-[11px] text-slate-500">
-                                    {hr.parent_name} · Next Due:{" "}
-                                    {hr.next_due_or_followup_date ||
-                                      hr.recorded_date}
-                                  </div>
-                                </div>
-                                <span className="font-mono text-[11px] font-semibold text-teal-700">
-                                  {hr.status}
-                                </span>
-                              </div>
-                            ))}
-                        </>
-                      )}
-
-                      {showDomainSection("travel_records") && (
-                        <>
-                          <div className="flex items-center justify-between pt-2">
-                            <span className="text-xs font-bold text-slate-700">
-                              Travel Records Agent (Trips, Bookings & Vouchers)
-                            </span>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                handleSelectDomain("travel_records")
-                              }
-                              className="text-xs font-semibold text-sky-700 hover:underline"
-                            >
-                              Eventar Travel Manager →
-                            </button>
-                          </div>
-                          {(travelRecordsData.items || [])
-                            .slice(0, 3)
-                            .map((tr: any) => (
-                              <div
-                                key={tr.id}
-                                className="flex items-center justify-between rounded-lg border border-slate-100 px-3.5 py-2 text-xs"
-                              >
-                                <div>
-                                  <div className="font-semibold text-slate-900">
-                                    {tr.trip_name} ({tr.destination})
-                                  </div>
-                                  <div className="text-[11px] text-slate-500">
-                                    {tr.booking_reference} · {tr.departure_date}{" "}
-                                    to {tr.return_date}
-                                  </div>
-                                </div>
-                                <span className="font-mono text-[11px] font-semibold text-sky-700">
-                                  {tr.status}
-                                </span>
-                              </div>
-                            ))}
-                        </>
-                      )}
+                        ))}
                     </div>
                   </div>
-                )}
-              </div>
+
+                  {/* Right Column: Household Assets & Quick Expense Entry */}
+                  <div className="rounded-lg border border-zinc-200 bg-white p-5">
+                    <div className="flex items-center justify-between border-b border-zinc-100 pb-3">
+                      <h3 className="text-sm font-bold text-zinc-900">
+                        Household Assets & Quick Spend
+                      </h3>
+                      <button
+                        type="button"
+                        onClick={() => setActiveView("documents")}
+                        className="text-xs font-semibold text-zinc-700 hover:text-zinc-950"
+                      >
+                        + Upload Document
+                      </button>
+                    </div>
+
+                    <div className="mt-4 space-y-2.5">
+                      {assets
+                        .filter((a) =>
+                          matchesSearch(
+                            a.name,
+                            a.brand,
+                            a.model_number,
+                            a.location_room,
+                            a.status
+                          )
+                        )
+                        .map((asset) => (
+                          <div
+                            key={asset.id}
+                            className="flex items-center justify-between gap-3 rounded-md border border-zinc-200 px-3.5 py-2.5 text-xs"
+                          >
+                            <div>
+                              <div className="font-semibold text-zinc-900">
+                                {asset.name}
+                              </div>
+                              <div className="text-[11px] text-zinc-500">
+                                {asset.location_room} ·{" "}
+                                {asset.warranty
+                                  ? `Warranty until ${asset.warranty.end_date}`
+                                  : asset.vehicle
+                                  ? `${asset.vehicle.registration_number}`
+                                  : asset.brand}
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <div className="font-mono font-bold tabular-nums text-zinc-900">
+                                {formatINR(asset.tco?.total_tco_minor)}
+                              </div>
+                              <div className="text-[11px] text-zinc-500">
+                                {asset.status === "OPERATIONAL"
+                                  ? "Operational"
+                                  : "Service Due"}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                    </div>
+
+                    <form
+                      onSubmit={handleAddExpense}
+                      className="mt-4 grid grid-cols-1 gap-2 rounded-md border border-zinc-200 bg-zinc-50 p-3 sm:grid-cols-3"
+                    >
+                      <input
+                        type="text"
+                        required
+                        placeholder="Merchant / Payee"
+                        value={expenseMerchant}
+                        onChange={(e) => setExpenseMerchant(e.target.value)}
+                        className="rounded-md border border-zinc-300 bg-white px-2.5 py-1.5 text-xs text-zinc-900 focus:border-zinc-950 focus:outline-none"
+                      />
+                      <input
+                        type="number"
+                        required
+                        min="1"
+                        placeholder="Amount (₹)"
+                        value={expenseAmountInr}
+                        onChange={(e) => setExpenseAmountInr(e.target.value)}
+                        className="rounded-md border border-zinc-300 bg-white px-2.5 py-1.5 font-mono text-xs tabular-nums text-zinc-900 focus:border-zinc-950 focus:outline-none"
+                      />
+                      <button
+                        type="submit"
+                        className="inline-flex items-center justify-center gap-1 rounded-md bg-zinc-950 px-3 py-1.5 text-xs font-semibold text-white hover:bg-zinc-800"
+                      >
+                        <Plus className="h-3.5 w-3.5" />
+                        <span>Log Spend</span>
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
