@@ -141,5 +141,6 @@ async def test_proactive_intelligence_engine(db_session: AsyncSession) -> None:
     assert ProactiveInsightType.MAINTENANCE_DUE in detected_types
     assert ProactiveInsightType.LOW_INVENTORY in detected_types
     assert ProactiveInsightType.RECURRING_EXPENSE in detected_types
+    assert ProactiveInsightType.UPCOMING_PARENT_CHECKUP in detected_types
     assert report.reminders_created > 0
     assert report.notifications_created > 0

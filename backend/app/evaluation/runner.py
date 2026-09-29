@@ -792,7 +792,7 @@ class HomeIQEvaluationRunner:
             {
                 "case_id": "rag_02",
                 "question": "How much did we spend on groceries and what is our monthly budget?",
-                "domain": "expense_budget",
+                "domain": "finance_expenses",
                 "expected_facts": ["8500000"],
                 "expected_docs": [],
                 "expected_tables": ["households", "expenses"],
@@ -808,7 +808,7 @@ class HomeIQEvaluationRunner:
             {
                 "case_id": "rag_04",
                 "question": "When is the MSEDCL electricity bill due?",
-                "domain": "bills_utilities",
+                "domain": "finance_expenses",
                 "expected_facts": ["2026-10-08", "418000"],
                 "expected_docs": [],
                 "expected_tables": ["bills"],
@@ -823,11 +823,11 @@ class HomeIQEvaluationRunner:
             },
             {
                 "case_id": "rag_06",
-                "question": "Which recurring household subscription or utility expense is active?",
-                "domain": "bills_utilities",
-                "expected_facts": ["418000"],
+                "question": "When is our parents' next cardiology checkup and what lab tests are recorded?",
+                "domain": "parents_health",
+                "expected_facts": ["2026-10-05", "HbA1c"],
                 "expected_docs": [],
-                "expected_tables": ["bills"],
+                "expected_tables": ["parent_health_records", "reminders", "documents"],
             },
         ]
 
@@ -910,8 +910,8 @@ class HomeIQEvaluationRunner:
             HouseholdDomainId.KITCHEN_GROCERY: "Check our pantry stock and grocery shopping list.",
             HouseholdDomainId.LAUNDRY_CLOTHING: "How should we wash the silk kurta in our wardrobe?",
             HouseholdDomainId.HOME_MAINTENANCE: "When is our Bosch dishwasher appliance maintenance due?",
-            HouseholdDomainId.BILLS_UTILITIES: "Audit our pending MSEDCL electricity utility bill.",
-            HouseholdDomainId.EXPENSE_BUDGET: "What is our monthly household budget and expense ledger spend?",
+            HouseholdDomainId.FINANCE_EXPENSES: "Audit our pending MSEDCL electricity utility bill, monthly household budget, and expense ledger spend.",
+            HouseholdDomainId.PARENTS_HEALTH: "Check our parents' scheduled health checkup reminders, doctor appointments, medication schedules, and lab reports.",
             HouseholdDomainId.VEHICLE_MOBILITY: "Check our Honda car odometer and PUC compliance status.",
             HouseholdDomainId.DOCUMENTS_WARRANTY: "Verify our active warranty certificates and insurance policy coverage.",
         }

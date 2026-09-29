@@ -1341,7 +1341,7 @@ export async function handleApiRequest(
       actor_user_id: ctx.user_id,
       asset_id: null,
       event_type: "expense.recorded",
-      domain: "expense_budget",
+      domain: "finance_expenses",
       severity: "INFO",
       correlation_id: `corr-exp-${expId.slice(0, 8)}`,
       payload_json: {
@@ -1365,6 +1365,9 @@ export async function handleApiRequest(
         (s) => s.household_id === ctx.household_id
       ),
       expenses: state.expenses.filter((e) => e.household_id === ctx.household_id),
+      reminders: state.reminders.filter(
+        (r) => r.household_id === ctx.household_id
+      ),
     });
   }
 
@@ -1788,9 +1791,23 @@ export async function handleApiRequest(
     if (
       isConsequentialPayment ||
       qLower.includes("bill") ||
-      qLower.includes("electricity")
+      qLower.includes("utility") ||
+      qLower.includes("utilities") ||
+      qLower.includes("electricity") ||
+      qLower.includes("msedcl") ||
+      qLower.includes("budget") ||
+      qLower.includes("spend") ||
+      qLower.includes("expense") ||
+      qLower.includes("expenditure") ||
+      qLower.includes("payment") ||
+      qLower.includes("due date") ||
+      qLower.includes("recurring") ||
+      qLower.includes("subscription") ||
+      qLower.includes("finance") ||
+      qLower.includes("financial") ||
+      qLower.includes("reminder")
     ) {
-      primaryDomain = "bills_utilities";
+      primaryDomain = "finance_expenses";
     } else if (
       qLower.includes("grocery") ||
       qLower.includes("pantry") ||
@@ -1805,13 +1822,6 @@ export async function handleApiRequest(
       qLower.includes("saree")
     ) {
       primaryDomain = "laundry_clothing";
-    } else if (
-      qLower.includes("budget") ||
-      qLower.includes("spend") ||
-      qLower.includes("expense") ||
-      qLower.includes("subscription")
-    ) {
-      primaryDomain = "expense_budget";
     } else if (
       qLower.includes("vehicle") ||
       qLower.includes("nexon") ||
@@ -1955,7 +1965,13 @@ export async function handleApiRequest(
       }
     }
 
-    if (primaryDomain === "expense_budget") {
+    if (primaryDomain === "finance_expenses") {
+      const household = state.households.find(
+        (h) => h.id === ctx.household_id
+      );
+      const monthlyBudgetMinor = Number(
+        household?.monthly_budget_minor || 8500000
+      );
       const totalExpMinor = expenses.reduce(
         (s, e) => s + Number(e.amount_minor),
         0
@@ -1964,22 +1980,34 @@ export async function handleApiRequest(
         (s, sub) => s + Number(sub.amount_minor),
         0
       );
+      const pendingBillsMinor = bills
+        .filter((b) => b.status === "PENDING")
+        .reduce((s, b) => s + Number(b.amount_due_minor), 0);
+      const remainingBudgetMinor = Math.max(
+        0,
+        monthlyBudgetMinor - totalExpMinor
+      );
       recordedFacts.push({
         source_table: "expenses",
         record_id: expenses[0]?.id || SEEDED_HOUSEHOLD_ID,
-        field_or_metric: "Total Recorded Ledger Spend",
-        recorded_value: `₹${(totalExpMinor / 100).toFixed(2)} across ${
+        field_or_metric:
+          "Spending Summary & Household Expenses (Payment History)",
+        recorded_value: `₹${(totalExpMinor / 100).toFixed(2)} recorded across ${
           expenses.length
-        } transactions`,
+        } transactions | Monthly Budget: ₹${(monthlyBudgetMinor / 100).toFixed(
+          2
+        )} (Remaining: ₹${(remainingBudgetMinor / 100).toFixed(2)})`,
         is_deterministic_calculation: true,
       });
       recordedFacts.push({
         source_table: "subscriptions",
         record_id: subscriptions[0]?.id || SEEDED_HOUSEHOLD_ID,
-        field_or_metric: "Active Recurring Subscriptions",
+        field_or_metric: "Recurring Bills & Subscriptions",
         recorded_value: `₹${(totalSubMinor / 100).toFixed(2)} across ${
           subscriptions.length
-        } active plans`,
+        } active recurring plans | Pending Utility Bills: ₹${(
+          pendingBillsMinor / 100
+        ).toFixed(2)}`,
         is_deterministic_calculation: true,
       });
     }
@@ -2031,7 +2059,7 @@ export async function handleApiRequest(
     const pendingPayload = isConsequentialPayment
       ? {
           interrupt_type: "HUMAN_APPROVAL_REQUIRED",
-          domain: "bills_utilities",
+          domain: "finance_expenses",
           tool_name: "dispatch_external_utility_bill_payment",
           risk_level: "EXTERNAL_CONSEQUENTIAL",
           proposed_arguments: {
@@ -2044,13 +2072,18 @@ export async function handleApiRequest(
         }
       : null;
 
+    const resolvedAgentName =
+      primaryDomain === "finance_expenses"
+        ? "Finance & Household Expenses Agent"
+        : `${primaryDomain} Orchestrated Agent`;
+
     state.agent_runs.unshift({
       id: runId,
       household_id: ctx.household_id,
       initiated_by_user_id: ctx.user_id,
       approved_by_user_id: null,
       thread_id: threadId,
-      agent_name: `${primaryDomain} Orchestrated Agent`,
+      agent_name: resolvedAgentName,
       target_domain: primaryDomain,
       user_query: userQuery,
       status: statusValue,
@@ -2097,7 +2130,7 @@ export async function handleApiRequest(
       domain_outputs: [
         {
           domain: primaryDomain,
-          agent_name: `${primaryDomain} Agent`,
+          agent_name: resolvedAgentName,
           summary_answer: synthesizedResponse,
           recorded_facts: recordedFacts,
           estimates_or_suggestions: suggestions,
@@ -2289,7 +2322,7 @@ export async function handleApiRequest(
     )) {
       insights.push({
         insight_type: "UPCOMING_BILL",
-        domain: "bills_utilities",
+        domain: "finance_expenses",
         severity: "WARNING",
         title: `Upcoming ${b.utility_type} Bill: ${b.provider_name}`,
         description: `Account #${b.consumer_account_number} has ₹${(
@@ -2376,7 +2409,7 @@ export async function handleApiRequest(
     )) {
       insights.push({
         insight_type: "RECURRING_EXPENSE",
-        domain: "expense_budget",
+        domain: "finance_expenses",
         severity: "INFO",
         title: `Active Subscription Renewal: ${s.service_name}`,
         description: `${s.vendor_name} (${s.billing_cycle}) renews on ${s.next_renewal_date}.`,

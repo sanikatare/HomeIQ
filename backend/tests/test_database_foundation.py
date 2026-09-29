@@ -43,8 +43,9 @@ async def test_exact_twenty_normalized_tables_registered() -> None:
         "events",
         "agent_runs",
         "notifications",
+        "parent_health_records",
     }
-    assert len(ALL_MODELS) == 20
+    assert len(ALL_MODELS) == 21
     assert set(Base.metadata.tables.keys()) == expected_tables
 
 

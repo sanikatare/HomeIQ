@@ -43,6 +43,8 @@ from app.schemas.api_schemas import (
     NotificationCreateRequest,
     NotificationResponse,
     PaginatedResponse,
+    ParentHealthRecordCreateRequest,
+    ParentHealthRecordResponse,
     ReminderCreateRequest,
     ReminderResponse,
     SubscriptionCreateRequest,
@@ -696,7 +698,45 @@ async def mark_notification_read(
     return NotificationResponse.model_validate(notif)
 
 
-# Register all 18 routers onto api_v1_router
+# -----------------------------------------------------------------------------
+# 19. Parents' Health Monitoring Records
+# -----------------------------------------------------------------------------
+parents_health_router = APIRouter(
+    prefix="/parents-health",
+    tags=["19. Parents' Health Monitoring"],
+)
+
+
+@parents_health_router.get("", response_model=PaginatedResponse[ParentHealthRecordResponse])
+async def list_parents_health_records(
+    offset: int = Query(0, ge=0),
+    limit: int = Query(50, ge=1, le=200),
+    svc: HouseholdPlatformService = Depends(get_platform_service),
+) -> PaginatedResponse[ParentHealthRecordResponse]:
+    items, total = await svc.list_parent_health_records(offset=offset, limit=limit)
+    return PaginatedResponse(
+        items=[ParentHealthRecordResponse.model_validate(r) for r in items],
+        total=total,
+        offset=offset,
+        limit=limit,
+    )
+
+
+@parents_health_router.post(
+    "",
+    response_model=ParentHealthRecordResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+async def create_parents_health_record(
+    payload: ParentHealthRecordCreateRequest,
+    svc: HouseholdPlatformService = Depends(get_platform_service),
+) -> ParentHealthRecordResponse:
+    record = await svc.create_parent_health_record(payload)
+    await svc.session.commit()
+    return ParentHealthRecordResponse.model_validate(record)
+
+
+# Register all routers onto api_v1_router
 for router in [
     auth_router,
     households_router,
@@ -716,5 +756,6 @@ for router in [
     insurance_router,
     reminders_router,
     notifications_router,
+    parents_health_router,
 ]:
     api_v1_router.include_router(router)

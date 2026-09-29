@@ -36,6 +36,8 @@ from app.db.enums import (
     MaintenanceStatus,
     MaintenanceType,
     MeasurementUnit,
+    ParentHealthRecordCategory,
+    ParentHealthRecordStatus,
     WarrantyStatus,
 )
 from app.db.models import (
@@ -49,6 +51,7 @@ from app.db.models import (
     InsurancePolicy,
     InventoryItem,
     MaintenanceRecord,
+    ParentHealthRecord,
     Subscription,
     Vehicle,
     Warranty,
@@ -330,7 +333,7 @@ async def tool_home_maintenance_inspect_assets(
     }
 
 
-async def tool_bills_utilities_audit(
+async def tool_finance_bills_and_subscriptions_audit(
     session: AsyncSession,
     household_id: uuid.UUID,
     params: dict[str, Any],
@@ -338,6 +341,7 @@ async def tool_bills_utilities_audit(
     repos = RepositoryRegistry(session)
     bills, _ = await repos.bills.list_for_household(household_id, limit=50)
     subs, _ = await repos.subscriptions.list_for_household(household_id, limit=50)
+    reminders, _ = await repos.reminders.list_for_household(household_id, limit=50)
 
     facts: list[RecordedHouseholdFact] = []
     unpaid_total_minor = 0
@@ -363,6 +367,37 @@ async def tool_bills_utilities_audit(
             )
         )
 
+    for s in subs:
+        facts.append(
+            RecordedHouseholdFact(
+                source_table="subscriptions",
+                record_id=str(s.id),
+                field_or_metric=f"{s.service_name} ({s.billing_cycle})",
+                recorded_value=(
+                    f"recurring_amount_minor={s.recurring_amount_minor}, "
+                    f"next_renewal_date={s.next_renewal_date}, status={s.status.value}"
+                ),
+                is_deterministic_calculation=True,
+            )
+        )
+
+    financial_reminders = [
+        r
+        for r in reminders
+        if r.domain == "finance_expenses"
+        or r.source_entity_type in {"bill", "subscription", "expense"}
+    ]
+    for rem in financial_reminders:
+        facts.append(
+            RecordedHouseholdFact(
+                source_table="reminders",
+                record_id=str(rem.id),
+                field_or_metric=f"Financial Reminder: {rem.title}",
+                recorded_value=f"due_at={rem.due_at.isoformat()}, status={rem.status.value}",
+                is_deterministic_calculation=True,
+            )
+        )
+
     monthly_sub_minor = sum(int(s.recurring_amount_minor) for s in subs if s.status.value == "ACTIVE")
     return {
         "facts": [f.model_dump() for f in facts],
@@ -370,6 +405,7 @@ async def tool_bills_utilities_audit(
             "bills_count": len(bills),
             "unpaid_bills_total_minor": unpaid_total_minor,
             "active_subscriptions_monthly_minor": monthly_sub_minor,
+            "financial_reminders_count": len(financial_reminders),
         },
     }
 
@@ -390,7 +426,7 @@ async def tool_bills_external_payment_dispatch(
     }
 
 
-async def tool_expense_budget_deterministic_ledger(
+async def tool_finance_expenses_deterministic_ledger(
     session: AsyncSession,
     household_id: uuid.UUID,
     params: dict[str, Any],
@@ -569,9 +605,10 @@ async def tool_parents_health_monitoring_records(
     retriever = SharedRetrievalInterface(session)
     query = str(params.get("query", "parent health checkup lab report medication"))
 
+    health_records, _ = await repos.parent_health.list_for_household(household_id, limit=50)
     reminders, _ = await repos.reminders.list_for_household(household_id, limit=50)
     health_reminders = [
-        r for r in reminders if r.domain in {"parents_health", "health", "documents_warranty"}
+        r for r in reminders if r.domain in {"parents_health", "health"}
     ]
     retrieved_docs = await retriever.retrieve_grounded_documents(
         household_id=household_id,
@@ -580,6 +617,27 @@ async def tool_parents_health_monitoring_records(
     )
 
     facts: list[RecordedHouseholdFact] = []
+    upcoming_checkups_count = 0
+    for rec in health_records:
+        if rec.next_due_or_followup_date:
+            upcoming_checkups_count += 1
+        facts.append(
+            RecordedHouseholdFact(
+                source_table="parent_health_records",
+                record_id=str(rec.id),
+                field_or_metric=f"{rec.parent_name} — {rec.title} ({rec.record_category.value})",
+                recorded_value=(
+                    f"recorded_date={rec.recorded_date}, "
+                    f"next_due_or_followup_date={rec.next_due_or_followup_date}, "
+                    f"schedule={rec.schedule_or_frequency or 'N/A'}, "
+                    f"provider={rec.provider_or_doctor or 'N/A'}, "
+                    f"recorded_value={rec.explicit_measurement_value or 'N/A'}, "
+                    f"status={rec.status.value}"
+                ),
+                is_deterministic_calculation=True,
+                citation_document_id=str(rec.document_id) if rec.document_id else None,
+            )
+        )
     for r in health_reminders:
         facts.append(
             RecordedHouseholdFact(
@@ -604,69 +662,120 @@ async def tool_parents_health_monitoring_records(
     return {
         "facts": [f.model_dump() for f in facts],
         "metrics": {
+            "parent_health_records_count": len(health_records),
+            "upcoming_checkups_count": upcoming_checkups_count,
             "health_reminders_count": len(health_reminders),
             "retrieved_health_documents_count": len(retrieved_docs),
         },
+        "retrieved_documents": retrieved_docs,
     }
 
 
-async def tool_travel_records_and_bookings(
+async def tool_parents_health_log_record(
+    session: AsyncSession,
+    household_id: uuid.UUID,
+    params: dict[str, Any],
+) -> dict[str, Any]:
+    repos = RepositoryRegistry(session)
+    parent_name = str(params.get("parent_name", "Smt. Sunita Tare (Mother)"))
+    title = str(params.get("title", "Scheduled Periodic Health Checkup"))
+    category_str = str(params.get("record_category", "PERIODIC_CHECKUP"))
+    category = (
+        ParentHealthRecordCategory(category_str)
+        if category_str in ParentHealthRecordCategory.__members__
+        else ParentHealthRecordCategory.PERIODIC_CHECKUP
+    )
+    record = ParentHealthRecord(
+        household_id=household_id,
+        parent_name=parent_name,
+        record_category=category,
+        title=title,
+        provider_or_doctor=str(
+            params.get("provider_or_doctor", "Dr. A. Deshmukh · Deenanath Mangeshkar Hospital")
+        ),
+        recorded_date=date.today(),
+        next_due_or_followup_date=date.today() + timedelta(days=30),
+        schedule_or_frequency=str(params.get("schedule_or_frequency", "Monthly")),
+        explicit_measurement_value=str(
+            params.get("explicit_measurement_value", "Logged via Parents' Health Monitoring Agent")
+        ),
+        status=ParentHealthRecordStatus.SCHEDULED,
+    )
+    created = await repos.parent_health.create(record)
+    return {
+        "facts": [
+            RecordedHouseholdFact(
+                source_table="parent_health_records",
+                record_id=str(created.id),
+                field_or_metric="created_parent_health_record",
+                recorded_value=f"{created.parent_name}: {created.title} ({created.record_category.value})",
+            ).model_dump()
+        ],
+        "metrics": {"created_parent_health_record_id": str(created.id)},
+        "emitted_event": "health.record.logged",
+    }
+
+
+async def tool_travel_records_and_itinerary(
     session: AsyncSession,
     household_id: uuid.UUID,
     params: dict[str, Any],
 ) -> dict[str, Any]:
     repos = RepositoryRegistry(session)
     retriever = SharedRetrievalInterface(session)
-    docs = await repos.documents.list_for_household(household_id, limit=20)
-    reminders = await repos.reminders.list_pending_for_household(household_id)
-    expenses = await repos.expenses.list_for_household(household_id, limit=25)
-    query_str = str(params.get("query") or "trip flight train hotel booking itinerary travel")
-    chunks = await retriever.retrieve_document_chunks(
+    query = str(params.get("query", "travel trip booking flight hotel itinerary"))
+
+    expenses, _ = await repos.expenses.list_for_household(household_id, limit=50)
+    reminders, _ = await repos.reminders.list_for_household(household_id, limit=50)
+    retrieved_docs = await retriever.retrieve_grounded_documents(
         household_id=household_id,
-        query=query_str,
-        top_k=4,
+        query=query,
+        domain_label="travel_records",
     )
 
-    facts: list[dict[str, Any]] = []
-    travel_docs = [
-        d for d in docs
-        if any(k in d.title.lower() or k in d.extracted_text_summary.lower() for k in ("travel", "trip", "flight", "hotel", "train", "booking", "pnr", "itinerary"))
-    ]
-    for doc in travel_docs:
+    facts: list[RecordedHouseholdFact] = []
+    travel_spend_minor = 0
+    for e in expenses:
+        travel_spend_minor += e.amount_minor
         facts.append(
-            {
-                "source_table": "documents",
-                "record_id": str(doc.id),
-                "field_or_metric": f"{doc.title} ({doc.document_type.value})",
-                "recorded_value": doc.extracted_text_summary,
-                "is_deterministic_calculation": False,
-                "citation_document_id": str(doc.id),
-            }
+            RecordedHouseholdFact(
+                source_table="expenses",
+                record_id=str(e.id),
+                field_or_metric=f"{e.merchant_name} ({e.category.value})",
+                recorded_value=f"amount_minor={e.amount_minor}, date={e.incurred_on}",
+                is_deterministic_calculation=True,
+                citation_document_id=str(e.receipt_document_id) if e.receipt_document_id else None,
+            )
         )
-
-    travel_reminders = [
-        r for r in reminders
-        if r.domain == "travel_records" or any(k in r.title.lower() for k in ("trip", "flight", "hotel", "travel", "check-in", "passport", "visa"))
-    ]
-    for rem in travel_reminders:
+    for r in reminders:
         facts.append(
-            {
-                "source_table": "reminders",
-                "record_id": str(rem.id),
-                "field_or_metric": f"reminder:{rem.title}",
-                "recorded_value": f"Due {rem.due_at.isoformat()} ({rem.status.value}) — {rem.description or ''}",
-                "is_deterministic_calculation": False,
-            }
+            RecordedHouseholdFact(
+                source_table="reminders",
+                record_id=str(r.id),
+                field_or_metric=r.title,
+                recorded_value=f"due_at={r.due_at.isoformat()}, status={r.status.value}",
+                is_deterministic_calculation=True,
+            )
+        )
+    for d in retrieved_docs:
+        facts.append(
+            RecordedHouseholdFact(
+                source_table="documents",
+                record_id=d["document_id"],
+                field_or_metric=d["title"],
+                recorded_value=d["excerpt"] or "Recorded travel/booking document metadata",
+                citation_document_id=d["document_id"],
+            )
         )
 
     return {
-        "facts": facts,
+        "facts": [f.model_dump() for f in facts],
         "metrics": {
-            "travel_documents_count": len(travel_docs),
-            "upcoming_travel_reminders_count": len(travel_reminders),
-            "retrieved_chunks_count": len(chunks),
+            "travel_documents_count": len(retrieved_docs),
+            "travel_reminders_count": len(reminders),
+            "recorded_travel_expenses_minor": travel_spend_minor,
         },
-        "chunks": [c.model_dump() for c in chunks],
+        "retrieved_documents": retrieved_docs,
     }
 
 
@@ -709,26 +818,26 @@ SHARED_TOOL_REGISTRY: dict[str, RegisteredTool] = {
     "audit_utility_bills_and_subscriptions": RegisteredTool(
         name="audit_utility_bills_and_subscriptions",
         domain=HouseholdDomainId.FINANCE_EXPENSES,
-        description="Computes unpaid utility bill totals, effective per-unit kWh rates, and recurring subscription obligations.",
+        description="Computes unpaid utility bill totals, due dates, effective per-unit kWh rates, recurring subscription obligations, and financial reminders.",
         risk_level=ActionRiskLevel.READ_ONLY,
-        permitted_tables=("households", "bills", "subscriptions", "documents", "expenses"),
-        handler=tool_bills_utilities_audit,
+        permitted_tables=("households", "bills", "subscriptions", "documents", "expenses", "reminders"),
+        handler=tool_finance_bills_and_subscriptions_audit,
     ),
     "dispatch_external_utility_bill_payment": RegisteredTool(
         name="dispatch_external_utility_bill_payment",
         domain=HouseholdDomainId.FINANCE_EXPENSES,
         description="Initiates an external bank/UPI payment to settle a utility bill. Requires mandatory Human Approval Gate.",
         risk_level=ActionRiskLevel.EXTERNAL_CONSEQUENTIAL,
-        permitted_tables=("households", "bills", "expenses", "subscriptions", "documents"),
+        permitted_tables=("households", "bills", "expenses", "subscriptions", "documents", "reminders"),
         handler=tool_bills_external_payment_dispatch,
     ),
     "compute_household_budget_and_ledger_variance": RegisteredTool(
         name="compute_household_budget_and_ledger_variance",
         domain=HouseholdDomainId.FINANCE_EXPENSES,
-        description="Executes deterministic SQL aggregation of household spend by category, remaining budget, and utilization %.",
+        description="Executes deterministic SQL aggregation of household expenses, expenditure by category, payment history, remaining budget, and utilization %.",
         risk_level=ActionRiskLevel.READ_ONLY,
-        permitted_tables=("households", "expenses", "bills", "subscriptions", "documents"),
-        handler=tool_expense_budget_deterministic_ledger,
+        permitted_tables=("households", "expenses", "bills", "subscriptions", "documents", "reminders"),
+        handler=tool_finance_expenses_deterministic_ledger,
     ),
     "inspect_vehicle_fleet_and_compliance": RegisteredTool(
         name="inspect_vehicle_fleet_and_compliance",
@@ -749,17 +858,25 @@ SHARED_TOOL_REGISTRY: dict[str, RegisteredTool] = {
     "retrieve_parents_health_records_and_schedules": RegisteredTool(
         name="retrieve_parents_health_records_and_schedules",
         domain=HouseholdDomainId.PARENTS_HEALTH,
-        description="Retrieves recorded parent checkups, doctor appointments, lab reports, medication schedules, vaccinations, and health reminders without medical diagnosis.",
+        description="Retrieves recorded parent checkups, doctor appointments, lab reports, medication schedules, vaccinations, explicitly recorded measurements, and health reminders without medical diagnosis.",
         risk_level=ActionRiskLevel.READ_ONLY,
-        permitted_tables=("documents", "reminders", "notifications", "household_members"),
+        permitted_tables=("parent_health_records", "documents", "reminders", "notifications", "household_members"),
         handler=tool_parents_health_monitoring_records,
     ),
-    "retrieve_household_travel_records_and_bookings": RegisteredTool(
-        name="retrieve_household_travel_records_and_bookings",
+    "log_parent_health_checkup_or_reminder": RegisteredTool(
+        name="log_parent_health_checkup_or_reminder",
+        domain=HouseholdDomainId.PARENTS_HEALTH,
+        description="Records a parent health checkup, doctor appointment, lab report reference, medication schedule, vaccination, or measurement entry.",
+        risk_level=ActionRiskLevel.INTERNAL_MUTATION,
+        permitted_tables=("parent_health_records", "documents", "reminders", "notifications", "household_members"),
+        handler=tool_parents_health_log_record,
+    ),
+    "retrieve_travel_records_and_bookings": RegisteredTool(
+        name="retrieve_travel_records_and_bookings",
         domain=HouseholdDomainId.TRAVEL_RECORDS,
-        description="Retrieves recorded household trips, flight/train/bus bookings, hotel accommodations, travel documents, travel expenses, and trip reminders.",
+        description="Retrieves recorded household travel itineraries, bookings, hotel/flight records, travel documents, travel expenses, and trip reminders.",
         risk_level=ActionRiskLevel.READ_ONLY,
-        permitted_tables=("documents", "reminders", "expenses", "notifications"),
-        handler=tool_travel_records_and_bookings,
+        permitted_tables=("documents", "expenses", "reminders", "households"),
+        handler=tool_travel_records_and_itinerary,
     ),
 }

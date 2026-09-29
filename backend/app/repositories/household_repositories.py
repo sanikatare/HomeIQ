@@ -34,6 +34,7 @@ from app.db.models import (
     InventoryItem,
     MaintenanceRecord,
     Notification,
+    ParentHealthRecord,
     Reminder,
     Subscription,
     User,
@@ -268,3 +269,4 @@ class RepositoryRegistry:
         self.events = TenantRepository(session, Event)
         self.agent_runs = TenantRepository(session, AgentRun)
         self.notifications = TenantRepository(session, Notification)
+        self.parent_health = TenantRepository(session, ParentHealthRecord)

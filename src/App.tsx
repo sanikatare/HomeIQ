@@ -50,8 +50,7 @@ type DomainFilterId =
   | "kitchen_grocery"
   | "laundry_clothing"
   | "home_maintenance"
-  | "bills_utilities"
-  | "expense_budget"
+  | "finance_expenses"
   | "vehicle_mobility"
   | "documents_warranty";
 
@@ -92,16 +91,10 @@ const SEVEN_DOMAIN_NAV: DomainNavSpec[] = [
     icon: Wrench,
   },
   {
-    id: "bills_utilities",
-    label: "Bills & Utilities",
-    defaultQuery: "Please pay our pending MSEDCL electricity bill now.",
-    icon: Zap,
-  },
-  {
-    id: "expense_budget",
-    label: "Expense & Budget",
+    id: "finance_expenses",
+    label: "Finance & Household Expenses",
     defaultQuery:
-      "Summarize our recorded household expenses and active recurring subscriptions.",
+      "Summarize our pending utility bills, household expenses, monthly budget, recurring bills, payment history, and financial reminders.",
     icon: Receipt,
   },
   {
@@ -263,9 +256,9 @@ const SAMPLE_AGENT_QUERIES = [
       "Which pantry grocery items are currently low in stock or need restocking?",
   },
   {
-    label: "Monthly Expenses & Subscriptions",
+    label: "Finance & Household Expenses",
     query:
-      "Summarize our recorded household expenses and active recurring subscriptions.",
+      "Summarize our pending utility bills, household expenses, monthly budget, recurring bills, payment history, and financial reminders.",
   },
   {
     label: "Silk Saree Wash Rules",
@@ -301,7 +294,8 @@ export function App() {
     items: any[];
     subscriptions: any[];
     expenses: any[];
-  }>({ items: [], subscriptions: [], expenses: [] });
+    reminders?: any[];
+  }>({ items: [], subscriptions: [], expenses: [], reminders: [] });
   const [warrantiesData, setWarrantiesData] = useState<{
     items: any[];
     insurance_policies: any[];
@@ -2922,76 +2916,165 @@ export function App() {
                   </div>
                 )}
 
-                {/* Bills, Subscriptions, Expenses & Policies */}
-                {(showDomainSection("bills_utilities") ||
-                  showDomainSection("expense_budget") ||
+                {/* Unified Finance & Household Expenses + Documents & Warranty */}
+                {(showDomainSection("finance_expenses") ||
                   showDomainSection("documents_warranty")) && (
                   <div className="rounded-xl border border-slate-200 bg-white p-5">
-                    <h3 className="text-sm font-bold text-slate-900">
-                      Bills, Subscriptions & Expenses
-                    </h3>
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div>
+                        <h3 className="text-sm font-bold text-slate-900">
+                          {selectedDomain === "documents_warranty"
+                            ? "Warranties & Insurance Policies"
+                            : "Finance & Household Expenses"}
+                        </h3>
+                        {showDomainSection("finance_expenses") && (
+                          <p className="mt-0.5 text-[11px] text-slate-500">
+                            Bills & utilities, household expenditure, budget
+                            management, payments & payment history, due dates,
+                            recurring bills, expense tracking, spending
+                            summaries, and financial reminders.
+                          </p>
+                        )}
+                      </div>
+                      {showDomainSection("finance_expenses") && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setActiveView("intelligence");
+                            runAgentQueryText(
+                              "Summarize our pending utility bills, household expenses, monthly budget, recurring bills, payment history, and financial reminders."
+                            );
+                          }}
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-800 hover:bg-slate-100"
+                        >
+                          <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+                          Ask Finance Agent
+                        </button>
+                      )}
+                    </div>
 
-                    <div className="mt-3 space-y-2.5">
-                      {(showDomainSection("bills_utilities") ||
-                        showDomainSection("expense_budget")) &&
-                        billsData.items
-                          .filter((bill) =>
-                            matchesSearch(
-                              bill.provider_name,
-                              bill.utility_type,
-                              bill.consumer_account_number,
-                              bill.status,
-                              bill.due_date
-                            )
-                          )
-                          .map((bill) => (
-                            <div
-                              key={bill.id}
-                              className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-200 px-3.5 py-2.5 text-xs"
-                            >
-                              <div>
-                                <div className="font-semibold text-slate-900">
-                                  {bill.provider_name}
-                                </div>
-                                <div className="text-[11px] text-slate-500">
-                                  Account #{bill.consumer_account_number} · Due{" "}
-                                  {bill.due_date} ·{" "}
-                                  <span
-                                    className={
-                                      bill.status === "PAID"
-                                        ? "font-semibold text-emerald-700"
-                                        : "font-semibold text-amber-700"
-                                    }
-                                  >
-                                    {bill.status}
-                                  </span>
-                                </div>
+                    <div className="mt-3 space-y-3">
+                      {showDomainSection("finance_expenses") && (
+                        <>
+                          {/* Spending Summary & Budget Management Strip */}
+                          <div className="grid grid-cols-1 gap-2.5 rounded-xl border border-slate-200 bg-slate-50/70 p-3 sm:grid-cols-3">
+                            <div>
+                              <div className="text-[11px] font-medium text-slate-500">
+                                Monthly Budget & Spend Summary
                               </div>
-                              <div className="flex items-center gap-2.5">
-                                <span className="font-mono font-bold tabular-nums text-slate-900">
-                                  {formatINR(bill.amount_due_minor)}
-                                </span>
-                                {bill.status === "PENDING" && (
-                                  <button
-                                    type="button"
-                                    onClick={() =>
-                                      handleRequestBillPayment(
-                                        bill.provider_name
-                                      )
-                                    }
-                                    className="rounded-md bg-slate-900 px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-slate-800"
-                                  >
-                                    Pay Bill
-                                  </button>
-                                )}
+                              <div className="mt-0.5 font-mono text-xs font-bold tabular-nums text-slate-900">
+                                {formatINR(spendMinor)} /{" "}
+                                {formatINR(budgetMinor)}
+                              </div>
+                              <div className="text-[11px] text-slate-500">
+                                {budgetUtilizationPct}% utilized ·{" "}
+                                {formatINR(Math.max(0, budgetMinor - spendMinor))}{" "}
+                                remaining
                               </div>
                             </div>
-                          ))}
+                            <div>
+                              <div className="text-[11px] font-medium text-slate-500">
+                                Pending Bills & Due Dates
+                              </div>
+                              <div className="mt-0.5 font-mono text-xs font-bold tabular-nums text-amber-700">
+                                {formatINR(
+                                  summary?.metrics?.pending_bills_amount_minor
+                                )}
+                              </div>
+                              <div className="text-[11px] text-slate-500">
+                                {summary?.metrics?.pending_bills_count ?? 0}{" "}
+                                unpaid utility bill(s)
+                              </div>
+                            </div>
+                            <div>
+                              <div className="text-[11px] font-medium text-slate-500">
+                                Recurring Bills & Subscriptions
+                              </div>
+                              <div className="mt-0.5 font-mono text-xs font-bold tabular-nums text-slate-900">
+                                {formatINR(
+                                  billsData.subscriptions.reduce(
+                                    (acc, s) => acc + Number(s.amount_minor || 0),
+                                    0
+                                  )
+                                )}
+                              </div>
+                              <div className="text-[11px] text-slate-500">
+                                {billsData.subscriptions.length} active
+                                recurring cycle(s)
+                              </div>
+                            </div>
+                          </div>
 
-                      {showDomainSection("expense_budget") && (
-                        <>
+                          {/* Utility Bills, Due Dates & Payments */}
+                          <div className="pt-1 text-xs font-bold text-slate-700">
+                            Utility Bills, Due Dates & Payment Status
+                          </div>
+                          {billsData.items
+                            .filter((bill) =>
+                              matchesSearch(
+                                bill.provider_name,
+                                bill.utility_type,
+                                bill.consumer_account_number,
+                                bill.status,
+                                bill.due_date
+                              )
+                            )
+                            .map((bill) => (
+                              <div
+                                key={bill.id}
+                                className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-200 px-3.5 py-2.5 text-xs"
+                              >
+                                <div>
+                                  <div className="font-semibold text-slate-900">
+                                    {bill.provider_name} · {bill.utility_type}
+                                  </div>
+                                  <div className="text-[11px] text-slate-500">
+                                    Account #{bill.consumer_account_number} · Due{" "}
+                                    {bill.due_date}
+                                    {bill.consumption_units
+                                      ? ` · ${bill.consumption_units} ${bill.consumption_unit_label || "units"}`
+                                      : ""}{" "}
+                                    ·{" "}
+                                    <span
+                                      className={
+                                        bill.status === "PAID"
+                                          ? "font-semibold text-emerald-700"
+                                          : "font-semibold text-amber-700"
+                                      }
+                                    >
+                                      {bill.status}
+                                    </span>
+                                    {bill.paid_at && (
+                                      <span className="ml-1 text-slate-400">
+                                        (Paid {String(bill.paid_at).slice(0, 10)})
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2.5">
+                                  <span className="font-mono font-bold tabular-nums text-slate-900">
+                                    {formatINR(bill.amount_due_minor)}
+                                  </span>
+                                  {bill.status === "PENDING" && (
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        handleRequestBillPayment(
+                                          bill.provider_name
+                                        )
+                                      }
+                                      className="rounded-md bg-slate-900 px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-slate-800"
+                                    >
+                                      Pay Bill
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+
+                          {/* Recurring Bills & Active Subscriptions */}
                           <div className="pt-2 text-xs font-bold text-slate-700">
-                            Subscriptions
+                            Recurring Bills & Subscriptions
                           </div>
                           {billsData.subscriptions
                             .filter((sub) =>
@@ -3012,7 +3095,8 @@ export function App() {
                                     {sub.service_name}
                                   </span>
                                   <span className="ml-2 text-[11px] text-slate-500">
-                                    Renews {sub.next_renewal_date}
+                                    {sub.billing_cycle} · Due/Renews{" "}
+                                    {sub.next_renewal_date}
                                   </span>
                                 </div>
                                 <span className="font-mono font-semibold tabular-nums text-slate-900">
@@ -3021,8 +3105,9 @@ export function App() {
                               </div>
                             ))}
 
+                          {/* Expense Tracking, Expenditure & Payment History */}
                           <div className="pt-2 text-xs font-bold text-slate-700">
-                            Recent Expenses
+                            Expense Tracking & Payment History
                           </div>
                           <form
                             onSubmit={handleAddExpense}
@@ -3031,7 +3116,7 @@ export function App() {
                             <input
                               type="text"
                               required
-                              placeholder="Merchant name"
+                              placeholder="Merchant / Payee"
                               value={expenseMerchant}
                               onChange={(e) =>
                                 setExpenseMerchant(e.target.value)
@@ -3040,7 +3125,7 @@ export function App() {
                             />
                             <input
                               type="text"
-                              placeholder="Note (optional)"
+                              placeholder="Expenditure note"
                               value={expenseDesc}
                               onChange={(e) => setExpenseDesc(e.target.value)}
                               className="rounded border border-slate-300 bg-white px-2.5 py-1 text-xs"
@@ -3071,10 +3156,11 @@ export function App() {
                                 exp.merchant_name,
                                 exp.description,
                                 exp.category,
-                                exp.payment_method
+                                exp.payment_method,
+                                exp.incurred_on
                               )
                             )
-                            .slice(0, 4)
+                            .slice(0, 6)
                             .map((exp) => (
                               <div
                                 key={exp.id}
@@ -3082,10 +3168,16 @@ export function App() {
                               >
                                 <div>
                                   <div className="font-medium text-slate-800">
-                                    {exp.merchant_name}
+                                    {exp.merchant_name}{" "}
+                                    <span className="text-[11px] font-normal text-slate-500">
+                                      · {exp.category}
+                                    </span>
                                   </div>
                                   <div className="text-[11px] text-slate-500">
-                                    {exp.description}
+                                    {exp.description} · Paid on{" "}
+                                    {exp.incurred_on} via{" "}
+                                    {exp.payment_method || "UPI"}
+                                    {exp.is_recurring ? " · Recurring" : ""}
                                   </div>
                                 </div>
                                 <span className="font-mono font-semibold tabular-nums text-slate-900">
@@ -3093,6 +3185,47 @@ export function App() {
                                 </span>
                               </div>
                             ))}
+
+                          {/* Financial Reminders */}
+                          <div className="pt-2 text-xs font-bold text-slate-700">
+                            Financial Reminders & Due-Date Alerts
+                          </div>
+                          <div className="space-y-1.5">
+                            {billsData.items
+                              .filter((b) => b.status === "PENDING")
+                              .map((b) => (
+                                <div
+                                  key={`rem-bill-${b.id}`}
+                                  className="flex items-center justify-between rounded-lg border border-amber-200 bg-amber-50/60 px-3 py-2 text-xs text-amber-950"
+                                >
+                                  <span>
+                                    Upcoming utility bill due:{" "}
+                                    <strong>{b.provider_name}</strong> (
+                                    {formatINR(b.amount_due_minor)})
+                                  </span>
+                                  <span className="font-mono text-[11px] font-semibold">
+                                    Due {b.due_date}
+                                  </span>
+                                </div>
+                              ))}
+                            {billsData.subscriptions
+                              .filter((s) => s.is_active)
+                              .map((s) => (
+                                <div
+                                  key={`rem-sub-${s.id}`}
+                                  className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700"
+                                >
+                                  <span>
+                                    Recurring renewal:{" "}
+                                    <strong>{s.service_name}</strong> (
+                                    {formatINR(s.amount_minor)})
+                                  </span>
+                                  <span className="font-mono text-[11px] text-slate-500">
+                                    Renews {s.next_renewal_date}
+                                  </span>
+                                </div>
+                              ))}
+                          </div>
                         </>
                       )}
 

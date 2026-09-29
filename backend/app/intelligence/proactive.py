@@ -65,6 +65,7 @@ class ProactiveInsightType(StrEnum):
     LOW_INVENTORY = "LOW_INVENTORY"
     RECURRING_EXPENSE = "RECURRING_EXPENSE"
     UNUSUAL_SPENDING_CHANGE = "UNUSUAL_SPENDING_CHANGE"
+    UPCOMING_PARENT_CHECKUP = "UPCOMING_PARENT_CHECKUP"
     HOUSEHOLD_FOLLOW_UP = "HOUSEHOLD_FOLLOW_UP"
 
 
@@ -406,6 +407,47 @@ class ProactiveIntelligenceEngine:
                         ),
                     )
                 )
+
+        # 7B. UPCOMING_PARENT_CHECKUP (Deterministic: parent checkup / follow-up date within 21 days)
+        parent_health_records, _ = await self.repos.parent_health.list_for_household(
+            household_id, limit=100
+        )
+        for ph in parent_health_records:
+            if ph.next_due_or_followup_date:
+                days_to_followup = (ph.next_due_or_followup_date - today).days
+                if 0 <= days_to_followup <= 21:
+                    insights.append(
+                        ProactiveInsight(
+                            household_id=household_id,
+                            insight_type=ProactiveInsightType.UPCOMING_PARENT_CHECKUP,
+                            title=f"Upcoming Parent Health Checkup — {ph.parent_name}",
+                            explanation=(
+                                f"Recorded fact: '{ph.title}' ({ph.record_category.value}) for {ph.parent_name} "
+                                f"with {ph.provider_or_doctor or 'Physician'} is due on "
+                                f"{ph.next_due_or_followup_date.isoformat()} ({days_to_followup} day(s) remaining)."
+                            ),
+                            supporting_household_data=[
+                                RecordedHouseholdFact(
+                                    source_table="parent_health_records",
+                                    record_id=str(ph.id),
+                                    field_or_metric="next_due_or_followup_date",
+                                    recorded_value=f"{ph.next_due_or_followup_date.isoformat()} ({ph.title})",
+                                    is_deterministic_calculation=True,
+                                    citation_document_id=str(ph.document_id) if ph.document_id else None,
+                                )
+                            ],
+                            is_deterministic_rule=True,
+                            confidence_score=1.0,
+                            recommended_action=AgentRecommendation(
+                                title="Confirm Appointment & Prepare Lab Reports",
+                                recommendation_text=(
+                                    "Reminder: Confirm appointment slot and organize previous lab reports and medication schedule. "
+                                    "(Record tracking only — no clinical diagnosis)."
+                                ),
+                                basis_or_assumption="Deterministic follow-up date window <= 21 days.",
+                            ),
+                        )
+                    )
 
         # 8. HOUSEHOLD_FOLLOW_UP (Pending human approvals or open high-priority reminders)
         runs, _ = await self.repos.agent_runs.list_for_household(household_id, limit=50)

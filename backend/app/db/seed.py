@@ -34,6 +34,8 @@ from app.db.enums import (
     MeasurementUnit,
     NotificationChannel,
     NotificationStatus,
+    ParentHealthRecordCategory,
+    ParentHealthRecordStatus,
     PaymentMethod,
     ReminderPriority,
     ReminderStatus,
@@ -61,6 +63,7 @@ from app.db.models import (
     InventoryItem,
     MaintenanceRecord,
     Notification,
+    ParentHealthRecord,
     Reminder,
     Subscription,
     User,
@@ -308,7 +311,34 @@ async def seed_development_data(session: AsyncSession) -> dict[str, uuid.UUID]:
         expiry_date=date(2026, 11, 9),
         created_by_id=rohan.id,
     )
-    session.add_all([doc_dishwasher_warranty, doc_car_insurance])
+    doc_parent_lab_report = Document(
+        id=uuid.UUID("aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaa03"),
+        household_id=household.id,
+        asset_id=None,
+        title="Golwilkar Metropolis Senior Health Panel & HbA1c Lab Report (Parents)",
+        document_type=DocumentType.MEDICAL_LAB_REPORT,
+        gcs_uri="gs://homeiq-household-documents-dev/tare-sharma-pune/parents-metropolis-lab-report-sep2026.pdf",
+        mime_type="application/pdf",
+        file_size_bytes=394200,
+        sha256_checksum="4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a",
+        extracted_text=(
+            "Golwilkar Metropolis Diagnostics Kothrud Pune. Senior Comprehensive Panel (18-Sep-2026). "
+            "Smt. Sunita Tare (Mother): HbA1c 6.1%, Fasting Glucose 102 mg/dL, Vitamin D 34 ng/mL, BP 124/78 mmHg. "
+            "Shri. Prakash Tare (Father): Lipid Profile Total Cholesterol 172 mg/dL, BP 128/82 mmHg. "
+            "Next periodic checkup due 05-Oct-2026 with Dr. A. Deshmukh at Deenanath Mangeshkar Hospital."
+        ),
+        structured_metadata_json={
+            "lab_name": "Golwilkar Metropolis Diagnostics, Kothrud",
+            "report_date": "2026-09-18",
+            "extraction_confidence": 0.99,
+        },
+        embedding_model="text-embedding-004",
+        is_indexed_for_rag=True,
+        document_date=date(2026, 9, 18),
+        expiry_date=date(2026, 12, 18),
+        created_by_id=sanika.id,
+    )
+    session.add_all([doc_dishwasher_warranty, doc_car_insurance, doc_parent_lab_report])
     await session.flush()
 
     # 11. Warranties (associated with asset_dishwasher and doc_dishwasher_warranty)
@@ -451,7 +481,128 @@ async def seed_development_data(session: AsyncSession) -> dict[str, uuid.UUID]:
         due_at=datetime(2026, 10, 10, 9, 0, tzinfo=timezone.utc),
         created_by_id=sanika.id,
     )
-    session.add(reminder_service)
+    reminder_parent_checkup = Reminder(
+        id=uuid.UUID("ffffffff-ffff-4fff-8fff-ffffffffff02"),
+        household_id=household.id,
+        assigned_user_id=sanika.id,
+        title="Parents' Monthly Senior Checkup & Cardiology Follow-up Visit",
+        description="Accompany Smt. Sunita Tare (Mother) & Shri. Prakash Tare (Father) to Deenanath Mangeshkar Hospital on Oct 5, 2026 at 09:30 AM with Golwilkar Metropolis lab folder.",
+        domain="parents_health",
+        priority=ReminderPriority.HIGH,
+        status=ReminderStatus.PENDING,
+        due_at=datetime(2026, 10, 5, 9, 30, tzinfo=timezone.utc),
+        created_by_id=sanika.id,
+    )
+    session.add_all([reminder_service, reminder_parent_checkup])
+    await session.flush()
+
+    # 17B. Parents' Health Monitoring Records
+    health_checkup_mother = ParentHealthRecord(
+        id=uuid.UUID("66666666-6666-4666-8666-666666666601"),
+        household_id=household.id,
+        document_id=doc_parent_lab_report.id,
+        parent_name="Smt. Sunita Tare (Mother)",
+        record_category=ParentHealthRecordCategory.PERIODIC_CHECKUP,
+        title="Monthly Comprehensive Senior Checkup",
+        provider_or_doctor="Dr. A. Deshmukh · Deenanath Mangeshkar Hospital",
+        recorded_date=date(2026, 9, 5),
+        next_due_or_followup_date=date(2026, 10, 5),
+        schedule_or_frequency="Monthly (1st Monday)",
+        explicit_measurement_value="BP: 124/78 mmHg · Pulse: 72 bpm · Weight: 63.8 kg",
+        status=ParentHealthRecordStatus.DUE_SOON,
+        notes="Carry previous ECG & Golwilkar Metropolis HbA1c folder.",
+        created_by_id=sanika.id,
+    )
+    health_visit_father = ParentHealthRecord(
+        id=uuid.UUID("66666666-6666-4666-8666-666666666602"),
+        household_id=household.id,
+        document_id=doc_parent_lab_report.id,
+        parent_name="Shri. Prakash Tare (Father)",
+        record_category=ParentHealthRecordCategory.DOCTOR_APPOINTMENT,
+        title="Cardiology & Ophthalmology Routine Follow-up Visit",
+        provider_or_doctor="Dr. S. Kulkarni · Sahyadri Super Speciality Hospital",
+        recorded_date=date(2026, 9, 12),
+        next_due_or_followup_date=date(2026, 10, 14),
+        schedule_or_frequency="Quarterly Follow-up",
+        explicit_measurement_value="Resting ECG: Recorded Normal Sinus · IOP: 14 mmHg",
+        status=ParentHealthRecordStatus.SCHEDULED,
+        notes="Routine 3-month consultation visit booked for 10:30 AM.",
+        created_by_id=sanika.id,
+    )
+    health_lab_mother = ParentHealthRecord(
+        id=uuid.UUID("66666666-6666-4666-8666-666666666603"),
+        household_id=household.id,
+        document_id=doc_parent_lab_report.id,
+        parent_name="Smt. Sunita Tare (Mother)",
+        record_category=ParentHealthRecordCategory.LAB_TEST_REPORT,
+        title="HbA1c, Fasting Lipid Profile & Vitamin D Lab Panel",
+        provider_or_doctor="Golwilkar Metropolis Diagnostics, Kothrud",
+        recorded_date=date(2026, 9, 18),
+        next_due_or_followup_date=date(2026, 12, 18),
+        schedule_or_frequency="Every 3 Months",
+        explicit_measurement_value="HbA1c: 6.1% · Fasting Glucose: 102 mg/dL · Vitamin D: 34 ng/mL",
+        status=ParentHealthRecordStatus.RECORDED,
+        notes="10-hour overnight fasting sample collected at home.",
+        created_by_id=sanika.id,
+    )
+    health_meds_parents = ParentHealthRecord(
+        id=uuid.UUID("66666666-6666-4666-8666-666666666604"),
+        household_id=household.id,
+        document_id=None,
+        parent_name="Smt. Sunita Tare (Mother) & Shri. Prakash Tare (Father)",
+        record_category=ParentHealthRecordCategory.MEDICATION_SCHEDULE,
+        title="Daily Morning & Evening Prescribed Medication Schedule",
+        provider_or_doctor="Dr. A. Deshmukh · Deenanath Mangeshkar Hospital",
+        recorded_date=date(2026, 9, 1),
+        next_due_or_followup_date=date(2026, 10, 15),
+        schedule_or_frequency="Daily — 08:00 AM & 08:30 PM",
+        explicit_measurement_value="Morning 08:00 AM (Post-Breakfast) · Evening 08:30 PM (Post-Dinner) — Refill due Oct 15",
+        status=ParentHealthRecordStatus.ACTIVE,
+        notes="Weekly pill organizer refilled every Sunday evening.",
+        created_by_id=sanika.id,
+    )
+    health_vaccination_parents = ParentHealthRecord(
+        id=uuid.UUID("66666666-6666-4666-8666-666666666605"),
+        household_id=household.id,
+        document_id=None,
+        parent_name="Smt. Sunita Tare (Mother) & Shri. Prakash Tare (Father)",
+        record_category=ParentHealthRecordCategory.VACCINATION_SCREENING,
+        title="Annual Quadrivalent Influenza Vaccine & Bone Density DEXA Screening",
+        provider_or_doctor="Deenanath Mangeshkar Preventive Care Clinic",
+        recorded_date=date(2026, 8, 20),
+        next_due_or_followup_date=date(2027, 8, 20),
+        schedule_or_frequency="Annual Screening & Immunization",
+        explicit_measurement_value="2026-27 Influenza Dose Administered · DEXA Screening Logged",
+        status=ParentHealthRecordStatus.COMPLETED,
+        notes="Batch certificates archived in household folder.",
+        created_by_id=sanika.id,
+    )
+    health_measurement_father = ParentHealthRecord(
+        id=uuid.UUID("66666666-6666-4666-8666-666666666606"),
+        household_id=household.id,
+        document_id=None,
+        parent_name="Shri. Prakash Tare (Father)",
+        record_category=ParentHealthRecordCategory.HEALTH_MEASUREMENT,
+        title="Explicitly Recorded Home Blood Pressure, SpO2 & Fasting Glucose",
+        provider_or_doctor="Home Omron HEM-7156T & Accu-Chek Guide Log",
+        recorded_date=date(2026, 9, 27),
+        next_due_or_followup_date=date(2026, 10, 4),
+        schedule_or_frequency="Weekly Sunday Morning Log",
+        explicit_measurement_value="BP: 128/82 mmHg · SpO2: 98% · Fasting Glucose: 98 mg/dL",
+        status=ParentHealthRecordStatus.RECORDED,
+        notes="Recorded at 07:30 AM after 10 minutes rest.",
+        created_by_id=rohan.id,
+    )
+    session.add_all(
+        [
+            health_checkup_mother,
+            health_visit_father,
+            health_lab_mother,
+            health_meds_parents,
+            health_vaccination_parents,
+            health_measurement_father,
+        ]
+    )
     await session.flush()
 
     # 18. Agent Runs
@@ -513,7 +664,7 @@ async def seed_development_data(session: AsyncSession) -> dict[str, uuid.UUID]:
         status=NotificationStatus.UNREAD,
         title="Upcoming MSEDCL Electricity Bill & Dishwasher Service",
         body="MSEDCL bill of ₹4,180.00 is due Oct 8, and Bosch Dishwasher service is due Oct 10.",
-        action_url="/domains/bills-utilities",
+        action_url="/domains/finance-expenses",
         created_by_id=sanika.id,
     )
     session.add(notification)

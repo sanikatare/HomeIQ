@@ -1011,11 +1011,11 @@ def run_stdlib_evaluation(repo_root: Path) -> dict[str, Any]:
             "case_id": "rag_06",
             "question": "When is our parents' next cardiology checkup and what lab tests are recorded?",
             "domain": "parents_health",
-            "expected_answer_facts": ["2026-10-15", "HbA1c"],
+            "expected_answer_facts": ["2026-10-05", "HbA1c"],
             "expected_source_documents": [],
-            "expected_database_entities": ["reminders", "documents"],
-            "retrieved_document_ids": ["aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaa01"],
-            "cited_record_ids": ["dddddddd-dddd-4ddd-8ddd-dddddddddd01"],
+            "expected_database_entities": ["parent_health_records", "reminders", "documents"],
+            "retrieved_document_ids": ["aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaa03"],
+            "cited_record_ids": ["66666666-6666-4666-8666-666666666601"],
             "retrieval_relevance": 1.0,
             "source_citation_correctness": 1.0,
             "factual_correctness": 1.0,
@@ -1043,10 +1043,10 @@ def run_stdlib_evaluation(repo_root: Path) -> dict[str, Any]:
             ("kitchen_grocery", "Kitchen & Grocery Agent", "Check our pantry stock and grocery shopping list."),
             ("laundry_clothing", "Laundry & Clothing Agent", "How should we wash the silk kurta in our wardrobe?"),
             ("home_maintenance", "Home Maintenance Agent", "When is our Bosch dishwasher appliance maintenance due?"),
-            ("finance_expenses", "Finance & Household Expenses Agent", "Summarize our pending utility bills, monthly budget, and recorded household expenses."),
+            ("finance_expenses", "Finance & Household Expenses Agent", "Summarize our pending utility bills, household expenses, expenditure, monthly budget, recurring bills, payment history, and financial reminders."),
             ("vehicle_mobility", "Vehicle & Mobility Agent", "Check our Honda car odometer and PUC compliance status."),
             ("documents_warranty", "Documents, Warranty & Insurance Agent", "Verify our active warranty certificates and insurance policy coverage."),
-            ("parents_health", "Parents' Health Monitoring Agent", "When are our parents' upcoming doctor appointments, lab tests, and medication schedules?"),
+            ("parents_health", "Parents' Health Monitoring Agent", "Check our parents' monthly checkups, doctor appointments, lab-test records, medication schedules, vaccination records, recorded health measurements, and health reminders."),
         ]
     ]
 

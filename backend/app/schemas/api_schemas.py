@@ -30,6 +30,8 @@ from app.db.enums import (
     MeasurementUnit,
     NotificationChannel,
     NotificationStatus,
+    ParentHealthRecordCategory,
+    ParentHealthRecordStatus,
     PaymentMethod,
     ReminderPriority,
     ReminderStatus,
@@ -692,4 +694,38 @@ class NotificationResponse(ORMBaseSchema):
     body: str
     action_url: str | None
     read_at: datetime | None
+    created_at: datetime
+
+
+# -----------------------------------------------------------------------------
+# 19. Parents' Health Monitoring Records
+# -----------------------------------------------------------------------------
+class ParentHealthRecordCreateRequest(ORMBaseSchema):
+    document_id: uuid.UUID | None = None
+    parent_name: str = Field(min_length=2, max_length=160)
+    record_category: ParentHealthRecordCategory
+    title: str = Field(min_length=2, max_length=200)
+    provider_or_doctor: str | None = Field(default=None, max_length=160)
+    recorded_date: date
+    next_due_or_followup_date: date | None = None
+    schedule_or_frequency: str | None = Field(default=None, max_length=120)
+    explicit_measurement_value: str | None = Field(default=None, max_length=200)
+    status: ParentHealthRecordStatus = ParentHealthRecordStatus.RECORDED
+    notes: str | None = None
+
+
+class ParentHealthRecordResponse(ORMBaseSchema):
+    id: uuid.UUID
+    household_id: uuid.UUID
+    document_id: uuid.UUID | None
+    parent_name: str
+    record_category: ParentHealthRecordCategory
+    title: str
+    provider_or_doctor: str | None
+    recorded_date: date
+    next_due_or_followup_date: date | None
+    schedule_or_frequency: str | None
+    explicit_measurement_value: str | None
+    status: ParentHealthRecordStatus
+    notes: str | None
     created_at: datetime

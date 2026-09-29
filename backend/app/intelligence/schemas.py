@@ -36,9 +36,6 @@ class HouseholdDomainId(StrEnum):
     DOCUMENTS_WARRANTY = "documents_warranty"
     PARENTS_HEALTH = "parents_health"
     TRAVEL_RECORDS = "travel_records"
-    # Legacy aliases for backward compatibility
-    BILLS_UTILITIES = "finance_expenses"
-    EXPENSE_BUDGET = "finance_expenses"
 
 
 class RecordedHouseholdFact(BaseModel):

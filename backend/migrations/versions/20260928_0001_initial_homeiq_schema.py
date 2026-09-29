@@ -556,9 +556,34 @@ def upgrade() -> None:
     )
     op.create_index("ix_notifications_recipient_unread", "notifications", ["recipient_user_id", "status", "created_at"])
 
+    # 21. parent_health_records
+    op.create_table(
+        "parent_health_records",
+        sa.Column("id", sa.Uuid(), nullable=False),
+        sa.Column("household_id", sa.Uuid(), nullable=False),
+        sa.Column("document_id", sa.Uuid(), nullable=True),
+        sa.Column("parent_name", sa.String(length=160), nullable=False),
+        sa.Column("record_category", sa.String(length=64), nullable=False),
+        sa.Column("title", sa.String(length=200), nullable=False),
+        sa.Column("provider_or_doctor", sa.String(length=160), nullable=True),
+        sa.Column("recorded_date", sa.Date(), nullable=False),
+        sa.Column("next_due_or_followup_date", sa.Date(), nullable=True),
+        sa.Column("schedule_or_frequency", sa.String(length=120), nullable=True),
+        sa.Column("explicit_measurement_value", sa.String(length=200), nullable=True),
+        sa.Column("status", sa.String(length=32), nullable=False, server_default="RECORDED"),
+        sa.Column("notes", sa.Text(), nullable=True),
+        sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False),
+        sa.Column("updated_at", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False),
+        sa.ForeignKeyConstraint(["household_id"], ["households.id"], ondelete="CASCADE", name="fk_parent_health_records_household_id_households"),
+        sa.ForeignKeyConstraint(["document_id"], ["documents.id"], ondelete="SET NULL", name="fk_parent_health_records_document_id_documents"),
+        sa.PrimaryKeyConstraint("id", name="pk_parent_health_records"),
+    )
+    op.create_index("ix_parent_health_records_household_cat_due", "parent_health_records", ["household_id", "record_category", "next_due_or_followup_date"])
+
 
 def downgrade() -> None:
     for table_name in [
+        "parent_health_records",
         "notifications",
         "agent_runs",
         "events",

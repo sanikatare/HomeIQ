@@ -18,6 +18,7 @@ from app.core.logging import get_logger
 from app.db.enums import (
     EventSeverity,
     NotificationStatus,
+    ReminderPriority,
     ReminderStatus,
     StockStatus,
 )
@@ -36,6 +37,7 @@ from app.db.models import (
     InventoryItem,
     MaintenanceRecord,
     Notification,
+    ParentHealthRecord,
     Reminder,
     Subscription,
     User,
@@ -57,6 +59,7 @@ from app.schemas.api_schemas import (
     InventoryItemCreateRequest,
     MaintenanceCreateRequest,
     NotificationCreateRequest,
+    ParentHealthRecordCreateRequest,
     ReminderCreateRequest,
     SubscriptionCreateRequest,
     UserCreateRequest,
@@ -497,3 +500,60 @@ class HouseholdPlatformService:
             },
             updated_by_id=self.ctx.user_id,
         )
+
+    # -------------------------------------------------------------------------
+    # 19. Parents' Health Monitoring Records
+    # -------------------------------------------------------------------------
+    async def list_parent_health_records(
+        self, offset: int = 0, limit: int = 50
+    ) -> tuple[Sequence[ParentHealthRecord], int]:
+        return await self.repos.parent_health.list_for_household(
+            self.ctx.household_id, offset=offset, limit=limit
+        )
+
+    async def create_parent_health_record(
+        self, payload: ParentHealthRecordCreateRequest
+    ) -> ParentHealthRecord:
+        record = ParentHealthRecord(
+            household_id=self.ctx.household_id,
+            created_by_id=self.ctx.user_id,
+            **payload.model_dump(),
+        )
+        created = await self.repos.parent_health.create(record)
+        await self._record_audit_event(
+            event_type="health.record.logged",
+            domain="parents_health",
+            summary=f"Recorded parent health entry '{created.title}' for {created.parent_name}",
+            payload={
+                "record_id": str(created.id),
+                "parent_name": created.parent_name,
+                "record_category": created.record_category.value,
+                "next_due_or_followup_date": (
+                    created.next_due_or_followup_date.isoformat()
+                    if created.next_due_or_followup_date
+                    else None
+                ),
+            },
+        )
+        if created.next_due_or_followup_date:
+            due_dt = datetime(
+                created.next_due_or_followup_date.year,
+                created.next_due_or_followup_date.month,
+                created.next_due_or_followup_date.day,
+                9,
+                0,
+                tzinfo=timezone.utc,
+            )
+            reminder = Reminder(
+                household_id=self.ctx.household_id,
+                assigned_user_id=self.ctx.user_id,
+                title=f"{created.parent_name}: {created.title}",
+                description=f"Follow-up / checkup scheduled with {created.provider_or_doctor or 'healthcare provider'}.",
+                domain="parents_health",
+                priority=ReminderPriority.HIGH,
+                status=ReminderStatus.PENDING,
+                due_at=due_dt,
+                created_by_id=self.ctx.user_id,
+            )
+            await self.repos.reminders.create(reminder)
+        return created

@@ -66,6 +66,8 @@ class HouseholdEventType(StrEnum):
     WARRANTY_EXPIRING = "WARRANTY_EXPIRING"
     INSURANCE_EXPIRING = "INSURANCE_EXPIRING"
     SERVICE_COMPLETED = "SERVICE_COMPLETED"
+    HEALTH_CHECKUP_DUE = "HEALTH_CHECKUP_DUE"
+    HEALTH_RECORD_LOGGED = "HEALTH_RECORD_LOGGED"
 
 
 class TypedEventEnvelope(BaseModel):
@@ -325,5 +327,7 @@ class HomeIQEventBus:
             HouseholdEventType.WARRANTY_EXPIRING,
             HouseholdEventType.INSURANCE_EXPIRING,
             HouseholdEventType.SERVICE_COMPLETED,
+            HouseholdEventType.HEALTH_CHECKUP_DUE,
+            HouseholdEventType.HEALTH_RECORD_LOGGED,
         ):
             self.subscribe(evt, on_critical_alert_event)

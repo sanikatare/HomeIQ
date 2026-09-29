@@ -39,12 +39,12 @@
 
 | Dataset | Creator | Official URL | Hugging Face URL | Doc Type & Size | License | HomeIQ Domains | Role & Status |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **CORD-v2** | NAVER Clova AI | https://github.com/clovaai/cord | https://huggingface.co/datasets/naver-clova-ix/cord-v2 | 1,000 POS receipts | CC BY 4.0 | Kitchen & Grocery, Expense & Budget | External OCR/Extraction Benchmark (**Adapter Implemented**, dataset not bundled in Git) |
-| **ICDAR 2019 SROIE** | ICDAR RRC | https://rrc.cvc.uab.es/?ch=13 | https://huggingface.co/datasets/darentang/sroie | 973 scanned receipts | MIT / Research | Kitchen & Grocery, Expense & Budget | External OCR/Header Extraction Benchmark (**Adapter Implemented**, dataset not bundled in Git) |
+| **CORD-v2** | NAVER Clova AI | https://github.com/clovaai/cord | https://huggingface.co/datasets/naver-clova-ix/cord-v2 | 1,000 POS receipts | CC BY 4.0 | Kitchen & Grocery, Finance & Household Expenses | External OCR/Extraction Benchmark (**Adapter Implemented**, dataset not bundled in Git) |
+| **ICDAR 2019 SROIE** | ICDAR RRC | https://rrc.cvc.uab.es/?ch=13 | https://huggingface.co/datasets/darentang/sroie | 973 scanned receipts | MIT / Research | Kitchen & Grocery, Finance & Household Expenses | External OCR/Header Extraction Benchmark (**Adapter Implemented**, dataset not bundled in Git) |
 | **FUNSD** | EPFL / Swisscom | https://guillaumejaume.github.io/FUNSD/ | https://huggingface.co/datasets/nielsr/funsd | 199 noisy forms | Non-Commercial Research | Documents, Warranty & Insurance | **Recommended** for noisy form entity linking |
 | **XFUND** | Microsoft Research | https://github.com/doc-analysis/XFUND | https://huggingface.co/datasets/ega/xfund | 1,393 multilingual forms | MIT | Documents, Warranty & Insurance | **Recommended** for multilingual layout evaluation |
 | **DocVQA** | CVC UAB / IIT-H | https://www.docvqa.org/ | https://huggingface.co/datasets/lmms-lab/DocVQA | 12,767 doc images, 50k QA pairs | Research-Only | Documents, Warranty & Insurance (RAG) | **Recommended** for RAG visual QA benchmarking |
-| **WildReceipt** | OpenMMLab | https://github.com/open-mmlab/mmocr | https://huggingface.co/datasets/dvgodoy/WildReceipt | 1,768 camera receipts | Apache-2.0 / Research | Kitchen & Grocery, Expense & Budget | **Recommended** for mobile camera skew/blur benchmarking |
+| **WildReceipt** | OpenMMLab | https://github.com/open-mmlab/mmocr | https://huggingface.co/datasets/dvgodoy/WildReceipt | 1,768 camera receipts | Apache-2.0 / Research | Kitchen & Grocery, Finance & Household Expenses | **Recommended** for mobile camera skew/blur benchmarking |
 | **RVL-CDIP** | Ryerson Vision Lab | https://adamharley.com/rvl-cdip/ | https://huggingface.co/datasets/aharley/rvl_cdip | 400,000 docs (16 classes) | Research-Only | Document Classification Router | **Recommended** for document category classification |
 
 ---

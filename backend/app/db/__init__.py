@@ -25,6 +25,8 @@ from app.db.enums import (
     MeasurementUnit,
     NotificationChannel,
     NotificationStatus,
+    ParentHealthRecordCategory,
+    ParentHealthRecordStatus,
     PaymentMethod,
     ReminderPriority,
     ReminderStatus,
@@ -52,6 +54,7 @@ from app.db.models import (
     InventoryItem,
     MaintenanceRecord,
     Notification,
+    ParentHealthRecord,
     Reminder,
     Subscription,
     User,
@@ -80,6 +83,7 @@ ALL_MODELS = [
     Event,
     AgentRun,
     Notification,
+    ParentHealthRecord,
 ]
 
 __all__ = [
@@ -105,6 +109,7 @@ __all__ = [
     "Event",
     "AgentRun",
     "Notification",
+    "ParentHealthRecord",
     "HouseholdRole",
     "AssetCategory",
     "AssetStatus",
@@ -137,4 +142,6 @@ __all__ = [
     "ActionRiskLevel",
     "NotificationChannel",
     "NotificationStatus",
+    "ParentHealthRecordCategory",
+    "ParentHealthRecordStatus",
 ]

@@ -1,6 +1,6 @@
 {
-  "report_id": "eval-run-20260929-073629",
-  "generated_at": "2026-09-29T07:36:29.930778+00:00",
+  "report_id": "eval-run-20260929-173845",
+  "generated_at": "2026-09-29T17:38:45.969343+00:00",
   "execution_mode": "deterministic_ci",
   "model_configuration": {
     "document_extraction_model": "gemini-2.5-flash",
@@ -585,7 +585,7 @@
       "created_domain_records": [
         {
           "table": "expenses",
-          "id": "8c4b4dee-47f0-4d76-87ec-b60960eced37"
+          "id": "b050f054-229d-432d-abd7-7f51263208f8"
         }
       ],
       "errors": []
@@ -593,7 +593,7 @@
     {
       "document_id": "eval_0002",
       "document_type": "UTILITY_BILL",
-      "domain": "bills_utilities",
+      "domain": "finance_expenses",
       "difficulty": "normal",
       "status": "passed",
       "expected_pipeline_status": "DB_UPDATED",
@@ -708,7 +708,7 @@
       "created_domain_records": [
         {
           "table": "bills",
-          "id": "5acb82e0-1e44-4123-a7ab-438d9e4f4880"
+          "id": "ee103952-f277-43bb-a79a-cf47b9c8131a"
         }
       ],
       "errors": []
@@ -865,7 +865,7 @@
       "created_domain_records": [
         {
           "table": "expenses",
-          "id": "d9687f24-d7e5-4ea1-8d15-3abcf06741c5"
+          "id": "70ae3843-9e25-4eee-af97-fa3769acfcc8"
         }
       ],
       "errors": []
@@ -1024,7 +1024,7 @@
       "created_domain_records": [
         {
           "table": "warranties",
-          "id": "a44e0bdb-3367-4a2e-a072-3cdb5f15460c"
+          "id": "a69557d3-4303-4930-9df3-1e2463de4928"
         }
       ],
       "errors": []
@@ -1174,11 +1174,11 @@
       "created_domain_records": [
         {
           "table": "maintenance_records",
-          "id": "9091026c-71f2-45e7-844c-7dafe9980c03"
+          "id": "8a4ff7be-5fd6-45ab-9bd6-3e339768ad8d"
         },
         {
           "table": "expenses",
-          "id": "fad84ac2-adfd-4b67-9b90-b2065d35630a"
+          "id": "f1f7439d-33cc-401d-8260-bbee4f157b2c"
         }
       ],
       "errors": []
@@ -1301,7 +1301,7 @@
       "created_domain_records": [
         {
           "table": "insurance_policies",
-          "id": "83bc0aee-fcf0-4883-be98-3c34e6ce9fcd"
+          "id": "9f41fdc0-0f05-435c-8e4a-d756b0bb7582"
         }
       ],
       "errors": []
@@ -1450,7 +1450,7 @@
       "created_domain_records": [
         {
           "table": "expenses",
-          "id": "683288ea-2f54-4e7b-9093-0f18f9e0da9f"
+          "id": "c91ac33a-61f6-44e0-bcb9-130677a5ebb1"
         }
       ],
       "errors": []
@@ -1600,11 +1600,11 @@
       "created_domain_records": [
         {
           "table": "maintenance_records",
-          "id": "aeb6a282-cad7-46bb-9683-082f8c04b9d8"
+          "id": "5efa5e87-ef69-4f9d-807b-b13a778ea6e3"
         },
         {
           "table": "expenses",
-          "id": "accb4004-1fc5-4edf-b435-ad4c0d18b6c0"
+          "id": "ac3398ad-a0ef-4c69-967a-d912bd7cd502"
         }
       ],
       "errors": []
@@ -1612,7 +1612,7 @@
     {
       "document_id": "eval_0009",
       "document_type": "INVOICE",
-      "domain": "expense_budget",
+      "domain": "finance_expenses",
       "difficulty": "adversarial",
       "status": "passed",
       "expected_pipeline_status": "FAILED",
@@ -1718,7 +1718,7 @@
     {
       "case_id": "rag_02",
       "question": "How much did we spend on groceries and what is our monthly budget?",
-      "domain": "expense_budget",
+      "domain": "finance_expenses",
       "expected_answer_facts": [
         "8500000"
       ],
@@ -1768,7 +1768,7 @@
     {
       "case_id": "rag_04",
       "question": "When is the MSEDCL electricity bill due?",
-      "domain": "bills_utilities",
+      "domain": "finance_expenses",
       "expected_answer_facts": [
         "2026-10-08",
         "418000"
@@ -1817,20 +1817,23 @@
     },
     {
       "case_id": "rag_06",
-      "question": "Which recurring household subscription or utility expense is active?",
-      "domain": "bills_utilities",
+      "question": "When is our parents' next cardiology checkup and what lab tests are recorded?",
+      "domain": "parents_health",
       "expected_answer_facts": [
-        "418000"
+        "2026-10-05",
+        "HbA1c"
       ],
       "expected_source_documents": [],
       "expected_database_entities": [
-        "bills"
+        "parent_health_records",
+        "reminders",
+        "documents"
       ],
       "retrieved_document_ids": [
-        "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaa01"
+        "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaa03"
       ],
       "cited_record_ids": [
-        "dddddddd-dddd-4ddd-8ddd-dddddddddd01"
+        "66666666-6666-4666-8666-666666666601"
       ],
       "retrieval_relevance": 1.0,
       "source_citation_correctness": 1.0,
@@ -1881,22 +1884,9 @@
       "status": "passed"
     },
     {
-      "domain": "bills_utilities",
-      "agent_name": "Bills & Utilities Agent",
-      "test_query": "Audit our pending MSEDCL electricity utility bill.",
-      "correct_routing": true,
-      "correct_tool_selection": true,
-      "correct_database_updates_or_reads": true,
-      "correct_event_generation": true,
-      "refusal_of_unsupported_operations": true,
-      "correct_household_isolation": true,
-      "error_handling_verified": true,
-      "status": "passed"
-    },
-    {
-      "domain": "expense_budget",
-      "agent_name": "Expense & Budget Agent",
-      "test_query": "What is our monthly household budget and expense ledger spend?",
+      "domain": "finance_expenses",
+      "agent_name": "Finance & Household Expenses Agent",
+      "test_query": "Summarize our pending utility bills, household expenses, expenditure, monthly budget, recurring bills, payment history, and financial reminders.",
       "correct_routing": true,
       "correct_tool_selection": true,
       "correct_database_updates_or_reads": true,
@@ -1931,6 +1921,19 @@
       "correct_household_isolation": true,
       "error_handling_verified": true,
       "status": "passed"
+    },
+    {
+      "domain": "parents_health",
+      "agent_name": "Parents' Health Monitoring Agent",
+      "test_query": "Check our parents' monthly checkups, doctor appointments, lab-test records, medication schedules, vaccination records, recorded health measurements, and health reminders.",
+      "correct_routing": true,
+      "correct_tool_selection": true,
+      "correct_database_updates_or_reads": true,
+      "correct_event_generation": true,
+      "refusal_of_unsupported_operations": true,
+      "correct_household_isolation": true,
+      "error_handling_verified": true,
+      "status": "passed"
     }
   ],
   "end_to_end_results": [
@@ -1947,7 +1950,7 @@
       ],
       "created_entities": {
         "document_id": "eval_0001",
-        "expense_id": "8c4b4dee-47f0-4d76-87ec-b60960eced37"
+        "expense_id": "b050f054-229d-432d-abd7-7f51263208f8"
       },
       "emitted_events": [
         "document.intelligence.completed",
@@ -1968,7 +1971,7 @@
       "created_entities": {
         "invoice_document_id": "eval_0003",
         "warranty_document_id": "eval_0004",
-        "warranty_id": "a44e0bdb-3367-4a2e-a072-3cdb5f15460c"
+        "warranty_id": "a69557d3-4303-4930-9df3-1e2463de4928"
       },
       "emitted_events": [
         "document.intelligence.completed",
@@ -1988,7 +1991,7 @@
       ],
       "created_entities": {
         "document_id": "eval_0002",
-        "bill_id": "5acb82e0-1e44-4123-a7ab-438d9e4f4880"
+        "bill_id": "ee103952-f277-43bb-a79a-cf47b9c8131a"
       },
       "emitted_events": [
         "document.intelligence.completed",
@@ -2009,8 +2012,8 @@
       ],
       "created_entities": {
         "document_id": "eval_0005",
-        "maintenance_record_id": "9091026c-71f2-45e7-844c-7dafe9980c03",
-        "expense_id": "fad84ac2-adfd-4b67-9b90-b2065d35630a"
+        "maintenance_record_id": "8a4ff7be-5fd6-45ab-9bd6-3e339768ad8d",
+        "expense_id": "f1f7439d-33cc-401d-8260-bbee4f157b2c"
       },
       "emitted_events": [
         "document.intelligence.completed",

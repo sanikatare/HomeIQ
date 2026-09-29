@@ -33,10 +33,10 @@ Asynchronous, compute-heavy workflows (document OCR, chunking, `pgvector` embedd
 | 1. Kitchen & Grocery          |   |  [1. AI Orchestrator (LangGraph StateGraph)]  |
 | 2. Laundry & Clothing         |   |                      |                        |
 | 3. Home Maintenance           |   |  [2. Agent Router] ->+-> [3. Planning Agent]  |
-| 4. Bills & Utilities          |   |                      |                        |
-| 5. Expense & Budget           |   |  [4. Hybrid RAG Layer (SQL + pgvector HNSW)]  |
-| 6. Vehicle & Mobility         |   |                      |                        |
-| 7. Documents & Warranty       |   |  [5. Policy & Validation Engine (Pydantic)]   |
+| 4. Finance & Household Exp.   |   |                      |                        |
+| 5. Vehicle & Mobility         |   |  [4. Hybrid RAG Layer (SQL + pgvector HNSW)]  |
+| 6. Documents & Warranty       |   |                      |                        |
+|                               |   |  [5. Policy & Validation Engine (Pydantic)]   |
 |                               |<--|                      |                        |
 | (Typed Domain Service APIs)   |   |  [6. Human Approval Gate (Interrupt/Resume)]  |
 +---------------+---------------+   +-----------------------+-----------------------+
@@ -78,7 +78,7 @@ Above the seven household domains sits the `backend/app/intelligence/` package, 
 - Example cross-domain plan:
   1. Query `home_maintenance` for unresolved appliance faults (`ac_unit_01`).
   2. Query `documents_warranty` for active warranty coverage on `ac_unit_01`.
-  3. If covered, draft a warranty claim task; if expired, query `expense_budget` for available `Home Repair` budget envelope before recommending vendor dispatch.
+  3. If covered, draft a warranty claim task; if expired, query `finance_expenses` for available `Home Repair` budget envelope before recommending vendor dispatch.
 
 ### 3.4 Retrieval / Hybrid RAG Layer (`rag.py`)
 - Combines **Relational Pre-Filtering** (`household_id`, `domain`, `document_type`, `valid_until`) with **Dense Vector Similarity** (`pgvector` HNSW cosine distance `<=>` using 768-dimensional `text-embedding-004` embeddings) and **Lexical Full-Text Search** (`tsvector` / BM25 ranking) merged via Reciprocal Rank Fusion (RRF).
@@ -108,11 +108,10 @@ Each domain inside `backend/app/domains/` follows a uniform internal structure (
 | :- | :--- | :--- | :--- | :--- |
 | **1** | `kitchen_grocery` | `pantry_items`, `stock_batches`, `recipes`, `recipe_ingredients`, `shopping_lists` | FIFO stock depletion, unit normalization (`g`/`kg`/`ml`), expiry countdowns, missing ingredient diff | Recipe generation constrained by expiring stock; receipt line-item normalization |
 | **2** | `laundry_clothing` | `garments`, `care_labels`, `wash_cycles`, `stain_protocols` | Wash load grouping by fabric/temp/color constraints, cost-per-wear calculation | Care tag symbol decoding, stain removal retrieval from fabric care knowledge base |
-| **3** | `home_maintenance` | `home_assets`, `maintenance_schedules`, `work_orders`, `vendor_logs` | Next-service due date calculation, MTBF (Mean Time Between Failures), seasonal checklist generation | Troubleshooting synthesis grounded in uploaded appliance manuals (Domain 7 link) |
-| **4** | `bills_utilities` | `utility_accounts`, `meter_readings`, `utility_bills`, `tariff_slabs` | Slab-wise electricity/water bill verification, YoY/MoM kWh consumption delta, anomaly z-score | Utility bill PDF extraction, tariff slab anomaly explanation |
-| **5** | `expense_budget` | `ledger_accounts`, `transactions`, `budget_envelopes`, `split_rules` | Double-entry balance integrity, category burn rate, savings runway, member split reconciliation | Merchant categorization with confidence scoring, natural-language spend Q&A via SQL tools |
-| **6** | `vehicle_mobility` | `vehicles`, `fuel_logs`, `service_records`, `compliance_docs` | Fuel efficiency (`km/L` or `Wh/km`), cost-per-km, odometer-based service interval triggers | Service invoice parsing, PUC/insurance renewal orchestration |
-| **7** | `documents_warranty` | `documents`, `document_chunks` (`vector(768)`), `warranties`, `insurance_policies` | Coverage expiration alerts, claim eligibility date window checks, cryptographic SHA-256 deduplication | Hybrid semantic + keyword RAG over policies, warranties, and manuals with page citations |
+| **3** | `home_maintenance` | `home_assets`, `maintenance_schedules`, `work_orders`, `vendor_logs` | Next-service due date calculation, MTBF (Mean Time Between Failures), seasonal checklist generation | Troubleshooting synthesis grounded in uploaded appliance manuals (Domain 6 link) |
+| **4** | `finance_expenses` | `bills`, `subscriptions`, `expenses`, `households`, `reminders` | Utility bill verification, due dates, recurring bills, household expenses & expenditure, budget management, payment history, spending summaries, financial reminders | Utility bill & receipt extraction, spending summary & budget Q&A via deterministic SQL tools |
+| **5** | `vehicle_mobility` | `vehicles`, `fuel_logs`, `service_records`, `compliance_docs` | Fuel efficiency (`km/L` or `Wh/km`), cost-per-km, odometer-based service interval triggers | Service invoice parsing, PUC/insurance renewal orchestration |
+| **6** | `documents_warranty` | `documents`, `document_chunks` (`vector(768)`), `warranties`, `insurance_policies` | Coverage expiration alerts, claim eligibility date window checks, cryptographic SHA-256 deduplication | Hybrid semantic + keyword RAG over policies, warranties, and manuals with page citations |
 
 ---
 

@@ -1,7 +1,7 @@
 # HomeIQ — Dataset & Document Intelligence Evaluation Report
 
-- **Report ID**: `eval-run-20260929-073629`
-- **Generated At**: `2026-09-29T07:36:29.930778+00:00`
+- **Report ID**: `eval-run-20260929-173845`
+- **Generated At**: `2026-09-29T17:38:45.969343+00:00`
 - **Execution Mode**: `deterministic_ci`
 - **Extraction Model Configured**: `gemini-2.5-flash`
 - **Model Fine-Tuned?**: `False` (Zero-shot schema-constrained multimodal extraction (response_schema=GeminiDocumentAnalysisEnvelope, temperature=0.0) + deterministic Pydantic/SQL validation)
@@ -64,11 +64,11 @@
 | Case ID | Domain | Question | Retrieval Relevance | Citation Correctness | Factual Correctness | Groundedness | Hallucination Rate | Status |
 | :--- | :--- | :--- | ---: | ---: | ---: | ---: | ---: | :--- |
 | `rag_01` | `documents_warranty` | When does my Bosch dishwasher warranty expire? | 100% | 100% | 100% | 100% | 0% | **PASSED** |
-| `rag_02` | `expense_budget` | How much did we spend on groceries and what is our monthly budget? | 100% | 100% | 100% | 100% | 0% | **PASSED** |
+| `rag_02` | `finance_expenses` | How much did we spend on groceries and what is our monthly budget? | 100% | 100% | 100% | 100% | 0% | **PASSED** |
 | `rag_03` | `home_maintenance` | When is our Bosch dishwasher appliance maintenance due? | 100% | 100% | 100% | 100% | 0% | **PASSED** |
-| `rag_04` | `bills_utilities` | When is the MSEDCL electricity bill due? | 100% | 100% | 100% | 100% | 0% | **PASSED** |
+| `rag_04` | `finance_expenses` | When is the MSEDCL electricity bill due? | 100% | 100% | 100% | 100% | 0% | **PASSED** |
 | `rag_05` | `vehicle_mobility` | What is our Honda City vehicle odometer and service status? | 100% | 100% | 100% | 100% | 0% | **PASSED** |
-| `rag_06` | `bills_utilities` | Which recurring household subscription or utility expense is active? | 100% | 100% | 100% | 100% | 0% | **PASSED** |
+| `rag_06` | `parents_health` | When is our parents' next cardiology checkup and what lab tests are recorded? | 100% | 100% | 100% | 100% | 0% | **PASSED** |
 
 ---
 
@@ -79,10 +79,10 @@
 | `kitchen_grocery` | Kitchen & Grocery Agent | PASS | PASS | PASS | PASS | PASS | PASS | **PASSED** |
 | `laundry_clothing` | Laundry & Clothing Agent | PASS | PASS | PASS | PASS | PASS | PASS | **PASSED** |
 | `home_maintenance` | Home Maintenance Agent | PASS | PASS | PASS | PASS | PASS | PASS | **PASSED** |
-| `bills_utilities` | Bills & Utilities Agent | PASS | PASS | PASS | PASS | PASS | PASS | **PASSED** |
-| `expense_budget` | Expense & Budget Agent | PASS | PASS | PASS | PASS | PASS | PASS | **PASSED** |
+| `finance_expenses` | Finance & Household Expenses Agent | PASS | PASS | PASS | PASS | PASS | PASS | **PASSED** |
 | `vehicle_mobility` | Vehicle & Mobility Agent | PASS | PASS | PASS | PASS | PASS | PASS | **PASSED** |
 | `documents_warranty` | Documents, Warranty & Insurance Agent | PASS | PASS | PASS | PASS | PASS | PASS | **PASSED** |
+| `parents_health` | Parents' Health Monitoring Agent | PASS | PASS | PASS | PASS | PASS | PASS | **PASSED** |
 
 ---
 

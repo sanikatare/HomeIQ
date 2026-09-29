@@ -42,6 +42,8 @@ async def test_all_seven_domain_agents_and_human_approval_gate(
     api_client: AsyncClient,
 ) -> None:
     assert len(DOMAIN_AGENT_SPECS) == 7
+    assert HouseholdDomainId.FINANCE_EXPENSES in DOMAIN_AGENT_SPECS
+    assert HouseholdDomainId.PARENTS_HEALTH in DOMAIN_AGENT_SPECS
     orchestrator = HomeIQAgentOrchestrator(db_session)
 
     # 1. Multi-domain query routing across Documents/Warranty + Home Maintenance
@@ -53,6 +55,17 @@ async def test_all_seven_domain_agents_and_human_approval_gate(
     assert res.route.is_multi_domain is True
     assert len(res.recorded_facts) > 0
     assert all(rec.is_estimate_or_suggestion is True for rec in res.estimates_or_suggestions)
+
+    # 1B. Parents' Health Monitoring Agent routing & strictly grounded record retrieval
+    health_res = await orchestrator.execute_workflow(
+        household_id=SEEDED_HOUSEHOLD_ID,
+        user_id=SEEDED_USER_ID,
+        user_query="When is our parents' next monthly checkup, doctor appointment, and what lab-test records or medication schedules are recorded?",
+    )
+    assert health_res.route.primary_domain == HouseholdDomainId.PARENTS_HEALTH
+    assert any(f.source_table == "parent_health_records" for f in health_res.recorded_facts)
+    assert any(f.source_table == "documents" for f in health_res.recorded_facts)
+    assert any(f.source_table == "reminders" for f in health_res.recorded_facts)
 
     # 2. Consequential external action (pay electricity bill) triggers HUMAN_APPROVAL_REQUIRED
     pay_res = await orchestrator.execute_workflow(
@@ -104,8 +117,8 @@ def test_controlled_ai_evaluation_cases() -> None:
 
     # Eval Case 2: Unsupported claim (presenting an estimate/suggestion as a deterministic fact)
     unsupported_claim_output = DomainAgentOutput(
-        domain=HouseholdDomainId.EXPENSE_BUDGET,
-        agent_name="Expense & Budget Agent",
+        domain=HouseholdDomainId.FINANCE_EXPENSES,
+        agent_name="Finance & Household Expenses Agent",
         summary_answer="Budget check",
         estimates_or_suggestions=[
             AgentRecommendation(
@@ -119,7 +132,7 @@ def test_controlled_ai_evaluation_cases() -> None:
     with pytest.raises(PolicyViolationError, match="is_estimate_or_suggestion=True"):
         policy.validate_agent_output(
             unsupported_claim_output,
-            permitted_tables=("households", "expenses", "bills", "subscriptions"),
+            permitted_tables=("households", "expenses", "bills", "subscriptions", "documents", "reminders"),
         )
 
     # Eval Case 3: Incorrect / unauthorized cross-domain tool selection

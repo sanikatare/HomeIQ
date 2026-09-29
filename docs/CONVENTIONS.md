@@ -32,7 +32,7 @@ Every domain under `backend/app/domains/<domain_name>/` must adhere to a strict 
 - `router.py`: FastAPI `APIRouter` endpoints with explicit `response_model` and status codes.
 
 ### 2.2 Cross-Domain Communication
-- **No Circular Imports**: Domain A (`kitchen_grocery`) must never directly mutate SQLAlchemy models belonging to Domain B (`expense_budget`).
+- **No Circular Imports**: Domain A (`kitchen_grocery`) must never directly mutate SQLAlchemy models belonging to Domain B (`finance_expenses`).
 - Cross-domain interactions occur strictly via:
   1. Calling the target domain's public `Service` interface within a shared database transaction unit-of-work, or
   2. Publishing a typed domain event to RabbitMQ (`homeiq.events`), or

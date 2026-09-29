@@ -79,6 +79,8 @@ from app.db.enums import (
     MeasurementUnit,
     NotificationChannel,
     NotificationStatus,
+    ParentHealthRecordCategory,
+    ParentHealthRecordStatus,
     PaymentMethod,
     ReminderPriority,
     ReminderStatus,
@@ -228,6 +230,11 @@ class Household(UUIDPrimaryKeyMixin, AuditMixin, Base):
     )
     notifications: Mapped[list[Notification]] = relationship(
         "Notification",
+        back_populates="household",
+        cascade="all, delete-orphan",
+    )
+    parent_health_records: Mapped[list[ParentHealthRecord]] = relationship(
+        "ParentHealthRecord",
         back_populates="household",
         cascade="all, delete-orphan",
     )
@@ -1181,3 +1188,61 @@ class Notification(HouseholdTenantMixin, Base):
         back_populates="notifications",
         foreign_keys=[recipient_user_id],
     )
+
+
+# =============================================================================
+# 21. parent_health_records (Parents' Health Monitoring & Record Registry)
+# =============================================================================
+class ParentHealthRecord(HouseholdTenantMixin, Base):
+    """
+    Stores explicitly recorded parent health monitoring records:
+    monthly/periodic checkups, doctor appointments/visits, lab-test records and
+    medical reports, medication schedules, follow-up dates, vaccination/screening
+    records, and explicitly recorded health measurements.
+    Strictly limited to monitoring and record management (no diagnosis or treatment decisions).
+    """
+
+    __tablename__ = "parent_health_records"
+    __table_args__ = (
+        Index(
+            "ix_parent_health_records_household_cat_due",
+            "household_id",
+            "record_category",
+            "next_due_or_followup_date",
+        ),
+    )
+
+    document_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("documents.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
+    parent_name: Mapped[str] = mapped_column(String(160), nullable=False)
+    record_category: Mapped[ParentHealthRecordCategory] = mapped_column(
+        Enum(
+            ParentHealthRecordCategory,
+            name="parent_health_record_category_enum",
+            native_enum=False,
+        ),
+        nullable=False,
+    )
+    title: Mapped[str] = mapped_column(String(200), nullable=False)
+    provider_or_doctor: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    recorded_date: Mapped[date] = mapped_column(Date, nullable=False, index=True)
+    next_due_or_followup_date: Mapped[date | None] = mapped_column(Date, nullable=True, index=True)
+    schedule_or_frequency: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    explicit_measurement_value: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    status: Mapped[ParentHealthRecordStatus] = mapped_column(
+        Enum(
+            ParentHealthRecordStatus,
+            name="parent_health_record_status_enum",
+            native_enum=False,
+        ),
+        default=ParentHealthRecordStatus.RECORDED,
+        nullable=False,
+    )
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    # Relationships
+    household: Mapped[Household] = relationship("Household", back_populates="parent_health_records")
+    document: Mapped[Document | None] = relationship("Document")

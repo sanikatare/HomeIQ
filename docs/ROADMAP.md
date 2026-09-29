@@ -27,9 +27,8 @@ This roadmap sequences the implementation of HomeIQ so that each phase produces 
 ## Phase 2: Deterministic Domain Modules (Domains 1 to 7)
 - **Objective**: Build the relational schemas, deterministic calculation services, and REST endpoints for all seven domains before wiring LLM autonomy.
 - **Sequence**:
-  - **2A — Financial & Document Core (Domains 5, 4, 7)**:
-    - `expense_budget`: Double-entry transactions, budget envelopes, SQL variance & burn-rate queries.
-    - `bills_utilities`: Utility meters, slab tariff verifiers, recurring payment schedules.
+  - **2A — Financial & Document Core**:
+    - `finance_expenses`: Bills & utilities, household expenses, expenditure, budget management, payments & payment history, due dates, recurring bills, expense tracking, spending summaries, and financial reminders.
     - `documents_warranty`: GCS signed URL upload flow, warranty expiration trackers, insurance policy registry.
   - **2B — Physical Operations & Asset Core (Domains 1, 2, 3, 6)**:
     - `kitchen_grocery`: Pantry batch tracking, FIFO stock deduction, unit normalization, recipe ingredient diffing.

@@ -113,6 +113,7 @@ class TestHomeIQEvaluationAndArchitectureVerification(unittest.TestCase):
             "events",
             "agent_runs",
             "notifications",
+            "parent_health_records",
         }
         self.assertEqual(created_tables, expected_tables)
 
@@ -123,6 +124,7 @@ class TestHomeIQEvaluationAndArchitectureVerification(unittest.TestCase):
             "/api/v1/households/summary",
             "/api/v1/assets",
             "/api/v1/inventory",
+            "/api/v1/parents-health",
             "/api/v1/documents/ingest-json",
             "/api/v1/intelligence/execute",
             "/api/v1/intelligence/approvals",
