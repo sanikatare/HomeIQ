@@ -946,7 +946,7 @@ def run_stdlib_evaluation(repo_root: Path) -> dict[str, Any]:
         {
             "case_id": "rag_02",
             "question": "How much did we spend on groceries and what is our monthly budget?",
-            "domain": "expense_budget",
+            "domain": "finance_expenses",
             "expected_answer_facts": ["8500000"],
             "expected_source_documents": [],
             "expected_database_entities": ["households", "expenses"],
@@ -978,7 +978,7 @@ def run_stdlib_evaluation(repo_root: Path) -> dict[str, Any]:
         {
             "case_id": "rag_04",
             "question": "When is the MSEDCL electricity bill due?",
-            "domain": "bills_utilities",
+            "domain": "finance_expenses",
             "expected_answer_facts": ["2026-10-08", "418000"],
             "expected_source_documents": [],
             "expected_database_entities": ["bills"],
@@ -1009,11 +1009,11 @@ def run_stdlib_evaluation(repo_root: Path) -> dict[str, Any]:
         },
         {
             "case_id": "rag_06",
-            "question": "Which recurring household subscription or utility expense is active?",
-            "domain": "bills_utilities",
-            "expected_answer_facts": ["418000"],
+            "question": "When is our parents' next cardiology checkup and what lab tests are recorded?",
+            "domain": "parents_health",
+            "expected_answer_facts": ["2026-10-15", "HbA1c"],
             "expected_source_documents": [],
-            "expected_database_entities": ["bills"],
+            "expected_database_entities": ["reminders", "documents"],
             "retrieved_document_ids": ["aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaa01"],
             "cited_record_ids": ["dddddddd-dddd-4ddd-8ddd-dddddddddd01"],
             "retrieval_relevance": 1.0,
@@ -1043,10 +1043,10 @@ def run_stdlib_evaluation(repo_root: Path) -> dict[str, Any]:
             ("kitchen_grocery", "Kitchen & Grocery Agent", "Check our pantry stock and grocery shopping list."),
             ("laundry_clothing", "Laundry & Clothing Agent", "How should we wash the silk kurta in our wardrobe?"),
             ("home_maintenance", "Home Maintenance Agent", "When is our Bosch dishwasher appliance maintenance due?"),
-            ("bills_utilities", "Bills & Utilities Agent", "Audit our pending MSEDCL electricity utility bill."),
-            ("expense_budget", "Expense & Budget Agent", "What is our monthly household budget and expense ledger spend?"),
+            ("finance_expenses", "Finance & Household Expenses Agent", "Summarize our pending utility bills, monthly budget, and recorded household expenses."),
             ("vehicle_mobility", "Vehicle & Mobility Agent", "Check our Honda car odometer and PUC compliance status."),
             ("documents_warranty", "Documents, Warranty & Insurance Agent", "Verify our active warranty certificates and insurance policy coverage."),
+            ("parents_health", "Parents' Health Monitoring Agent", "When are our parents' upcoming doctor appointments, lab tests, and medication schedules?"),
         ]
     ]
 

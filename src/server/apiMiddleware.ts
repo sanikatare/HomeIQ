@@ -272,6 +272,34 @@ function createInitialSeedState(): DatabaseState {
         purchased_on: "2026-09-28",
         expiry_date: "2026-09-30",
       },
+      {
+        id: "99999999-9999-4999-8999-999999999903",
+        household_id: SEEDED_HOUSEHOLD_ID,
+        grocery_item_id: null,
+        name: "Cold-Pressed Groundnut Oil",
+        category: "COOKING_OILS",
+        storage_location: "PANTRY",
+        quantity_on_hand: "1.200",
+        unit: "LITER",
+        reorder_threshold: "1.500",
+        stock_status: "LOW_STOCK",
+        purchased_on: "2026-09-10",
+        expiry_date: "2027-03-10",
+      },
+      {
+        id: "99999999-9999-4999-8999-999999999904",
+        household_id: SEEDED_HOUSEHOLD_ID,
+        grocery_item_id: null,
+        name: "Organic Arhar Tur Dal",
+        category: "GRAINS_PULSES",
+        storage_location: "PANTRY",
+        quantity_on_hand: "3.500",
+        unit: "KILOGRAM",
+        reorder_threshold: "1.500",
+        stock_status: "IN_STOCK",
+        purchased_on: "2026-09-18",
+        expiry_date: "2027-04-18",
+      },
     ],
     clothing_items: [
       {
@@ -285,6 +313,32 @@ function createInitialSeedState(): DatabaseState {
         max_wash_temp_c: 20,
         can_tumble_dry: false,
         wear_count_since_wash: 1,
+        needs_laundry: true,
+      },
+      {
+        id: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaa02",
+        household_id: SEEDED_HOUSEHOLD_ID,
+        name: "Belgian White Linen Kurta & Shirt Set",
+        brand: "Fabindia Artisanal",
+        color: "Crisp Ivory White",
+        fabric_type: "LINEN",
+        care_instruction: "GENTLE_COLD_WASH",
+        max_wash_temp_c: 30,
+        can_tumble_dry: false,
+        wear_count_since_wash: 0,
+        needs_laundry: false,
+      },
+      {
+        id: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaa03",
+        household_id: SEEDED_HOUSEHOLD_ID,
+        name: "Tailored Indigo Cotton Chino & Shirt",
+        brand: "Uniqlo U Studio",
+        color: "Deep Indigo Navy",
+        fabric_type: "ORGANIC_COTTON",
+        care_instruction: "MACHINE_WASH_WARM",
+        max_wash_temp_c: 40,
+        can_tumble_dry: true,
+        wear_count_since_wash: 2,
         needs_laundry: true,
       },
     ],
@@ -531,15 +585,33 @@ function loadState(): DatabaseState {
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
   }
+  const initial = createInitialSeedState();
   if (!fs.existsSync(dbFilePath)) {
-    const initial = createInitialSeedState();
     fs.writeFileSync(dbFilePath, JSON.stringify(initial, null, 2), "utf-8");
     return initial;
   }
   try {
-    return JSON.parse(fs.readFileSync(dbFilePath, "utf-8")) as DatabaseState;
+    const parsed = JSON.parse(
+      fs.readFileSync(dbFilePath, "utf-8")
+    ) as DatabaseState;
+    let updated = false;
+    for (const seedItem of initial.inventory_items) {
+      if (!parsed.inventory_items?.some((i) => i.id === seedItem.id)) {
+        parsed.inventory_items = [...(parsed.inventory_items || []), seedItem];
+        updated = true;
+      }
+    }
+    for (const seedCloth of initial.clothing_items) {
+      if (!parsed.clothing_items?.some((c) => c.id === seedCloth.id)) {
+        parsed.clothing_items = [...(parsed.clothing_items || []), seedCloth];
+        updated = true;
+      }
+    }
+    if (updated) {
+      fs.writeFileSync(dbFilePath, JSON.stringify(parsed, null, 2), "utf-8");
+    }
+    return parsed;
   } catch {
-    const initial = createInitialSeedState();
     fs.writeFileSync(dbFilePath, JSON.stringify(initial, null, 2), "utf-8");
     return initial;
   }
@@ -1013,6 +1085,277 @@ export async function handleApiRequest(
     return sendJson(res, 201, newItem);
   }
 
+  const invPatchMatch = pathname.match(/^\/api\/v1\/inventory\/([^/]+)$/);
+  if (invPatchMatch && method === "PATCH") {
+    const ctx = resolveAuth(req, res, state);
+    if (!ctx) return;
+    const itemId = invPatchMatch[1];
+    const item = state.inventory_items.find(
+      (i) => i.household_id === ctx.household_id && i.id === itemId
+    );
+    if (!item) {
+      return sendJson(res, 404, {
+        error: { code: "RESOURCE_NOT_FOUND", message: "Inventory item not found." },
+      });
+    }
+    const body = await readJsonBody(req);
+    const currentQty = parseFloat(String(item.quantity_on_hand || "0"));
+    const delta = body?.delta !== undefined ? parseFloat(String(body.delta)) : 0;
+    const nextQty =
+      body?.quantity_on_hand !== undefined
+        ? Math.max(0, parseFloat(String(body.quantity_on_hand)))
+        : Math.max(0, currentQty + delta);
+    const thresh = parseFloat(String(item.reorder_threshold || "1.0"));
+    item.quantity_on_hand = nextQty.toFixed(3);
+    item.stock_status =
+      nextQty <= 0
+        ? "OUT_OF_STOCK"
+        : nextQty <= thresh
+        ? "LOW_STOCK"
+        : "IN_STOCK";
+
+    state.events.unshift({
+      id: crypto.randomUUID(),
+      household_id: ctx.household_id,
+      actor_user_id: ctx.user_id,
+      asset_id: null,
+      event_type:
+        item.stock_status === "IN_STOCK"
+          ? "inventory.restocked"
+          : "inventory.low_stock",
+      domain: "kitchen_grocery",
+      severity: item.stock_status === "IN_STOCK" ? "INFO" : "WARNING",
+      correlation_id: `corr-inv-${item.id.slice(0, 8)}`,
+      payload_json: {
+        inventory_item_id: item.id,
+        item_name: item.name,
+        quantity_on_hand: item.quantity_on_hand,
+        stock_status: item.stock_status,
+      },
+      occurred_at: new Date().toISOString(),
+      processed_by_worker: true,
+    });
+
+    saveState(state);
+    return sendJson(res, 200, item);
+  }
+
+  const clothPatchMatch = pathname.match(/^\/api\/v1\/clothing\/([^/]+)$/);
+  if (clothPatchMatch && method === "PATCH") {
+    const ctx = resolveAuth(req, res, state);
+    if (!ctx) return;
+    const clothId = clothPatchMatch[1];
+    const garment = state.clothing_items.find(
+      (c) => c.household_id === ctx.household_id && c.id === clothId
+    );
+    if (!garment) {
+      return sendJson(res, 404, {
+        error: { code: "RESOURCE_NOT_FOUND", message: "Garment not found." },
+      });
+    }
+    const body = await readJsonBody(req);
+    garment.needs_laundry =
+      body?.needs_laundry !== undefined
+        ? Boolean(body.needs_laundry)
+        : !garment.needs_laundry;
+    garment.wear_count_since_wash = garment.needs_laundry ? 1 : 0;
+
+    state.events.unshift({
+      id: crypto.randomUUID(),
+      household_id: ctx.household_id,
+      actor_user_id: ctx.user_id,
+      asset_id: null,
+      event_type: garment.needs_laundry
+        ? "laundry.queued"
+        : "laundry.care_completed",
+      domain: "laundry_clothing",
+      severity: "INFO",
+      correlation_id: `corr-clth-${garment.id.slice(0, 8)}`,
+      payload_json: {
+        clothing_id: garment.id,
+        name: garment.name,
+        needs_laundry: garment.needs_laundry,
+      },
+      occurred_at: new Date().toISOString(),
+      processed_by_worker: true,
+    });
+
+    saveState(state);
+    return sendJson(res, 200, garment);
+  }
+
+  if (pathname === "/api/v1/clothing" && method === "POST") {
+    const ctx = resolveAuth(req, res, state);
+    if (!ctx) return;
+    const body = await readJsonBody(req);
+    const {
+      name = "Custom Garment",
+      brand = "Household Wardrobe",
+      color = "Neutral",
+      fabric_type = "ORGANIC_COTTON",
+      care_instruction = "GENTLE_COLD_WASH",
+      max_wash_temp_c = 30,
+      can_tumble_dry = false,
+    } = body || {};
+    const newCloth = {
+      id: crypto.randomUUID(),
+      household_id: ctx.household_id,
+      name: String(name).trim(),
+      brand: String(brand).trim(),
+      color: String(color).trim(),
+      fabric_type: String(fabric_type).trim(),
+      care_instruction: String(care_instruction).trim(),
+      max_wash_temp_c: Number(max_wash_temp_c || 30),
+      can_tumble_dry: Boolean(can_tumble_dry),
+      wear_count_since_wash: 1,
+      needs_laundry: true,
+    };
+    state.clothing_items.unshift(newCloth);
+    saveState(state);
+    return sendJson(res, 201, newCloth);
+  }
+
+  if (pathname === "/api/v1/maintenance" && method === "POST") {
+    const ctx = resolveAuth(req, res, state);
+    if (!ctx) return;
+    const body = await readJsonBody(req);
+    const {
+      title = "Preventive Appliance Inspection",
+      description = "Scheduled engineering inspection and calibration.",
+      technician_or_vendor = "HomeIQ Certified Engineering Partner",
+      scheduled_for = "2026-10-15",
+      estimated_cost_inr = 1200,
+      asset_id = ASSET_AC_ID,
+      priority = "HIGH",
+    } = body || {};
+    const newMaint = {
+      id: crypto.randomUUID(),
+      household_id: ctx.household_id,
+      asset_id: asset_id || ASSET_AC_ID,
+      document_id: null,
+      title: String(title).trim(),
+      description: String(description).trim(),
+      priority: String(priority),
+      status: "SCHEDULED",
+      scheduled_for: String(scheduled_for),
+      completed_on: null,
+      technician_or_vendor: String(technician_or_vendor).trim(),
+      labor_cost_minor: Math.max(
+        0,
+        Math.round(parseFloat(String(estimated_cost_inr || 0)) * 100)
+      ),
+      parts_cost_minor: 0,
+      next_recommended_service_on: "2027-04-15",
+    };
+    state.maintenance_records.unshift(newMaint);
+    saveState(state);
+    return sendJson(res, 201, newMaint);
+  }
+
+  const maintPatchMatch = pathname.match(/^\/api\/v1\/maintenance\/([^/]+)$/);
+  if (maintPatchMatch && method === "PATCH") {
+    const ctx = resolveAuth(req, res, state);
+    if (!ctx) return;
+    const maintId = maintPatchMatch[1];
+    const record = state.maintenance_records.find(
+      (m) => m.household_id === ctx.household_id && m.id === maintId
+    );
+    if (!record) {
+      return sendJson(res, 404, {
+        error: {
+          code: "RESOURCE_NOT_FOUND",
+          message: "Maintenance record not found.",
+        },
+      });
+    }
+    const today = new Date().toISOString().slice(0, 10);
+    record.status = "COMPLETED";
+    record.completed_on = today;
+
+    const linkedAsset = state.assets.find(
+      (a) => a.household_id === ctx.household_id && a.id === record.asset_id
+    );
+    if (linkedAsset && linkedAsset.status === "MAINTENANCE_DUE") {
+      linkedAsset.status = "OPERATIONAL";
+    }
+
+    state.events.unshift({
+      id: crypto.randomUUID(),
+      household_id: ctx.household_id,
+      actor_user_id: ctx.user_id,
+      asset_id: record.asset_id,
+      event_type: "maintenance.completed",
+      domain: "home_maintenance",
+      severity: "INFO",
+      correlation_id: `corr-mnt-${record.id.slice(0, 8)}`,
+      payload_json: {
+        maintenance_id: record.id,
+        title: record.title,
+        completed_on: today,
+      },
+      occurred_at: new Date().toISOString(),
+      processed_by_worker: true,
+    });
+
+    saveState(state);
+    return sendJson(res, 200, record);
+  }
+
+  if (pathname === "/api/v1/expenses" && method === "POST") {
+    const ctx = resolveAuth(req, res, state);
+    if (!ctx) return;
+    const body = await readJsonBody(req);
+    const {
+      merchant_name = "Household Vendor",
+      description = "Household expense",
+      amount_inr = 500,
+      category = "HOUSEHOLD_SUPPLIES",
+      payment_method = "UPI",
+    } = body || {};
+    const amountMinor = Math.max(
+      100,
+      Math.round(parseFloat(String(amount_inr || 0)) * 100)
+    );
+    const expId = crypto.randomUUID();
+    const today = new Date().toISOString().slice(0, 10);
+    const newExp = {
+      id: expId,
+      household_id: ctx.household_id,
+      asset_id: null,
+      bill_id: null,
+      maintenance_record_id: null,
+      receipt_document_id: null,
+      category,
+      merchant_name: String(merchant_name).trim(),
+      description: String(description).trim(),
+      amount_minor: amountMinor,
+      currency_code: "INR",
+      incurred_on: today,
+      payment_method,
+      is_recurring: false,
+    };
+    state.expenses.unshift(newExp);
+    state.events.unshift({
+      id: crypto.randomUUID(),
+      household_id: ctx.household_id,
+      actor_user_id: ctx.user_id,
+      asset_id: null,
+      event_type: "expense.recorded",
+      domain: "expense_budget",
+      severity: "INFO",
+      correlation_id: `corr-exp-${expId.slice(0, 8)}`,
+      payload_json: {
+        expense_id: expId,
+        merchant_name: newExp.merchant_name,
+        amount_minor: amountMinor,
+      },
+      occurred_at: new Date().toISOString(),
+      processed_by_worker: true,
+    });
+    saveState(state);
+    return sendJson(res, 201, newExp);
+  }
+
   if (pathname === "/api/v1/bills" && method === "GET") {
     const ctx = resolveAuth(req, res, state);
     if (!ctx) return;
@@ -1344,6 +1687,26 @@ export async function handleApiRequest(
         is_recurring: false,
       });
       createdRecords.push({ table: "expenses", record_id: expId });
+
+      // Deterministic Receipt -> Inventory update for recognized items
+      if (lower.includes("indrayani") || lower.includes("rice")) {
+        const riceItem = state.inventory_items.find(
+          (i) =>
+            i.household_id === ctx.household_id &&
+            i.name.toLowerCase().includes("rice")
+        );
+        if (riceItem) {
+          const updatedQty =
+            parseFloat(String(riceItem.quantity_on_hand || "0")) + 5.0;
+          riceItem.quantity_on_hand = updatedQty.toFixed(3);
+          riceItem.stock_status = "IN_STOCK";
+          riceItem.purchased_on = nowIso.slice(0, 10);
+          createdRecords.push({
+            table: "inventory_items",
+            record_id: riceItem.id,
+          });
+        }
+      }
     }
 
     state.events.unshift({
@@ -2137,6 +2500,26 @@ export async function handleApiRequest(
       );
     }
     return sendJson(res, 404, { error: { message: "Manifest not found" } });
+  }
+
+  if (
+    pathname === "/api/v1/intelligence/evaluation/latest" &&
+    method === "GET"
+  ) {
+    const reportPath = path.resolve(
+      process.cwd(),
+      "evaluation/results/latest.json"
+    );
+    if (fs.existsSync(reportPath)) {
+      return sendJson(
+        res,
+        200,
+        JSON.parse(fs.readFileSync(reportPath, "utf-8"))
+      );
+    }
+    return sendJson(res, 404, {
+      error: { code: "NOT_FOUND", message: "No evaluation report found." },
+    });
   }
 
   if (

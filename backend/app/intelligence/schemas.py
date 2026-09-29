@@ -31,10 +31,14 @@ class HouseholdDomainId(StrEnum):
     KITCHEN_GROCERY = "kitchen_grocery"
     LAUNDRY_CLOTHING = "laundry_clothing"
     HOME_MAINTENANCE = "home_maintenance"
-    BILLS_UTILITIES = "bills_utilities"
-    EXPENSE_BUDGET = "expense_budget"
+    FINANCE_EXPENSES = "finance_expenses"
     VEHICLE_MOBILITY = "vehicle_mobility"
     DOCUMENTS_WARRANTY = "documents_warranty"
+    PARENTS_HEALTH = "parents_health"
+    TRAVEL_RECORDS = "travel_records"
+    # Legacy aliases for backward compatibility
+    BILLS_UTILITIES = "finance_expenses"
+    EXPENSE_BUDGET = "finance_expenses"
 
 
 class RecordedHouseholdFact(BaseModel):

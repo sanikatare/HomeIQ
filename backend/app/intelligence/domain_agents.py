@@ -175,63 +175,72 @@ DOMAIN_AGENT_SPECS: dict[HouseholdDomainId, DomainAgentSpec] = {
             "and clearly label preventive advice as suggestions."
         ),
     ),
-    HouseholdDomainId.BILLS_UTILITIES: DomainAgentSpec(
-        domain=HouseholdDomainId.BILLS_UTILITIES,
-        agent_name="Bills & Utilities Agent",
+    HouseholdDomainId.FINANCE_EXPENSES: DomainAgentSpec(
+        domain=HouseholdDomainId.FINANCE_EXPENSES,
+        agent_name="Finance & Household Expenses Agent",
         responsibilities=(
-            "Monitor utility bills (electricity, water, gas, broadband) for due dates, consumption units (kWh), and effective unit rates.",
-            "Track recurring subscription renewals and autopay configurations.",
-            "Enforce Human-in-the-Loop approval before initiating any external bill payment.",
+            "Monitor utility bills (electricity, water, gas, broadband), due dates, recurring bills, and subscription renewals.",
+            "Compute household expenses, expenditure summaries, budget management, and payment history using deterministic SQL.",
+            "Emit financial reminders and enforce Human-in-the-Loop approval before initiating any external bill payment.",
         ),
-        tools=("audit_utility_bills_and_subscriptions", "dispatch_external_utility_bill_payment"),
-        permitted_data=("bills", "subscriptions", "documents", "expenses"),
+        tools=(
+            "audit_utility_bills_and_subscriptions",
+            "compute_household_budget_and_ledger_variance",
+            "dispatch_external_utility_bill_payment",
+        ),
+        permitted_data=("households", "bills", "subscriptions", "documents", "expenses"),
         input_schema_name="DomainAgentInput",
         output_schema_name="DomainAgentOutput",
-        relevant_entities=("Bill", "Subscription", "Document"),
+        relevant_entities=("Household", "Bill", "Subscription", "Expense", "Document"),
         relevant_events=(
             "bill.due_date.approaching",
             "bill.payment.approval_requested",
             "bill.payment.dispatched",
-        ),
-        validation_rules=(
-            "Effective tariff rate (`amount_due / units_consumed`) is computed deterministically in Python/SQL.",
-            "Calling `dispatch_external_utility_bill_payment` MUST trigger a `HUMAN_APPROVAL_REQUIRED` interrupt.",
-        ),
-        failure_behavior=(
-            "Return unpaid `bills` and active `subscriptions` sorted by `due_date` ascending."
-        ),
-        system_prompt=(
-            "You are the HomeIQ Bills & Utilities Agent. Never invent meter readings or bill amounts, "
-            "and never execute external payments without human authorization."
-        ),
-    ),
-    HouseholdDomainId.EXPENSE_BUDGET: DomainAgentSpec(
-        domain=HouseholdDomainId.EXPENSE_BUDGET,
-        agent_name="Expense & Budget Agent",
-        responsibilities=(
-            "Compute household budget utilization, category-wise expenditure rollups, and remaining monthly runway using SQL.",
-            "Track asset-linked expenses to support Total Cost of Ownership (TCO) analysis.",
-            "Provide clearly separated savings suggestions based on deterministic spend variance.",
-        ),
-        tools=("compute_household_budget_and_ledger_variance",),
-        permitted_data=("households", "expenses", "bills", "subscriptions"),
-        input_schema_name="DomainAgentInput",
-        output_schema_name="DomainAgentOutput",
-        relevant_entities=("Household", "Expense", "Bill", "Subscription"),
-        relevant_events=(
             "budget.threshold.exceeded",
             "expense.ledger.reconciled",
         ),
         validation_rules=(
-            "All sums, percentages, and remaining balances must come exclusively from `FinanceRepository` SQL aggregations.",
-            "Budget optimization tips must be placed in `estimates_or_suggestions` with `is_estimate_or_suggestion=True`.",
+            "All sums, percentages, tariff rates, and remaining balances must come exclusively from SQL/Python aggregations.",
+            "Calling `dispatch_external_utility_bill_payment` MUST trigger a `HUMAN_APPROVAL_REQUIRED` interrupt.",
         ),
         failure_behavior=(
-            "Return the deterministic `summarize_monthly_spend` SQL dictionary without commentary."
+            "Return unpaid `bills`, active `subscriptions`, and deterministic monthly spend totals."
         ),
         system_prompt=(
-            "You are the HomeIQ Expense & Budget Agent. You never perform mental arithmetic; "
-            "you report exact minor-unit SQL totals and separate budget advice from ledger facts."
+            "You are the HomeIQ Finance & Household Expenses Agent. You manage bills and utilities, "
+            "household expenses, budget management, payment history, recurring bills, and financial reminders. "
+            "Never invent amounts or execute external payments without human authorization."
+        ),
+    ),
+    HouseholdDomainId.PARENTS_HEALTH: DomainAgentSpec(
+        domain=HouseholdDomainId.PARENTS_HEALTH,
+        agent_name="Parents' Health Monitoring Agent",
+        responsibilities=(
+            "Record, organize, retrieve, and track parents' periodic checkups, doctor appointments, and follow-up dates.",
+            "Index and retrieve lab-test records, medical reports, vaccination/screening records, and explicitly recorded health measurements.",
+            "Track medication schedules and generate upcoming checkup and health-related reminders strictly without diagnosis or medical decision-making.",
+        ),
+        tools=("retrieve_parents_health_records_and_schedules",),
+        permitted_data=("documents", "reminders", "notifications", "household_members"),
+        input_schema_name="DomainAgentInput",
+        output_schema_name="DomainAgentOutput",
+        relevant_entities=("Document", "Reminder", "Notification", "HouseholdMember"),
+        relevant_events=(
+            "health.checkup.reminder_scheduled",
+            "health.record.logged",
+            "health.appointment.upcoming",
+        ),
+        validation_rules=(
+            "Strictly limited to monitoring, organization, retrieval, and reminders of explicitly recorded health data.",
+            "Never perform medical diagnosis, disease prediction, treatment recommendation, or clinical decision-making.",
+        ),
+        failure_behavior=(
+            "Return recorded parent checkup dates, medication schedules, and lab report citations without clinical interpretation."
+        ),
+        system_prompt=(
+            "You are the HomeIQ Parents' Health Monitoring Agent. Help users record, organize, retrieve, "
+            "track, and remind about their parents' checkups, doctor visits, lab reports, medication schedules, "
+            "vaccinations, and recorded measurements. Do not diagnose, predict disease, or recommend treatments."
         ),
     ),
     HouseholdDomainId.VEHICLE_MOBILITY: DomainAgentSpec(
@@ -261,6 +270,37 @@ DOMAIN_AGENT_SPECS: dict[HouseholdDomainId, DomainAgentSpec] = {
         system_prompt=(
             "You are the HomeIQ Vehicle & Mobility Agent. Report exact odometer metrics, PUC dates, "
             "and TCO figures from PostgreSQL."
+        ),
+    ),
+    HouseholdDomainId.TRAVEL_RECORDS: DomainAgentSpec(
+        domain=HouseholdDomainId.TRAVEL_RECORDS,
+        agent_name="Travel Records Agent",
+        responsibilities=(
+            "Record, organize, retrieve, and track past and upcoming household trips, travel dates, and destinations.",
+            "Index flight, train, bus, and hotel/accommodation bookings, PNR confirmations, and travel documents.",
+            "Track travel expenses, receipts, trip timelines, and reminders for upcoming departures and travel documents.",
+        ),
+        tools=("retrieve_household_travel_records_and_bookings",),
+        permitted_data=("documents", "reminders", "expenses", "notifications"),
+        input_schema_name="DomainAgentInput",
+        output_schema_name="DomainAgentOutput",
+        relevant_entities=("Document", "Reminder", "Expense", "Notification"),
+        relevant_events=(
+            "travel.trip.logged",
+            "travel.booking.verified",
+            "travel.reminder.scheduled",
+        ),
+        validation_rules=(
+            "Focus strictly on organizing and retrieving recorded household travel bookings, dates, documents, and expenses.",
+            "Do not invent unrecorded PNR numbers, booking confirmations, or speculative travel recommendations.",
+        ),
+        failure_behavior=(
+            "Return recorded trip bookings, travel documents, and departure reminders directly from PostgreSQL."
+        ),
+        system_prompt=(
+            "You are the HomeIQ Travel Records Agent. Help users record, organize, retrieve, and track "
+            "past and upcoming trips, flight/train/bus bookings, hotel confirmations, travel documents, "
+            "travel expenses, and departure reminders based strictly on recorded household data."
         ),
     ),
 }
@@ -496,38 +536,57 @@ class SharedDomainAgentExecutor:
             )
             return summary, rec
 
-        if domain == HouseholdDomainId.BILLS_UTILITIES:
+        if domain == HouseholdDomainId.FINANCE_EXPENSES:
             unpaid = metrics.get("unpaid_bills_total_minor", 0)
             sub_m = metrics.get("active_subscriptions_monthly_minor", 0)
+            budget = metrics.get("household_monthly_budget_minor", 8500000)
+            spent = metrics.get("total_recorded_spend_minor", 0)
             summary = (
-                f"Deterministic utility audit: ₹{unpaid / 100:,.2f} in unpaid utility bills and "
-                f"₹{sub_m / 100:,.2f}/month in active recurring subscriptions."
+                f"Finance & Household Expenses Summary: ₹{unpaid / 100:,.2f} in unpaid utility bills, "
+                f"₹{sub_m / 100:,.2f}/month in recurring subscriptions, and ₹{spent / 100:,.2f} recorded "
+                f"against the ₹{budget / 100:,.2f} monthly budget."
             )
             rec = AgentRecommendation(
-                title="Peak-Hour Load Shifting Opportunity",
+                title="Upcoming Due Dates & Budget Runway Reminder",
                 recommendation_text=(
-                    "Suggestion: Running high-wattage appliances (dishwasher/water heater) during non-peak "
-                    "hours can reduce next cycle's slab consumption."
+                    "Reminder: Review pending utility bills before their due dates and maintain "
+                    "a 15% monthly budget buffer for recurring household obligations."
                 ),
-                basis_or_assumption="Advisory estimate based on recorded kWh consumption in `bills`.",
+                basis_or_assumption="Derived deterministically from `bills`, `subscriptions`, and `expenses`.",
             )
             return summary, rec
 
-        if domain == HouseholdDomainId.EXPENSE_BUDGET:
-            budget = metrics.get("household_monthly_budget_minor", 0)
-            spent = metrics.get("total_recorded_spend_minor", 0)
-            pct = metrics.get("budget_utilization_percent", 0.0)
+        if domain == HouseholdDomainId.PARENTS_HEALTH:
+            rem_cnt = metrics.get("health_reminders_count", 0)
+            doc_cnt = metrics.get("retrieved_health_documents_count", 0)
             summary = (
-                f"SQL Ledger Summary: Recorded spend is ₹{spent / 100:,.2f} against a monthly budget "
-                f"of ₹{budget / 100:,.2f} ({pct}% utilization)."
+                f"Parents' Health Monitoring Summary: Retrieved {rem_cnt} scheduled checkup/medication "
+                f"reminder(s) and {doc_cnt} recorded lab/medical report(s) from the household vault."
             )
             rec = AgentRecommendation(
-                title="Projected Monthly Savings Runway",
+                title="Upcoming Checkup & Lab Follow-Up Reminder",
                 recommendation_text=(
-                    f"Estimate: Remaining unallocated budget envelope is ₹{(budget - spent) / 100:,.2f}. "
-                    "Consider earmarking 15% for upcoming annual insurance renewals."
+                    "Schedule Reminder: Ensure periodic blood panel reports and current medication logs "
+                    "are brought to the next scheduled physician appointment. (Record tracking only — no medical advice)."
                 ),
-                basis_or_assumption="Derived deterministically from `monthly_budget_minor - sum(expenses.amount_minor)`.",
+                basis_or_assumption="Derived strictly from recorded appointment dates and uploaded lab report metadata.",
+            )
+            return summary, rec
+
+        if domain == HouseholdDomainId.TRAVEL_RECORDS:
+            doc_cnt = metrics.get("travel_documents_count", 0)
+            rem_cnt = metrics.get("upcoming_travel_reminders_count", 0)
+            summary = (
+                f"Travel Records Summary: Retrieved {doc_cnt} recorded travel booking/confirmation document(s) "
+                f"and {rem_cnt} upcoming trip/document reminder(s)."
+            )
+            rec = AgentRecommendation(
+                title="Upcoming Departure & Document Check Reminder",
+                recommendation_text=(
+                    "Travel Reminder: Verify boarding pass check-in window (48 hours prior to departure) and "
+                    "keep digital PNR and hotel voucher copies accessible."
+                ),
+                basis_or_assumption="Derived strictly from recorded trip departure dates and booking confirmations.",
             )
             return summary, rec
 
