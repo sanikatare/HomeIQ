@@ -1,0 +1,29 @@
+# ==============================================================================
+# Render Blueprint Specification — HomeIQ Platform
+# Deploy in 1 click on Render: Dashboard -> New -> Blueprint -> Connect Repo
+# ==============================================================================
+
+services:
+  # 1. Unified Full-Stack Web & API Gateway Service (React 19 SPA + Live API Engine)
+  - type: web
+    name: homeiq-platform
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /health/live
+    envVars:
+      - key: NODE_VERSION
+        value: 22.14.0
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_FLASH_MODEL
+        value: gemini-2.5-flash
+      - key: GEMINI_PRO_MODEL
+        value: gemini-2.5-pro
+      - key: GEMINI_EMBEDDING_MODEL
+        value: text-embedding-004
