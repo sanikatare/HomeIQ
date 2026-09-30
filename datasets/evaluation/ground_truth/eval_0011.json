@@ -1,0 +1,20 @@
+{
+  "document_id": "eval_0011",
+  "expected_category": "MEDICAL_LAB_REPORT",
+  "expected_status": "DB_UPDATED",
+  "expected_error_category": null,
+  "expected_domain_tables": ["parent_health_records", "reminders"],
+  "fields": {
+    "lab_or_provider_name": "Golwilkar Metropolis Diagnostics, Kothrud, Pune",
+    "report_number": "GMD-PNQ-2026-0918",
+    "parent_name": "Smt. Sunita Tare (Mother) & Shri. Prakash Tare (Father)",
+    "referring_doctor": "Dr. A. Deshmukh",
+    "recorded_date": "2026-09-18",
+    "next_followup_date": "2026-10-05",
+    "record_category": "LAB_TEST_REPORT",
+    "hba1c_percent": "6.1",
+    "fasting_glucose_mg_dl": 102,
+    "vitamin_d_ng_ml": 34,
+    "blood_pressure_mmhg": "124/78"
+  }
+}

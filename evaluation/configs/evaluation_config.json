@@ -1,5 +1,5 @@
 {
-  "framework_version": "1.0.0",
+  "framework_version": "2.0.0",
   "manifest_path": "datasets/evaluation/manifests/evaluation_manifest.json",
   "ground_truth_dir": "datasets/evaluation/ground_truth",
   "documents_dir": "datasets/evaluation/documents",
@@ -15,7 +15,9 @@
       "UTILITY_BILL",
       "WARRANTY_DOCUMENT",
       "INSURANCE_DOCUMENT",
-      "SERVICE_INVOICE"
+      "SERVICE_INVOICE",
+      "MEDICAL_LAB_REPORT",
+      "TRAVEL_BOOKING_VOUCHER"
     ]
   }
 }

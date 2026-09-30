@@ -1,0 +1,20 @@
+{
+  "document_id": "eval_0012",
+  "expected_category": "TRAVEL_BOOKING_VOUCHER",
+  "expected_status": "DB_UPDATED",
+  "expected_error_category": null,
+  "expected_domain_tables": ["travel_records", "expenses"],
+  "fields": {
+    "trip_name": "Udaipur Royal Heritage Diwali Family Getaway",
+    "origin_city": "Pune (PNQ)",
+    "destination": "Udaipur, Rajasthan (UDR)",
+    "transport_mode": "FLIGHT",
+    "booking_reference": "PNR: K8M4WQ",
+    "provider_or_carrier": "IndiGo Airlines · Flight 6E-7142",
+    "accommodation_name": "Taj Lake Palace, Lake Pichola (Conf #TLP-UDR-88412)",
+    "departure_date": "2026-10-24",
+    "return_date": "2026-10-27",
+    "currency_code": "INR",
+    "total_amount_minor": 4860000
+  }
+}

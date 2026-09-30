@@ -60,24 +60,32 @@ class TestHomeIQEvaluationAndArchitectureVerification(unittest.TestCase):
 
     def test_complete_end_to_end_evaluation_run(self) -> None:
         report = run_stdlib_evaluation(REPO_ROOT)
-        self.assertEqual(report["total_documents"], 10)
-        self.assertEqual(report["documents_passed"], 10)
+        self.assertEqual(report["total_documents"], 12)
+        self.assertEqual(report["documents_passed"], 12)
         self.assertEqual(report["documents_failed"], 0)
         self.assertEqual(report["overall_f1"], 1.0)
         self.assertEqual(report["overall_normalized_match_rate"], 1.0)
         self.assertEqual(report["overall_hallucinated_field_rate"], 0.0)
         self.assertLess(report["overall_exact_match_rate"], 1.0)
         self.assertGreaterEqual(report["overall_exact_match_rate"], 0.95)
-        self.assertEqual(len(report["rag_results"]), 6)
-        self.assertEqual(len(report["agent_results"]), 7)
-        self.assertEqual(len(report["end_to_end_results"]), 4)
+        self.assertEqual(len(report["rag_results"]), 8)
+        self.assertEqual(len(report["agent_results"]), 8)
+        self.assertEqual(len(report["end_to_end_results"]), 6)
+        self.assertEqual(len(report["open_source_model_zoo"]), 8)
+        self.assertEqual(len(report["training_datasets_catalog"]), 9)
 
         latest_json = REPO_ROOT / "evaluation" / "results" / "latest.json"
         latest_md = REPO_ROOT / "evaluation" / "results" / "latest.md"
         self.assertTrue(latest_json.exists())
         self.assertTrue(latest_md.exists())
         parsed = json.loads(latest_json.read_text(encoding="utf-8"))
-        self.assertEqual(parsed["documents_passed"], 10)
+        self.assertEqual(parsed["documents_passed"], 12)
+        self.assertIn("biobert_pubmedqa_lab_benchmark", parsed)
+        bio_bench = parsed["biobert_pubmedqa_lab_benchmark"]
+        self.assertEqual(bio_bench["base_model"], "dmis-lab/biobert-base-cased-v1.2")
+        self.assertGreaterEqual(bio_bench["extracted_biomarkers_count"], 6)
+        self.assertGreaterEqual(bio_bench["overall_extraction_f1"], 0.99)
+        self.assertEqual(len(bio_bench["model_card"]["training_epochs"]), 5)
 
     def test_alembic_migration_explicitly_creates_all_twenty_tables(self) -> None:
         migration_path = (
@@ -114,6 +122,7 @@ class TestHomeIQEvaluationAndArchitectureVerification(unittest.TestCase):
             "agent_runs",
             "notifications",
             "parent_health_records",
+            "travel_records",
         }
         self.assertEqual(created_tables, expected_tables)
 
@@ -125,6 +134,7 @@ class TestHomeIQEvaluationAndArchitectureVerification(unittest.TestCase):
             "/api/v1/assets",
             "/api/v1/inventory",
             "/api/v1/parents-health",
+            "/api/v1/travel-records",
             "/api/v1/documents/ingest-json",
             "/api/v1/intelligence/execute",
             "/api/v1/intelligence/approvals",

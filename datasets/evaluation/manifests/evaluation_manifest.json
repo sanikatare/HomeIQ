@@ -1,10 +1,11 @@
 {
-  "manifest_version": "1.0.0",
+  "manifest_version": "2.0.0",
   "project": "HomeIQ — AI Household Intelligence & Management Platform",
-  "created_at": "2026-09-28T22:30:00Z",
+  "created_at": "2026-09-30T08:20:00Z",
   "documents": [
     {
       "document_id": "eval_0001",
+      "title": "Sahyadri Fresh Mart Organic Grocery Receipt",
       "file": "documents/grocery/receipt_0001.pdf",
       "document_type": "RECEIPT",
       "domain": "kitchen_grocery",
@@ -13,6 +14,8 @@
       "language": "en",
       "difficulty": "normal",
       "requires_asset_link": false,
+      "hf_model_id": "naver-clova-ix/donut-base-finetuned-cord-v2",
+      "training_dataset_id": "naver-clova-ix/cord-v2",
       "expected_entities": ["Expense"],
       "expected_fields": [
         "merchant_name",
@@ -27,6 +30,7 @@
     },
     {
       "document_id": "eval_0002",
+      "title": "MSEDCL Mahavitaran Monthly Electricity Utility Bill",
       "file": "documents/bills/bill_0002.pdf",
       "document_type": "UTILITY_BILL",
       "domain": "finance_expenses",
@@ -35,6 +39,8 @@
       "language": "en",
       "difficulty": "normal",
       "requires_asset_link": false,
+      "hf_model_id": "ProsusAI/finbert + naver-clova-ix/donut-base-finetuned-rvlcdip",
+      "training_dataset_id": "katanaml-org/invoices-donut-data-v1",
       "expected_entities": ["Bill"],
       "expected_fields": [
         "provider_name",
@@ -51,6 +57,7 @@
     },
     {
       "document_id": "eval_0003",
+      "title": "Bosch Series 6 Dishwasher Purchase Tax Invoice",
       "file": "documents/appliances/invoice_0003.pdf",
       "document_type": "INVOICE",
       "domain": "home_maintenance",
@@ -60,6 +67,8 @@
       "difficulty": "normal",
       "requires_asset_link": true,
       "asset_role": "appliance",
+      "hf_model_id": "impira/layoutlm-invoices",
+      "training_dataset_id": "Voxel51/FATURA-invoice-dataset",
       "expected_entities": ["Expense"],
       "expected_fields": [
         "vendor_name",
@@ -78,6 +87,7 @@
     },
     {
       "document_id": "eval_0004",
+      "title": "BSH Bosch 24-Month Manufacturer Warranty Certificate",
       "file": "documents/warranties/warranty_0004.pdf",
       "document_type": "WARRANTY_DOCUMENT",
       "domain": "documents_warranty",
@@ -87,6 +97,8 @@
       "difficulty": "normal",
       "requires_asset_link": true,
       "asset_role": "appliance",
+      "hf_model_id": "nlpaueb/legal-bert-base-uncased + BAAI/bge-large-en-v1.5",
+      "training_dataset_id": "theatticusproject/cuad",
       "expected_entities": ["Warranty"],
       "expected_fields": [
         "provider_name",
@@ -107,6 +119,7 @@
     },
     {
       "document_id": "eval_0005",
+      "title": "Deccan AutoWorks Periodic Vehicle Service Job-Card & Invoice",
       "file": "documents/vehicles/service_0005.pdf",
       "document_type": "SERVICE_INVOICE",
       "domain": "vehicle_mobility",
@@ -116,6 +129,8 @@
       "difficulty": "normal",
       "requires_asset_link": true,
       "asset_role": "vehicle",
+      "hf_model_id": "microsoft/trocr-base-printed + impira/layoutlm-document-qa",
+      "training_dataset_id": "keremberke/license-plate-object-detection",
       "expected_entities": ["MaintenanceRecord", "Expense"],
       "expected_fields": [
         "service_center_or_vendor",
@@ -135,6 +150,7 @@
     },
     {
       "document_id": "eval_0006",
+      "title": "BharatShield Comprehensive Motor Vehicle Insurance Policy",
       "file": "documents/insurance/policy_0006.pdf",
       "document_type": "INSURANCE_DOCUMENT",
       "domain": "documents_warranty",
@@ -144,6 +160,8 @@
       "difficulty": "normal",
       "requires_asset_link": true,
       "asset_role": "vehicle",
+      "hf_model_id": "nlpaueb/legal-bert-base-uncased",
+      "training_dataset_id": "lmms-lab/DocVQA",
       "expected_entities": ["InsurancePolicy"],
       "expected_fields": [
         "insurer_name",
@@ -160,6 +178,7 @@
     },
     {
       "document_id": "eval_0007",
+      "title": "Deccan Organic Provision Store Receipt (OCR Noise Stress Test)",
       "file": "documents/grocery/receipt_0007_ocr_noisy.pdf",
       "document_type": "RECEIPT",
       "domain": "kitchen_grocery",
@@ -168,6 +187,8 @@
       "language": "en",
       "difficulty": "hard",
       "requires_asset_link": false,
+      "hf_model_id": "SCUT-DLVCLab/lilt-roberta-en-base",
+      "training_dataset_id": "darentang/sroie",
       "expected_entities": ["Expense"],
       "expected_fields": [
         "merchant_name",
@@ -182,6 +203,7 @@
     },
     {
       "document_id": "eval_0008",
+      "title": "CoolBreeze Daikin Split AC Preventive Service Invoice",
       "file": "documents/maintenance/service_0008_missing_optional.pdf",
       "document_type": "SERVICE_INVOICE",
       "domain": "home_maintenance",
@@ -191,6 +213,8 @@
       "difficulty": "hard",
       "requires_asset_link": true,
       "asset_role": "appliance",
+      "hf_model_id": "impira/layoutlm-invoices",
+      "training_dataset_id": "aharley/rvl_cdip",
       "expected_entities": ["MaintenanceRecord", "Expense"],
       "expected_fields": [
         "service_center_or_vendor",
@@ -210,6 +234,7 @@
     },
     {
       "document_id": "eval_0009",
+      "title": "GlitchTronics Corrupt Line-Item Sum Invoice (Adversarial Trap)",
       "file": "documents/appliances/invoice_0009_corrupt_sum.pdf",
       "document_type": "INVOICE",
       "domain": "finance_expenses",
@@ -219,11 +244,14 @@
       "difficulty": "adversarial",
       "requires_asset_link": true,
       "asset_role": "appliance",
+      "hf_model_id": "ProsusAI/finbert",
+      "training_dataset_id": "mitulshah/transaction-categorization",
       "expected_entities": [],
       "expected_fields": ["vendor_name", "invoice_number", "total_amount_minor"]
     },
     {
       "document_id": "eval_0010",
+      "title": "Unreadable Blurry Insurance Scan Confidence < 0.70 (Adversarial Trap)",
       "file": "documents/insurance/policy_0010_low_confidence.pdf",
       "document_type": "INSURANCE_DOCUMENT",
       "domain": "documents_warranty",
@@ -232,8 +260,66 @@
       "language": "en",
       "difficulty": "adversarial",
       "requires_asset_link": false,
+      "hf_model_id": "nlpaueb/legal-bert-base-uncased",
+      "training_dataset_id": "lmms-lab/DocVQA",
       "expected_entities": [],
       "expected_fields": ["insurer_name", "policy_number"]
+    },
+    {
+      "document_id": "eval_0011",
+      "title": "Golwilkar Metropolis Senior HbA1c, Glucose & BP Lab Panel (Parents' Health)",
+      "file": "documents/health/lab_report_0011.pdf",
+      "document_type": "MEDICAL_LAB_REPORT",
+      "domain": "parents_health",
+      "ground_truth": "ground_truth/eval_0011.json",
+      "source": "synthetic",
+      "language": "en",
+      "difficulty": "normal",
+      "requires_asset_link": false,
+      "hf_model_id": "aaditya/OpenBioLLM-Llama3-8B + d4data/biomedical-ner-all",
+      "training_dataset_id": "bigbio/med_qa + ncbi/ncbi_disease",
+      "expected_entities": ["ParentHealthRecord", "Reminder"],
+      "expected_fields": [
+        "lab_or_provider_name",
+        "report_number",
+        "parent_name",
+        "referring_doctor",
+        "recorded_date",
+        "next_followup_date",
+        "record_category",
+        "hba1c_percent",
+        "fasting_glucose_mg_dl",
+        "vitamin_d_ng_ml",
+        "blood_pressure_mmhg"
+      ]
+    },
+    {
+      "document_id": "eval_0012",
+      "title": "IndiGo Flight PNR & Taj Lake Palace Udaipur Booking Voucher (Travel Records)",
+      "file": "documents/travel/travel_voucher_0012.pdf",
+      "document_type": "TRAVEL_BOOKING_VOUCHER",
+      "domain": "travel_records",
+      "ground_truth": "ground_truth/eval_0012.json",
+      "source": "synthetic",
+      "language": "en",
+      "difficulty": "normal",
+      "requires_asset_link": false,
+      "hf_model_id": "Qwen/Qwen2-VL-7B-Instruct + dslim/bert-base-NER",
+      "training_dataset_id": "rossum/docile + homeiq/multi-modal-travel-vouchers-v1",
+      "expected_entities": ["TravelRecord", "Expense"],
+      "expected_fields": [
+        "trip_name",
+        "origin_city",
+        "destination",
+        "transport_mode",
+        "booking_reference",
+        "provider_or_carrier",
+        "accommodation_name",
+        "departure_date",
+        "return_date",
+        "currency_code",
+        "total_amount_minor"
+      ]
     }
   ]
 }

@@ -580,9 +580,40 @@ def upgrade() -> None:
     )
     op.create_index("ix_parent_health_records_household_cat_due", "parent_health_records", ["household_id", "record_category", "next_due_or_followup_date"])
 
+    # 22. travel_records
+    op.create_table(
+        "travel_records",
+        sa.Column("id", sa.Uuid(), nullable=False),
+        sa.Column("household_id", sa.Uuid(), nullable=False),
+        sa.Column("document_id", sa.Uuid(), nullable=True),
+        sa.Column("trip_name", sa.String(length=200), nullable=False),
+        sa.Column("destination", sa.String(length=160), nullable=False),
+        sa.Column("origin_city", sa.String(length=120), nullable=True),
+        sa.Column("record_category", sa.String(length=64), nullable=False),
+        sa.Column("transport_mode", sa.String(length=32), nullable=False, server_default="FLIGHT"),
+        sa.Column("booking_reference", sa.String(length=120), nullable=False),
+        sa.Column("provider_or_carrier", sa.String(length=160), nullable=True),
+        sa.Column("accommodation_name", sa.String(length=200), nullable=True),
+        sa.Column("departure_date", sa.Date(), nullable=False),
+        sa.Column("return_date", sa.Date(), nullable=True),
+        sa.Column("travelers", sa.String(length=255), nullable=True),
+        sa.Column("status", sa.String(length=32), nullable=False, server_default="UPCOMING"),
+        sa.Column("expense_amount_minor", sa.BigInteger(), nullable=False, server_default="0"),
+        sa.Column("document_status", sa.String(length=160), nullable=True),
+        sa.Column("important_date_label", sa.String(length=160), nullable=True),
+        sa.Column("notes", sa.Text(), nullable=True),
+        sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False),
+        sa.Column("updated_at", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False),
+        sa.ForeignKeyConstraint(["household_id"], ["households.id"], ondelete="CASCADE", name="fk_travel_records_household_id_households"),
+        sa.ForeignKeyConstraint(["document_id"], ["documents.id"], ondelete="SET NULL", name="fk_travel_records_document_id_documents"),
+        sa.PrimaryKeyConstraint("id", name="pk_travel_records"),
+    )
+    op.create_index("ix_travel_records_household_status_departure", "travel_records", ["household_id", "status", "departure_date"])
+
 
 def downgrade() -> None:
     for table_name in [
+        "travel_records",
         "parent_health_records",
         "notifications",
         "agent_runs",
