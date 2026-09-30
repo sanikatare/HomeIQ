@@ -22,7 +22,7 @@ async def test_health_and_security_headers(api_client: AsyncClient) -> None:
     assert resp.status_code == 200
     data = resp.json()
     assert data["status"] == "nominal"
-    assert data["normalized_tables_count"] == 21
+    assert data["normalized_tables_count"] == 22
     # Verify OWASP security headers
     assert resp.headers["X-Content-Type-Options"] == "nosniff"
     assert resp.headers["X-Frame-Options"] == "SAMEORIGIN"

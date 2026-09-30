@@ -37,6 +37,7 @@ from app.db.models import (
     ParentHealthRecord,
     Reminder,
     Subscription,
+    TravelRecord,
     User,
     Vehicle,
     Warranty,
@@ -270,3 +271,4 @@ class RepositoryRegistry:
         self.agent_runs = TenantRepository(session, AgentRun)
         self.notifications = TenantRepository(session, Notification)
         self.parent_health = TenantRepository(session, ParentHealthRecord)
+        self.travel_records = TenantRepository(session, TravelRecord)

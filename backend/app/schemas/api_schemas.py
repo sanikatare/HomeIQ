@@ -38,6 +38,9 @@ from app.db.enums import (
     StockStatus,
     StorageLocation,
     SubscriptionStatus,
+    TravelRecordCategory,
+    TravelRecordStatus,
+    TravelTransportMode,
     VehicleType,
     WarrantyStatus,
     WarrantyType,
@@ -729,3 +732,56 @@ class ParentHealthRecordResponse(ORMBaseSchema):
     status: ParentHealthRecordStatus
     notes: str | None
     created_at: datetime
+
+
+# -----------------------------------------------------------------------------
+# 20. Travel & Leisure Planning Records
+# -----------------------------------------------------------------------------
+class TravelRecordCreateRequest(ORMBaseSchema):
+    document_id: uuid.UUID | None = None
+    trip_name: str = Field(min_length=2, max_length=200)
+    destination: str = Field(min_length=2, max_length=160)
+    origin_city: str | None = Field(default=None, max_length=120)
+    record_category: TravelRecordCategory = TravelRecordCategory.FAMILY_VACATION
+    transport_mode: TravelTransportMode = TravelTransportMode.FLIGHT
+    booking_reference: str = Field(min_length=2, max_length=120)
+    provider_or_carrier: str | None = Field(default=None, max_length=160)
+    accommodation_name: str | None = Field(default=None, max_length=200)
+    departure_date: date
+    return_date: date | None = None
+    travelers: str | None = Field(default=None, max_length=255)
+    status: TravelRecordStatus = TravelRecordStatus.UPCOMING
+    expense_amount_minor: int = Field(default=0, ge=0)
+    document_status: str | None = Field(default=None, max_length=160)
+    important_date_label: str | None = Field(default=None, max_length=160)
+    notes: str | None = None
+
+    @model_validator(mode="after")
+    def validate_dates(self) -> TravelRecordCreateRequest:
+        if self.return_date is not None and self.return_date < self.departure_date:
+            raise ValueError("Travel return_date must be on or after departure_date")
+        return self
+
+
+class TravelRecordResponse(ORMBaseSchema):
+    id: uuid.UUID
+    household_id: uuid.UUID
+    document_id: uuid.UUID | None
+    trip_name: str
+    destination: str
+    origin_city: str | None
+    record_category: TravelRecordCategory
+    transport_mode: TravelTransportMode
+    booking_reference: str
+    provider_or_carrier: str | None
+    accommodation_name: str | None
+    departure_date: date
+    return_date: date | None
+    travelers: str | None
+    status: TravelRecordStatus
+    expense_amount_minor: int
+    document_status: str | None
+    important_date_label: str | None
+    notes: str | None
+    created_at: datetime
+

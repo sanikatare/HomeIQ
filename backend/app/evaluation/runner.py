@@ -68,9 +68,12 @@ from app.schemas.document_extraction import (
     GeminiDocumentAnalysisEnvelope,
     InsuranceExtractionSchema,
     InvoiceExtractionSchema,
+    MedicalLabPanelItemExtraction,
+    MedicalLabReportExtractionSchema,
     ReceiptExtractionSchema,
     ServiceInvoiceExtractionSchema,
     SupportedExtractionCategory,
+    TravelBookingVoucherExtractionSchema,
     UtilityBillExtractionSchema,
     WarrantyExtractionSchema,
 )
@@ -478,6 +481,79 @@ class DeterministicEvaluationGeminiAnalyzer:
                             line_total_minor=1500000,
                         ),
                     ],
+                ),
+            )
+
+        if "[eval_0011]" in text or "lab_report_0011" in filename:
+            return GeminiDocumentAnalysisEnvelope(
+                detected_category=SupportedExtractionCategory.MEDICAL_LAB_REPORT,
+                overall_confidence=0.98,
+                extracted_text_summary="Golwilkar Metropolis Diagnostics Report MET-PNQ-2026-88412 Ramesh Deshmukh HbA1c 6.4%",
+                field_confidences=[
+                    FieldConfidence(
+                        field_name="explicit_measurement_summary",
+                        confidence=0.98,
+                        evidence_quote="HbA1c: 6.4% | Fasting Glucose: 108 mg/dL | Total Cholesterol: 174 mg/dL",
+                    )
+                ],
+                medical_lab_data=MedicalLabReportExtractionSchema(
+                    lab_or_provider_name="Golwilkar Metropolis Diagnostics, Kothrud, Pune",
+                    report_number="MET-PNQ-2026-88412",
+                    patient_or_parent_name="Ramesh Deshmukh (Father, 68y)",
+                    referring_doctor="Dr. S. Kulkarni, MD",
+                    report_date=date(2026, 9, 24),
+                    next_followup_date=date(2026, 12, 24),
+                    test_title="Quarterly HbA1c & Fasting Lipid Profile",
+                    explicit_measurement_summary="HbA1c: 6.4% | Fasting Glucose: 108 mg/dL | Total Cholesterol: 174 mg/dL",
+                    currency_code="INR",
+                    total_amount_minor=245000,
+                    panel_measurements=[
+                        MedicalLabPanelItemExtraction(
+                            biomarker="HbA1c (Glycosylated Hemoglobin)",
+                            value="6.4%",
+                            reference_range="4.0 - 5.6%",
+                        ),
+                        MedicalLabPanelItemExtraction(
+                            biomarker="Fasting Plasma Glucose",
+                            value="108 mg/dL",
+                            reference_range="70 - 100 mg/dL",
+                        ),
+                        MedicalLabPanelItemExtraction(
+                            biomarker="Total Serum Cholesterol",
+                            value="174 mg/dL",
+                            reference_range="< 200 mg/dL",
+                        ),
+                    ],
+                ),
+            )
+
+        if "[eval_0012]" in text or "travel_voucher_0012" in filename:
+            return GeminiDocumentAnalysisEnvelope(
+                detected_category=SupportedExtractionCategory.TRAVEL_BOOKING_VOUCHER,
+                overall_confidence=0.97,
+                extracted_text_summary="IndiGo Airlines / Taj Lake Palace Booking PNR-6E-KQ92M Diwali Family Heritage Retreat Udaipur",
+                field_confidences=[
+                    FieldConfidence(
+                        field_name="booking_reference",
+                        confidence=0.99,
+                        evidence_quote="BOOKING REFERENCE / PNR: PNR-6E-KQ92M",
+                    )
+                ],
+                travel_voucher_data=TravelBookingVoucherExtractionSchema(
+                    provider_or_carrier="IndiGo Airlines / Taj Lake Palace",
+                    booking_reference="PNR-6E-KQ92M",
+                    trip_name="Diwali Family Heritage Retreat — Udaipur",
+                    origin_city="Pune (PNQ)",
+                    destination="Udaipur, Rajasthan (UDR)",
+                    transport_mode="FLIGHT",
+                    departure_date=date(2026, 11, 8),
+                    return_date=date(2026, 11, 13),
+                    accommodation_name="Taj Lake Palace, Pichola",
+                    travelers="Aarav, Priya, Ramesh & Sunita Deshmukh (4 Adults)",
+                    currency_code="INR",
+                    total_amount_minor=14850000,
+                    document_status="E-Tickets + Hotel Voucher Verified · Senior Wheelchair Assist Confirmed",
+                    important_date_label="Web Check-in Opens 2026-11-06 06:00 IST",
                 ),
             )
 

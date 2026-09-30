@@ -1,6 +1,6 @@
 {
-  "report_id": "eval-run-20260930-102647",
-  "generated_at": "2026-09-30T10:26:47.896495+00:00",
+  "report_id": "eval-run-20260930-204819",
+  "generated_at": "2026-09-30T20:48:19.487073+00:00",
   "execution_mode": "deterministic_ci",
   "model_configuration": {
     "document_extraction_model": "dmis-lab/biobert-base-cased-v1.2 (PubMedQA LoRA) + naver-clova-ix/donut-base-finetuned-cord-v2 + Qwen/Qwen2.5-VL-7B-Instruct",
@@ -1527,7 +1527,7 @@
       "created_domain_records": [
         {
           "table": "expenses",
-          "id": "3b4401fd-c522-409f-baa8-dc4259e6a41f"
+          "id": "77da39d8-1756-41f9-b048-55de9c0352bc"
         }
       ],
       "errors": []
@@ -1656,7 +1656,7 @@
       "created_domain_records": [
         {
           "table": "bills",
-          "id": "156e6b97-46eb-4c2f-9b90-f75a02b5f457"
+          "id": "4e315645-7d50-474c-a001-655083614fde"
         }
       ],
       "errors": []
@@ -1819,7 +1819,7 @@
       "created_domain_records": [
         {
           "table": "expenses",
-          "id": "a4de89f0-96f5-4a12-bef1-734705916351"
+          "id": "8e40a874-552b-46fc-b847-f97680a73bbe"
         }
       ],
       "errors": []
@@ -1984,7 +1984,7 @@
       "created_domain_records": [
         {
           "table": "warranties",
-          "id": "35581c65-07c1-439d-98cb-3df42ae28dae"
+          "id": "01b823fa-c9fa-4651-9bb0-6a5a18728f10"
         }
       ],
       "errors": []
@@ -2140,11 +2140,11 @@
       "created_domain_records": [
         {
           "table": "maintenance_records",
-          "id": "dda7d09a-6cfb-46e9-8fce-b68858a5de3d"
+          "id": "783a3458-8b82-4316-a6ed-27d97998c4d1"
         },
         {
           "table": "expenses",
-          "id": "9f72dd86-f3d3-47ae-a045-ca39606d1616"
+          "id": "b1ac1852-0d61-4db0-8a8b-4c5749bf8659"
         }
       ],
       "errors": []
@@ -2273,7 +2273,7 @@
       "created_domain_records": [
         {
           "table": "insurance_policies",
-          "id": "d6905aa3-611e-41c4-840c-ba9c64ac87eb"
+          "id": "b2ae87e0-461f-4a14-9343-fc0b60908cf8"
         }
       ],
       "errors": []
@@ -2428,7 +2428,7 @@
       "created_domain_records": [
         {
           "table": "expenses",
-          "id": "6f045d03-3742-4e41-b8f8-5af9b791d065"
+          "id": "3ef435a8-9bf5-4d8a-8456-8364f71a2168"
         }
       ],
       "errors": []
@@ -2584,11 +2584,11 @@
       "created_domain_records": [
         {
           "table": "maintenance_records",
-          "id": "9796113c-4036-466a-95f6-a2dcdf897dd4"
+          "id": "7dcb5a9e-24e0-42bc-9e6c-f11253b2b10e"
         },
         {
           "table": "expenses",
-          "id": "101c74f9-61b2-4b05-aca3-d3e04b072a05"
+          "id": "5971ed13-4f67-4e38-a9da-7016a16506f5"
         }
       ],
       "errors": []
@@ -2675,7 +2675,7 @@
     },
     {
       "document_id": "eval_0011",
-      "title": "Metropolis Senior HbA1c, Glucose & BP Lab Panel (Parents' Health)",
+      "title": "Golwilkar Metropolis Senior HbA1c, Glucose & BP Lab Panel (Parents' Health)",
       "document_type": "MEDICAL_LAB_REPORT",
       "expected_category": "MEDICAL_LAB_REPORT",
       "domain": "parents_health",
@@ -2690,8 +2690,8 @@
       "detected_category": "MEDICAL_LAB_REPORT",
       "field_results": {
         "lab_or_provider_name": {
-          "expected": "Metropolis Diagnostics, Kothrud, Pune",
-          "predicted": "Metropolis Diagnostics, Kothrud, Pune",
+          "expected": "Golwilkar Metropolis Diagnostics, Kothrud, Pune",
+          "predicted": "Golwilkar Metropolis Diagnostics, Kothrud, Pune",
           "exact_match": true,
           "normalized_match": true,
           "match": true,
@@ -2708,8 +2708,8 @@
           "notes": null
         },
         "parent_name": {
-          "expected": "Mom & Dad",
-          "predicted": "Mom & Dad",
+          "expected": "Smt. Sunita Tare (Mother) & Shri. Prakash Tare (Father)",
+          "predicted": "Smt. Sunita Tare (Mother) & Shri. Prakash Tare (Father)",
           "exact_match": true,
           "normalized_match": true,
           "match": true,
@@ -2717,8 +2717,8 @@
           "notes": null
         },
         "referring_doctor": {
-          "expected": "Primary Care Physician",
-          "predicted": "Primary Care Physician",
+          "expected": "Dr. A. Deshmukh",
+          "predicted": "Dr. A. Deshmukh",
           "exact_match": true,
           "normalized_match": true,
           "match": true,
@@ -2806,11 +2806,11 @@
       "created_domain_records": [
         {
           "table": "parent_health_records",
-          "id": "f3236233-c418-4ce7-92ff-87755ce1c989"
+          "id": "fb2d4856-a885-4e63-9571-6fd504d3a4cf"
         },
         {
           "table": "reminders",
-          "id": "d10403ba-ba39-45ec-a821-a4f89e86710e"
+          "id": "88db0bad-ccda-469c-a633-2eaf2874af7a"
         }
       ],
       "errors": []
@@ -2948,11 +2948,11 @@
       "created_domain_records": [
         {
           "table": "travel_records",
-          "id": "f9b05691-5a85-41ef-a840-21d6842d5ec0"
+          "id": "8f6b7b2c-ae17-4684-9200-545d48761d0c"
         },
         {
           "table": "expenses",
-          "id": "1de6e25a-eddf-42cb-8156-f1176a44bc20"
+          "id": "785a9aed-c9e0-4013-9d82-f5922c07f742"
         }
       ],
       "errors": []
@@ -3299,7 +3299,7 @@
       ],
       "created_entities": {
         "document_id": "eval_0001",
-        "expense_id": "3b4401fd-c522-409f-baa8-dc4259e6a41f"
+        "expense_id": "77da39d8-1756-41f9-b048-55de9c0352bc"
       },
       "emitted_events": [
         "document.intelligence.completed",
@@ -3320,7 +3320,7 @@
       "created_entities": {
         "invoice_document_id": "eval_0003",
         "warranty_document_id": "eval_0004",
-        "warranty_id": "35581c65-07c1-439d-98cb-3df42ae28dae"
+        "warranty_id": "01b823fa-c9fa-4651-9bb0-6a5a18728f10"
       },
       "emitted_events": [
         "document.intelligence.completed",
@@ -3340,7 +3340,7 @@
       ],
       "created_entities": {
         "document_id": "eval_0002",
-        "bill_id": "156e6b97-46eb-4c2f-9b90-f75a02b5f457"
+        "bill_id": "4e315645-7d50-474c-a001-655083614fde"
       },
       "emitted_events": [
         "document.intelligence.completed",
@@ -3361,8 +3361,8 @@
       ],
       "created_entities": {
         "document_id": "eval_0005",
-        "maintenance_record_id": "dda7d09a-6cfb-46e9-8fce-b68858a5de3d",
-        "expense_id": "9f72dd86-f3d3-47ae-a045-ca39606d1616"
+        "maintenance_record_id": "783a3458-8b82-4316-a6ed-27d97998c4d1",
+        "expense_id": "b1ac1852-0d61-4db0-8a8b-4c5749bf8659"
       },
       "emitted_events": [
         "document.intelligence.completed",
@@ -3383,8 +3383,8 @@
       ],
       "created_entities": {
         "document_id": "eval_0011",
-        "parent_health_record_id": "f3236233-c418-4ce7-92ff-87755ce1c989",
-        "reminder_id": "d10403ba-ba39-45ec-a821-a4f89e86710e"
+        "parent_health_record_id": "fb2d4856-a885-4e63-9571-6fd504d3a4cf",
+        "reminder_id": "88db0bad-ccda-469c-a633-2eaf2874af7a"
       },
       "emitted_events": [
         "document.intelligence.completed",
@@ -3405,8 +3405,8 @@
       ],
       "created_entities": {
         "document_id": "eval_0012",
-        "travel_record_id": "f9b05691-5a85-41ef-a840-21d6842d5ec0",
-        "expense_id": "1de6e25a-eddf-42cb-8156-f1176a44bc20"
+        "travel_record_id": "8f6b7b2c-ae17-4684-9200-545d48761d0c",
+        "expense_id": "785a9aed-c9e0-4013-9d82-f5922c07f742"
       },
       "emitted_events": [
         "document.intelligence.completed",

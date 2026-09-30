@@ -291,6 +291,273 @@
   will-change: transform, opacity;
 }
 
+@keyframes selfPinPieceInsert {
+  0% {
+    opacity: 0;
+    transform: translate3d(var(--tx, 0px), var(--ty, -140px), 0)
+      rotate(var(--rot, 6deg)) scale(0.86);
+  }
+  14% {
+    opacity: 1;
+  }
+  46% {
+    opacity: 1;
+    transform: translate3d(var(--px, 0px), var(--py, -28px), 0) rotate(0deg)
+      scale(1.03);
+  }
+  74% {
+    opacity: 1;
+    transform: translate3d(0px, -7px, 0) rotate(0deg) scale(1.018);
+  }
+  88% {
+    opacity: 1;
+    transform: translate3d(0px, 1px, 0) rotate(0deg) scale(0.999);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0px, 0px, 0) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes selfPinPieceUnpin {
+  0% {
+    opacity: 1;
+    transform: translate3d(0px, 0px, 0) rotate(0deg) scale(1);
+  }
+  24% {
+    opacity: 1;
+    transform: translate3d(0px, -7px, 0) rotate(0deg) scale(1.018);
+  }
+  56% {
+    opacity: 0.95;
+    transform: translate3d(var(--px, 0px), var(--py, -28px), 0) rotate(0deg)
+      scale(1.025);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--tx, 0px), var(--ty, -140px), 0)
+      rotate(var(--rot, 6deg)) scale(0.86);
+  }
+}
+
+@keyframes selfPinThicknessCompress {
+  0% {
+    opacity: 0;
+    transform: translate3d(4px, 6px, 0);
+  }
+  18%,
+  46% {
+    opacity: 0.88;
+    transform: translate3d(3.5px, 5px, 0);
+  }
+  74% {
+    opacity: 0.72;
+    transform: translate3d(2px, 3px, 0);
+  }
+  88%,
+  100% {
+    opacity: 0;
+    transform: translate3d(0px, 0px, 0);
+  }
+}
+
+@keyframes selfPinThicknessUnpin {
+  0% {
+    opacity: 0;
+    transform: translate3d(0px, 0px, 0);
+  }
+  28%,
+  65% {
+    opacity: 0.75;
+    transform: translate3d(3px, 4.5px, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(4px, 6px, 0);
+  }
+}
+
+@keyframes selfPinSeamLockFlash {
+  0% {
+    opacity: 0;
+    stroke: rgba(255, 255, 255, 0.45);
+    stroke-width: 1.1px;
+  }
+  22%,
+  70% {
+    opacity: 0.85;
+    stroke: rgba(255, 250, 235, 0.85);
+    stroke-width: 1.4px;
+  }
+  86% {
+    opacity: 1;
+    stroke: #fde68a;
+    stroke-width: 2.4px;
+  }
+  100% {
+    opacity: 0;
+    stroke: rgba(255, 250, 235, 0);
+    stroke-width: 0.6px;
+  }
+}
+
+@keyframes selfPinSeamUnpin {
+  0% {
+    opacity: 0;
+    stroke: #fde68a;
+    stroke-width: 2.2px;
+  }
+  25%,
+  75% {
+    opacity: 0.75;
+    stroke: rgba(255, 250, 235, 0.75);
+    stroke-width: 1.6px;
+  }
+  100% {
+    opacity: 0;
+    stroke: rgba(255, 250, 235, 0);
+    stroke-width: 1px;
+  }
+}
+
+.animate-puzzle-piece {
+  animation: selfPinPieceInsert 1.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--delay, 0s);
+  transform-box: view-box;
+  transform-origin: var(--ox, 800px) var(--oy, 450px);
+  will-change: transform, opacity;
+}
+
+.animate-puzzle-piece-locked {
+  opacity: 1;
+  transform: translate3d(0px, 0px, 0) rotate(0deg) scale(1);
+}
+
+.animate-puzzle-piece-unpin {
+  animation: selfPinPieceUnpin 1.05s cubic-bezier(0.4, 0, 0.2, 1) both;
+  animation-delay: var(--rdelay, 0s);
+  transform-box: view-box;
+  transform-origin: var(--ox, 800px) var(--oy, 450px);
+  will-change: transform, opacity;
+}
+
+.animate-puzzle-thickness {
+  animation: selfPinThicknessCompress 1.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--delay, 0s);
+  will-change: transform, opacity;
+}
+
+.animate-puzzle-thickness-unpin {
+  animation: selfPinThicknessUnpin 1.05s cubic-bezier(0.4, 0, 0.2, 1) both;
+  animation-delay: var(--rdelay, 0s);
+  will-change: transform, opacity;
+}
+
+.animate-puzzle-seam {
+  animation: selfPinSeamLockFlash 1.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--delay, 0s);
+  will-change: opacity, stroke, stroke-width;
+}
+
+.animate-puzzle-seam-unpin {
+  animation: selfPinSeamUnpin 1.05s cubic-bezier(0.4, 0, 0.2, 1) both;
+  animation-delay: var(--rdelay, 0s);
+  will-change: opacity, stroke, stroke-width;
+}
+
+.landing-portal-canvas {
+  transform-origin: 50% 54%;
+  transition:
+    transform 680ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 680ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.landing-portal-entering .landing-portal-canvas {
+  transform: scale(1.22) translate3d(0, -1.5%, 0);
+  filter: brightness(1.12) blur(3px);
+}
+
+.landing-portal-title {
+  transition:
+    transform 580ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 580ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.landing-portal-entering .landing-portal-title {
+  transform: scale(1.12) translate3d(0, 14px, 0);
+  opacity: 0;
+  filter: blur(4px) drop-shadow(0 0 36px rgba(251, 191, 36, 0.8));
+}
+
+.dashboard-portal-wrapper {
+  transition:
+    transform 680ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 680ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 680ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.home-iq-title-hover {
+  transition:
+    transform 340ms cubic-bezier(0.16, 1, 0.3, 1),
+    text-shadow 340ms cubic-bezier(0.16, 1, 0.3, 1),
+    color 340ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 340ms cubic-bezier(0.16, 1, 0.3, 1);
+  text-shadow:
+    0 10px 32px rgba(0, 0, 0, 0.88),
+    0 0 28px rgba(251, 191, 36, 0.22);
+}
+
+.home-iq-title-hover:hover {
+  transform: scale(1.065) translate3d(0, -2px, 0);
+  color: #fffbeb;
+  text-shadow:
+    0 14px 40px rgba(0, 0, 0, 0.9),
+    0 0 24px rgba(254, 243, 199, 0.75),
+    0 0 56px rgba(245, 158, 11, 0.62),
+    0 0 95px rgba(251, 191, 36, 0.38);
+  filter: drop-shadow(0 0 18px rgba(251, 191, 36, 0.35));
+}
+
+@keyframes estateLaserScan {
+  0% {
+    transform: translate3d(0, -10%, 0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.85;
+  }
+  85% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate3d(0, 105%, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes estateNodePing {
+  0% {
+    transform: scale(1);
+    opacity: 0.75;
+  }
+  75%,
+  100% {
+    transform: scale(2.35);
+    opacity: 0;
+  }
+}
+
+.animate-estate-laser-scan {
+  animation: estateLaserScan 6.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  will-change: transform, opacity;
+}
+
+.animate-estate-node-ping {
+  animation: estateNodePing 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  will-change: transform, opacity;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-think-marquee,
   .animate-think-marquee-reverse,
@@ -301,7 +568,10 @@
   .animate-un-orbit-slow,
   .animate-un-orbit-reverse,
   .animate-un-line-sweep,
-  .animate-un-vertical-pulse {
+  .animate-un-vertical-pulse,
+  .animate-puzzle-piece,
+  .animate-puzzle-seam,
+  .animate-puzzle-full-photo {
     animation: none !important;
     transform: none !important;
   }

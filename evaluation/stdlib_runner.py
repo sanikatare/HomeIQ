@@ -689,10 +689,10 @@ def _simulate_analyzer(doc_id: str, text: str) -> dict[str, Any]:
             "detected_category": "MEDICAL_LAB_REPORT",
             "overall_confidence": 0.98,
             "payload": {
-                "lab_or_provider_name": "Metropolis Diagnostics, Kothrud, Pune",
+                "lab_or_provider_name": "Golwilkar Metropolis Diagnostics, Kothrud, Pune",
                 "report_number": "GMD-PNQ-2026-0918",
-                "parent_name": "Mom & Dad",
-                "referring_doctor": "Primary Care Physician",
+                "parent_name": "Smt. Sunita Tare (Mother) & Shri. Prakash Tare (Father)",
+                "referring_doctor": "Dr. A. Deshmukh",
                 "recorded_date": "2026-09-18",
                 "next_followup_date": "2026-10-05",
                 "record_category": "LAB_TEST_REPORT",

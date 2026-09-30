@@ -131,19 +131,20 @@ async def list_approval_runs(
             {
                 "run_id": str(r.id),
                 "thread_id": r.thread_id,
-                "agent_name": r.agent_name,
+                "agent_name": f"{r.target_domain}_specialist",
                 "target_domain": r.target_domain,
-                "user_query": r.user_query,
+                "user_query": r.user_prompt,
                 "status": r.status.value if hasattr(r.status, "value") else str(r.status),
                 "highest_risk_level": (
                     r.highest_risk_level.value
                     if hasattr(r.highest_risk_level, "value")
                     else str(r.highest_risk_level)
                 ),
-                "proposed_tool_calls": r.proposed_tool_calls_json,
+                "proposed_tool_calls": r.tool_calls_json or [],
+                "pending_action_payload": r.pending_action_payload_json,
                 "final_response": r.final_response,
                 "created_at": r.created_at.isoformat() if r.created_at else None,
-                "completed_at": r.completed_at.isoformat() if r.completed_at else None,
+                "decided_at": r.decided_at.isoformat() if r.decided_at else None,
             }
             for r in approval_runs
         ],
@@ -194,7 +195,7 @@ async def decide_human_approval(
 
         bills, _ = await repos.bills.list_for_household(ctx.household_id, offset=0, limit=20)
         for b in bills:
-            if b.status == BillStatus.PENDING:
+            if b.status in (BillStatus.PENDING_PAYMENT, BillStatus.UPCOMING):
                 b.status = BillStatus.PAID
                 b.paid_at = decided_time
                 break
@@ -275,10 +276,9 @@ async def list_events_and_dlq(
                 "event_type": ev.event_type,
                 "domain": ev.domain,
                 "severity": ev.severity.value if hasattr(ev.severity, "value") else str(ev.severity),
-                "correlation_id": ev.correlation_id,
+                "summary": ev.summary,
                 "payload_json": ev.payload_json,
-                "processed_by_worker": ev.processed_by_worker,
-                "occurred_at": ev.occurred_at.isoformat() if ev.occurred_at else None,
+                "created_at": ev.created_at.isoformat() if ev.created_at else None,
             }
             for ev in events
         ],

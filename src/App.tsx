@@ -779,7 +779,400 @@ const SAMPLE_AGENT_QUERIES = [
   },
 ];
 
+const REALISTIC_FARMHOUSE_PHOTO =
+  "/src/assets/images/white_modern_farmhouse_daylight_1790800814680.jpg";
+
+interface JigsawPieceSpec {
+  id: string;
+  row: number;
+  col: number;
+  path: string;
+  cx: number;
+  cy: number;
+  tx: number;
+  ty: number;
+  px: number;
+  py: number;
+  rot: number;
+  delay: number;
+  reverseDelay: number;
+}
+
+function buildSymmetricJigsawEdge(
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  tabSign: number
+): string {
+  if (tabSign === 0) {
+    return `L ${x2.toFixed(2)} ${y2.toFixed(2)}`;
+  }
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  // Right-hand normal vector scaled by tabSign (+1 or -1)
+  const nx = -dy * tabSign;
+  const ny = dx * tabSign;
+
+  const pt = (t: number, n: number) => {
+    const px = x1 + t * dx + n * nx;
+    const py = y1 + t * dy + n * ny;
+    return `${px.toFixed(2)} ${py.toFixed(2)}`;
+  };
+
+  // 6-segment symmetric cubic Bezier precision pin-and-socket tenon joint
+  return [
+    `C ${pt(0.2, 0.0)}, ${pt(0.31, -0.04)}, ${pt(0.38, 0.0)}`,
+    `C ${pt(0.43, 0.03)}, ${pt(0.28, 0.16)}, ${pt(0.34, 0.25)}`,
+    `C ${pt(0.38, 0.3)}, ${pt(0.44, 0.31)}, ${pt(0.5, 0.31)}`,
+    `C ${pt(0.56, 0.31)}, ${pt(0.62, 0.3)}, ${pt(0.66, 0.25)}`,
+    `C ${pt(0.72, 0.16)}, ${pt(0.57, 0.03)}, ${pt(0.62, 0.0)}`,
+    `C ${pt(0.69, -0.04)}, ${pt(0.8, 0.0)}, ${pt(1.0, 0.0)}`,
+  ].join(" ");
+}
+
+const PUZZLE_GRID_COLS = 12;
+const PUZZLE_GRID_ROWS = 7;
+const PUZZLE_VIEW_W = 1600;
+const PUZZLE_VIEW_H = 900;
+
+const JIGSAW_PUZZLE_PIECES: JigsawPieceSpec[] = (() => {
+  const cellW = PUZZLE_VIEW_W / PUZZLE_GRID_COLS;
+  const cellH = PUZZLE_VIEW_H / PUZZLE_GRID_ROWS;
+
+  // Deterministic pin directions so each piece pins directly into its already-seated neighbor
+  const horizTabs: number[][] = Array.from({ length: PUZZLE_GRID_ROWS + 1 }, (_, r) =>
+    Array.from({ length: PUZZLE_GRID_COLS }, (__, c) => {
+      if (r === 0 || r === PUZZLE_GRID_ROWS) return 0;
+      return (r * 3 + c * 5) % 2 === 0 ? 1 : -1;
+    })
+  );
+
+  const vertTabs: number[][] = Array.from({ length: PUZZLE_GRID_ROWS }, (_, r) =>
+    Array.from({ length: PUZZLE_GRID_COLS + 1 }, (__, c) => {
+      if (c === 0 || c === PUZZLE_GRID_COLS) return 0;
+      return (r * 7 + c * 3) % 2 === 0 ? 1 : -1;
+    })
+  );
+
+  // Connected chain order: builds from center-bottom foundation keystone outward & upward across all 12x7 pieces
+  const centerCol = (PUZZLE_GRID_COLS - 1) / 2;
+  const colOrder = Array.from({ length: PUZZLE_GRID_COLS }, (_, i) => i).sort(
+    (a, b) => Math.abs(a - centerCol) - Math.abs(b - centerCol)
+  );
+  const rowOrder = Array.from(
+    { length: PUZZLE_GRID_ROWS },
+    (_, i) => PUZZLE_GRID_ROWS - 1 - i
+  );
+  const orderMap = new Map<string, number>();
+  let seq = 0;
+  for (const r of rowOrder) {
+    for (const c of colOrder) {
+      orderMap.set(`${r}-${c}`, seq++);
+    }
+  }
+
+  const totalCount = PUZZLE_GRID_COLS * PUZZLE_GRID_ROWS;
+  const pieces: JigsawPieceSpec[] = [];
+
+  for (let r = 0; r < PUZZLE_GRID_ROWS; r++) {
+    for (let c = 0; c < PUZZLE_GRID_COLS; c++) {
+      const x0 = c * cellW;
+      const y0 = r * cellH;
+      const x1 = (c + 1) * cellW;
+      const y1 = (r + 1) * cellH;
+
+      const topSign = horizTabs[r][c];
+      const rightSign = vertTabs[r][c + 1];
+      const bottomSign = -horizTabs[r + 1][c];
+      const leftSign = -vertTabs[r][c];
+
+      const path = [
+        `M ${x0.toFixed(2)} ${y0.toFixed(2)}`,
+        buildSymmetricJigsawEdge(x0, y0, x1, y0, topSign),
+        buildSymmetricJigsawEdge(x1, y0, x1, y1, rightSign),
+        buildSymmetricJigsawEdge(x1, y1, x0, y1, bottomSign),
+        buildSymmetricJigsawEdge(x0, y1, x0, y0, leftSign),
+        "Z",
+      ].join(" ");
+
+      const cx = x0 + cellW * 0.5;
+      const cy = y0 + cellH * 0.5;
+
+      // 2-stage vectors scaled for smaller 12x7 puzzle pieces:
+      // 1) (tx, ty, rot): Outer architectural glide origin
+      // 2) (px, py, 0deg): Exact pin-socket alignment position right in front of the neighbor's joint
+      const isCenterCols = c === 5 || c === 6;
+      const isBottomRow = r === PUZZLE_GRID_ROWS - 1;
+      let tx = 0;
+      let ty = 0;
+      let px = 0;
+      let py = 0;
+      if (isBottomRow) {
+        if (isCenterCols) {
+          tx = c === 5 ? -22 : 22;
+          ty = 115;
+          px = 0;
+          py = 28;
+        } else if (c < 5) {
+          tx = -135;
+          ty = 36;
+          px = -32;
+          py = 0;
+        } else {
+          tx = 135;
+          ty = 36;
+          px = 32;
+          py = 0;
+        }
+      } else {
+        if (isCenterCols) {
+          tx = c === 5 ? -34 : 34;
+          ty = -125;
+          px = 0;
+          py = -30;
+        } else if (c < 5) {
+          tx = -130;
+          ty = -95;
+          px = -28;
+          py = -22;
+        } else {
+          tx = 130;
+          ty = -95;
+          px = 28;
+          py = -22;
+        }
+      }
+
+      const rot = ((r + c) % 2 === 0 ? 1 : -1) * (4 + ((r * 3 + c * 2) % 5));
+      const stepIndex = orderMap.get(`${r}-${c}`) ?? 0;
+      const delay = Number((0.04 + stepIndex * 0.025).toFixed(3));
+      const reverseDelay = Number(
+        ((totalCount - 1 - stepIndex) * 0.009).toFixed(3)
+      );
+
+      pieces.push({
+        id: `puzzle-${r}-${c}`,
+        row: r,
+        col: c,
+        path,
+        cx,
+        cy,
+        tx,
+        ty,
+        px,
+        py,
+        rot,
+        delay,
+        reverseDelay,
+      });
+    }
+  }
+
+  return pieces;
+})();
+
+const HomeBlocksLandingPage: React.FC<{
+  isEntering: boolean;
+  onStartEnterDashboard: () => void;
+}> = ({ isEntering, onStartEnterDashboard }) => {
+  const [puzzlePhase, setPuzzlePhase] = useState<
+    "assembling" | "locked" | "unpinning"
+  >("assembling");
+
+  // Smooth, synchronized 3-phase cycle: Assemble (3.5s) -> Hold Locked (6.0s) -> Smooth Reverse Un-Pin (1.8s)
+  useEffect(() => {
+    if (isEntering) return;
+
+    let timer: number;
+    if (puzzlePhase === "assembling") {
+      timer = window.setTimeout(() => {
+        setPuzzlePhase("locked");
+      }, 3450);
+    } else if (puzzlePhase === "locked") {
+      timer = window.setTimeout(() => {
+        setPuzzlePhase("unpinning");
+      }, 6200);
+    } else {
+      timer = window.setTimeout(() => {
+        setPuzzlePhase("assembling");
+      }, 1850);
+    }
+
+    return () => window.clearTimeout(timer);
+  }, [puzzlePhase, isEntering]);
+
+  const handleDoubleClick = () => {
+    if (isEntering) return;
+    onStartEnterDashboard();
+  };
+
+  return (
+    <div
+      onDoubleClick={handleDoubleClick}
+      role="button"
+      tabIndex={0}
+      aria-label="HOME IQ"
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          handleDoubleClick();
+        }
+      }}
+      className={`fixed inset-0 z-50 flex h-screen w-screen cursor-pointer flex-col items-center justify-between overflow-hidden bg-[#0B1018] select-none transition-opacity duration-700 ease-out ${
+        isEntering
+          ? "landing-portal-entering pointer-events-none opacity-0"
+          : "opacity-100"
+      }`}
+    >
+      {/* Stationary Full-Viewport Self-Pinning Jigsaw Canvas */}
+      <div className="landing-portal-canvas pointer-events-none relative flex h-full w-full items-center justify-center">
+        <svg
+          viewBox={`0 0 ${PUZZLE_VIEW_W} ${PUZZLE_VIEW_H}`}
+          preserveAspectRatio="xMidYMid slice"
+          className="h-full w-full"
+          aria-hidden="true"
+        >
+          <defs>
+            {JIGSAW_PUZZLE_PIECES.map((piece) => (
+              <clipPath key={piece.id} id={`clip-${piece.id}`}>
+                <path d={piece.path} />
+              </clipPath>
+            ))}
+          </defs>
+
+          {/* Dimmed Recessed Socket Board Underneath so Pin Cavities Are Visible Before Lock */}
+          <image
+            href={REALISTIC_FARMHOUSE_PHOTO}
+            x="0"
+            y="0"
+            width={PUZZLE_VIEW_W}
+            height={PUZZLE_VIEW_H}
+            preserveAspectRatio="xMidYMid slice"
+            opacity="0.16"
+          />
+          {JIGSAW_PUZZLE_PIECES.map((piece) => (
+            <path
+              key={`socket-${piece.id}`}
+              d={piece.path}
+              fill="rgba(7, 11, 18, 0.52)"
+              stroke="rgba(255, 248, 231, 0.16)"
+              strokeWidth="1.2"
+            />
+          ))}
+
+          {/* 84 Self-Pinning Interlocking Puzzle Pieces */}
+          {JIGSAW_PUZZLE_PIECES.map((piece) => {
+            const pieceClass =
+              puzzlePhase === "assembling"
+                ? "animate-puzzle-piece"
+                : puzzlePhase === "locked"
+                ? "animate-puzzle-piece-locked"
+                : "animate-puzzle-piece-unpin";
+
+            const thicknessClass =
+              puzzlePhase === "assembling"
+                ? "animate-puzzle-thickness"
+                : puzzlePhase === "unpinning"
+                ? "animate-puzzle-thickness-unpin"
+                : "opacity-0";
+
+            const seamClass =
+              puzzlePhase === "assembling"
+                ? "animate-puzzle-seam"
+                : puzzlePhase === "unpinning"
+                ? "animate-puzzle-seam-unpin"
+                : "opacity-0";
+
+            return (
+              <g
+                key={piece.id}
+                className={pieceClass}
+                style={
+                  {
+                    "--delay": `${piece.delay}s`,
+                    "--rdelay": `${piece.reverseDelay}s`,
+                    "--tx": `${piece.tx}px`,
+                    "--ty": `${piece.ty}px`,
+                    "--px": `${piece.px}px`,
+                    "--py": `${piece.py}px`,
+                    "--rot": `${piece.rot}deg`,
+                    "--ox": `${piece.cx}px`,
+                    "--oy": `${piece.cy}px`,
+                  } as React.CSSProperties
+                }
+              >
+                {/* 3D Extruded Pin-Block Thickness Rim that compresses to 0 as the pin seats into its socket */}
+                <path
+                  d={piece.path}
+                  fill="#1C1917"
+                  stroke="#44403C"
+                  strokeWidth="1.5"
+                  className={thicknessClass}
+                  style={
+                    {
+                      "--delay": `${piece.delay}s`,
+                      "--rdelay": `${piece.reverseDelay}s`,
+                    } as React.CSSProperties
+                  }
+                />
+
+                {/* Clipped Realistic Photograph Piece */}
+                <g clipPath={`url(#clip-${piece.id})`}>
+                  <image
+                    href={REALISTIC_FARMHOUSE_PHOTO}
+                    x="0"
+                    y="0"
+                    width={PUZZLE_VIEW_W}
+                    height={PUZZLE_VIEW_H}
+                    preserveAspectRatio="xMidYMid slice"
+                  />
+                </g>
+
+                {/* Precision Pin-Joint Seam that Flashes Warm Gold on Mechanical Seat & Lock */}
+                <path
+                  d={piece.path}
+                  fill="none"
+                  strokeLinejoin="round"
+                  className={seamClass}
+                  style={
+                    {
+                      "--delay": `${piece.delay}s`,
+                      "--rdelay": `${piece.reverseDelay}s`,
+                    } as React.CSSProperties
+                  }
+                />
+              </g>
+            );
+          })}
+
+          {/* Seamless Full-Resolution Photo Lock Layer once all 84 pins are seated */}
+          <image
+            href={REALISTIC_FARMHOUSE_PHOTO}
+            x="0"
+            y="0"
+            width={PUZZLE_VIEW_W}
+            height={PUZZLE_VIEW_H}
+            preserveAspectRatio="xMidYMid slice"
+            className={`transition-opacity duration-500 ease-out ${
+              puzzlePhase === "locked" || isEntering ? "opacity-100" : "opacity-0"
+            }`}
+          />
+        </svg>
+      </div>
+
+      {/* ONLY Text Written On This Page: HOME IQ (with subtle scale + soft glow hover animation) */}
+      <div className="landing-portal-title absolute inset-x-0 bottom-8 z-20 flex justify-center sm:bottom-12">
+        <h1 className="home-iq-title-hover pointer-events-auto cursor-pointer px-6 py-2 font-serif text-5xl font-black tracking-[0.28em] text-[#F5EFE6] sm:text-7xl md:text-8xl">
+          HOME IQ
+        </h1>
+      </div>
+    </div>
+  );
+};
+
 export function App() {
+  const [showLandingPage, setShowLandingPage] = useState<boolean>(true);
+  const [isLandingExiting, setIsLandingExiting] = useState<boolean>(false);
   const [activeView, setActiveView] = useState<SystemViewId>("dashboard");
   const [selectedDomain, setSelectedDomain] = useState<DomainFilterId>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -2478,13 +2871,43 @@ export function App() {
   const hasActiveFilter =
     selectedDomain !== "all" || searchQuery.trim().length > 0;
 
+  const handleStartEnterDashboard = () => {
+    if (isLandingExiting) return;
+    setIsLandingExiting(true);
+    setActiveView("dashboard");
+    window.setTimeout(() => {
+      setShowLandingPage(false);
+      setIsLandingExiting(false);
+    }, 680);
+  };
+
   return (
-    <div className="flex min-h-screen bg-zinc-100 text-zinc-900">
-      {/* Left Vertical Sidebar — Minimal Black, Gray & White */}
-      <aside className="sticky top-0 flex h-screen w-60 shrink-0 flex-col justify-between border-r border-zinc-800 bg-zinc-950 text-zinc-100">
-        <div>
-          {/* Top Brand Header — Just HomeIQ */}
-          <div className="flex items-center gap-3 border-b border-zinc-800 px-5 py-4">
+    <>
+      {showLandingPage && (
+        <HomeBlocksLandingPage
+          isEntering={isLandingExiting}
+          onStartEnterDashboard={handleStartEnterDashboard}
+        />
+      )}
+
+      <div
+        className={`dashboard-portal-wrapper flex min-h-screen bg-zinc-100 text-zinc-900 ${
+          showLandingPage && !isLandingExiting
+            ? "pointer-events-none fixed inset-0 overflow-hidden opacity-0 scale-[0.97]"
+            : "opacity-100 scale-100"
+        }`}
+      >
+        {/* Left Vertical Sidebar — Minimal Black, Gray & White */}
+        <aside className="sticky top-0 flex h-screen w-60 shrink-0 flex-col justify-between border-r border-zinc-800 bg-zinc-950 text-zinc-100">
+          <div>
+            {/* Top Brand Header — Just HomeIQ */}
+            <div
+              onClick={() => {
+                setIsLandingExiting(false);
+                setShowLandingPage(true);
+              }}
+            className="flex cursor-pointer items-center gap-3 border-b border-zinc-800 px-5 py-4 transition-colors hover:bg-zinc-900/60"
+          >
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-400/20 text-amber-300 ring-1 ring-amber-400/30">
               <CuteHomeLogo className="h-4 w-4" />
             </div>
@@ -11242,343 +11665,163 @@ export function App() {
                             <div className="animate-un-line-sweep h-full w-1/3 bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
                           </div>
 
-                          {/* Top Interactive Masterclass Chapter Selector Bar (Matched to Kitchen Heading Style) */}
-                          <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 border-b border-white/10 bg-black/30 px-6 py-4 backdrop-blur-md lg:px-10">
+                          {/* Top Compact Summary Header Bar (div:nth-of-type(5)) */}
+                          <div className="relative z-10 flex flex-wrap items-center justify-between gap-3 border-b border-white/10 bg-black/30 px-6 py-3.5 backdrop-blur-md lg:px-8">
                             <div className="flex items-center gap-2.5">
                               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-amber-500/20 text-amber-400 ring-1 ring-amber-400/30">
                                 <CuteHomeLogo className="h-5 w-5" />
                               </div>
-                              <span className="text-base font-bold tracking-tight text-white">
-                                Household Command & Estate Overview
-                              </span>
-                            </div>
-
-                            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0">
-                              {heroChapters.map((chap, idx) => {
-                                const isCurrent = idx === safeHeroIdx;
-                                return (
-                                  <button
-                                    key={chap.indexLabel}
-                                    type="button"
-                                    onClick={() => {
-                                      setHomeHeroChapterIdx(idx);
-                                      setHomeHeroAutoPlay(false);
-                                    }}
-                                    className={`rounded-full px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-all duration-200 ${
-                                      isCurrent
-                                        ? "bg-amber-400 text-zinc-950 font-semibold shadow-sm"
-                                        : "text-zinc-300 hover:bg-white/10 hover:text-white"
-                                    }`}
-                                  >
-                                    {chap.chapterTitle}
-                                  </button>
-                                );
-                              })}
+                              <div>
+                                <span className="text-base font-bold tracking-tight text-white">
+                                  Household Command & Estate Overview
+                                </span>
+                                <span className="ml-2.5 hidden text-xs text-zinc-400 sm:inline">
+                                  · Unified All-Domain Summary
+                                </span>
+                              </div>
                             </div>
 
                             <div className="flex items-center gap-2">
+                              <span className="rounded-lg bg-amber-400 px-3 py-1 text-xs font-bold text-zinc-950 whitespace-nowrap">
+                                All-in-One Summary
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => setActiveView("intelligence")}
+                                className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:border-amber-400/60 hover:bg-white/10 whitespace-nowrap"
+                              >
+                                <Sparkles className="h-3.5 w-3.5 text-amber-400" />
+                                <span>Ask Multi-Agent</span>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setActiveView("documents")}
+                                className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-black/40 px-3 py-1.5 text-xs font-semibold text-zinc-200 transition-colors hover:border-white/30 hover:text-white whitespace-nowrap"
+                              >
+                                <Upload className="h-3.5 w-3.5 text-amber-300" />
+                                <span>Ingest PDF</span>
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Single Compact All-in-One Summary Tab Body (div:nth-of-type(6)) */}
+                          <div className="relative z-10 space-y-4 px-6 py-5 lg:px-8">
+                            {/* Compact Top Row: 4 Core Household Totals */}
+                            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                               <button
                                 type="button"
                                 onClick={() =>
-                                  setHomeHeroAutoPlay((prev) => !prev)
+                                  handleSelectDomain("finance_expenses")
                                 }
-                                className="inline-flex items-center gap-1.5 rounded-xl border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-medium text-zinc-200 transition-colors hover:border-amber-400/50 hover:text-white whitespace-nowrap"
+                                className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.04] px-3.5 py-2.5 text-left transition-colors hover:border-amber-400/50 hover:bg-white/[0.07]"
                               >
-                                <Play
-                                  className={`h-3 w-3 ${
-                                    homeHeroAutoPlay
-                                      ? "text-amber-400"
-                                      : "text-zinc-400"
-                                  }`}
-                                />
-                                <span>
-                                  {homeHeroAutoPlay
-                                    ? "Auto-Reel Active"
-                                    : "Auto-Reel Paused"}
+                                <div className="min-w-0">
+                                  <div className="text-[11px] text-zinc-400">
+                                    Monthly Spend
+                                  </div>
+                                  <div className="truncate font-mono text-base font-bold tabular-nums text-white">
+                                    {formatINR(spendMinor)}
+                                  </div>
+                                </div>
+                                <span className="shrink-0 font-mono text-[11px] text-amber-300 tabular-nums">
+                                  {budgetUtilizationPct}%
                                 </span>
                               </button>
-                              <div className="flex items-center gap-1">
-                                <button
-                                  type="button"
-                                  aria-label="Previous Chapter"
-                                  onClick={() => {
-                                    setHomeHeroAutoPlay(false);
-                                    setHomeHeroChapterIdx(
-                                      (prev) =>
-                                        (prev - 1 + heroChapters.length) %
-                                        heroChapters.length
-                                    );
-                                  }}
-                                  className="flex h-8 w-8 items-center justify-center rounded-xl border border-white/15 bg-white/5 text-zinc-200 transition-colors hover:border-amber-400 hover:text-amber-300"
-                                >
-                                  <ChevronLeft className="h-4 w-4" />
-                                </button>
-                                <button
-                                  type="button"
-                                  aria-label="Next Chapter"
-                                  onClick={() => {
-                                    setHomeHeroAutoPlay(false);
-                                    setHomeHeroChapterIdx(
-                                      (prev) => (prev + 1) % heroChapters.length
-                                    );
-                                  }}
-                                  className="flex h-8 w-8 items-center justify-center rounded-xl border border-white/15 bg-white/5 text-zinc-200 transition-colors hover:border-amber-400 hover:text-amber-300"
-                                >
-                                  <ChevronRight className="h-4 w-4" />
-                                </button>
-                              </div>
-                            </div>
-                          </div>
 
-                          {/* Main 12-Column Split-Screen Animated Stage */}
-                          <div className="relative z-10 grid grid-cols-1 items-center gap-8 px-6 py-8 lg:grid-cols-12 lg:px-10 lg:py-11">
-                            {/* Left 7 Columns: Editorial Proposition, Quantified Proof & Actions */}
-                            <div className="space-y-6 lg:col-span-7">
-                              {/* Unboxed Metadata Kicker (Zero-Pill Discipline) */}
-                              <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-amber-300/90">
-                                <span>{activeHero.kicker}</span>
-                                <span aria-hidden="true">·</span>
-                                <span className="text-zinc-300">
-                                  8 Specialist Agents Grounded
-                                </span>
-                              </div>
-
-                              <div className="space-y-3">
-                                <h1 className="text-3xl leading-[1.12] font-bold tracking-tight text-white sm:text-4xl lg:text-5xl [text-wrap:balance]">
-                                  {activeHero.headline}
-                                </h1>
-                                <p className="max-w-2xl text-sm leading-relaxed text-zinc-300 sm:text-base">
-                                  {activeHero.narrative}
-                                </p>
-                              </div>
-
-                              {/* 3 Quantified Case-Study Proof Columns */}
-                              <div className="grid grid-cols-1 gap-4 border-y border-white/10 py-4 sm:grid-cols-3">
-                                {activeHero.proofPoints.map((pt, idx) => (
-                                  <div
-                                    key={idx}
-                                    className="border-l-2 border-amber-400/70 pl-3.5"
-                                  >
-                                    <div className="text-xs text-zinc-400">
-                                      {pt.label}
-                                    </div>
-                                    <div className="mt-0.5 font-mono text-sm font-bold tabular-nums text-white sm:text-base">
-                                      {pt.value}
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
-
-                              {/* Primary & Secondary Action Controls */}
-                              <div className="flex flex-wrap items-center gap-3">
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    if (activeHero.domainId === "all") {
-                                      setActiveView("documents");
-                                    } else {
-                                      handleSelectDomain(activeHero.domainId);
-                                    }
-                                  }}
-                                  className="inline-flex items-center gap-2 rounded-xl bg-amber-400 px-5 py-3 text-xs font-bold text-zinc-950 shadow-lg transition-transform duration-150 hover:-translate-y-0.5 hover:bg-amber-300 whitespace-nowrap"
-                                >
-                                  <span>{activeHero.ctaLabel}</span>
-                                  <ArrowRight className="h-4 w-4" />
-                                </button>
-
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    setActiveView("intelligence");
-                                    runAgentQueryText(
-                                      activeHero.agentPrompt,
-                                      activeHero.domainId === "all"
-                                        ? undefined
-                                        : activeHero.domainId
-                                    );
-                                  }}
-                                  className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/5 px-4 py-3 text-xs font-semibold text-white transition-colors hover:border-amber-400/60 hover:bg-white/10 whitespace-nowrap"
-                                >
-                                  <Sparkles className="h-3.5 w-3.5 text-amber-400" />
-                                  <span>Ask Multi-Agent</span>
-                                </button>
-
-                                <button
-                                  type="button"
-                                  onClick={() => setActiveView("documents")}
-                                  className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-black/40 px-4 py-3 text-xs font-semibold text-zinc-200 transition-colors hover:border-white/30 hover:text-white whitespace-nowrap"
-                                >
-                                  <Upload className="h-3.5 w-3.5 text-amber-300" />
-                                  <span>Ingest Document</span>
-                                </button>
-                              </div>
-                            </div>
-
-                            {/* Right 5 Columns: Moving Ken-Burns Visual Frame & Floating Spotlight Cards */}
-                            <div className="relative lg:col-span-5">
-                              {/* Animated Orbital Geometry Ring Behind Visual */}
-                              <svg
-                                aria-hidden="true"
-                                viewBox="0 0 320 320"
-                                className="animate-un-orbit-slow pointer-events-none absolute -top-10 -right-10 h-64 w-64 text-amber-400/20"
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  handleSelectDomain("finance_expenses")
+                                }
+                                className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.04] px-3.5 py-2.5 text-left transition-colors hover:border-amber-400/50 hover:bg-white/[0.07]"
                               >
-                                <circle
-                                  cx="160"
-                                  cy="160"
-                                  r="140"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="1.5"
-                                  strokeDasharray="10 8"
-                                />
-                                <circle
-                                  cx="160"
-                                  cy="20"
-                                  r="5"
-                                  fill="currentColor"
-                                />
-                              </svg>
-
-                              <div className="relative h-80 w-full overflow-hidden rounded-2xl border border-white/15 bg-zinc-900 shadow-2xl sm:h-96">
-                                <img
-                                  key={activeHero.primaryImage}
-                                  src={activeHero.primaryImage}
-                                  alt={activeHero.chapterTitle}
-                                  referrerPolicy="no-referrer"
-                                  className="animate-think-kenburns h-full w-full object-cover"
-                                />
-                                {/* Measured Contrast Scrim */}
-                                <div className="absolute inset-0 bg-gradient-to-t from-[#090A0F] via-[#090A0F]/45 to-transparent" />
-
-                                {/* Top-Left Chapter Index Indicator */}
-                                <div className="absolute top-4 left-4 right-4 flex items-center justify-between text-xs font-medium text-white">
-                                  <span className="rounded-lg bg-black/65 px-3 py-1.5 font-mono backdrop-blur-md">
-                                    CHAPTER {activeHero.indexLabel} / 06
-                                  </span>
-                                  <span className="rounded-lg bg-black/65 px-3 py-1.5 text-amber-300 backdrop-blur-md">
-                                    {activeHero.spotlightTitle}
-                                  </span>
-                                </div>
-
-                                {/* Floating Animated Card (Bottom Overlay) */}
-                                <div className="animate-un-float absolute right-4 bottom-4 left-4 rounded-xl border border-white/20 bg-zinc-950/85 p-4 backdrop-blur-md">
-                                  <div className="flex items-center justify-between gap-4">
-                                    <div className="flex items-center gap-3 min-w-0">
-                                      <img
-                                        src={activeHero.secondaryImage}
-                                        alt={activeHero.spotlightTitle}
-                                        referrerPolicy="no-referrer"
-                                        className="h-12 w-16 shrink-0 rounded-lg border border-white/15 object-cover"
-                                      />
-                                      <div className="min-w-0">
-                                        <div className="truncate text-xs font-bold text-white">
-                                          {activeHero.spotlightTitle}
-                                        </div>
-                                        <div className="mt-0.5 truncate text-[11px] text-zinc-300">
-                                          {activeHero.spotlightSubtext}
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div className="shrink-0 text-right">
-                                      <div className="font-mono text-lg font-bold tabular-nums text-amber-400">
-                                        {activeHero.spotlightMetric}
-                                      </div>
-                                      <button
-                                        type="button"
-                                        onClick={() => {
-                                          setActiveView("intelligence");
-                                          runAgentQueryText(
-                                            activeHero.agentPrompt,
-                                            activeHero.domainId === "all"
-                                              ? undefined
-                                              : activeHero.domainId
-                                          );
-                                        }}
-                                        className="mt-0.5 text-[11px] font-semibold text-white underline decoration-amber-400 underline-offset-2 hover:text-amber-300 whitespace-nowrap"
-                                      >
-                                        Inspect Case →
-                                      </button>
-                                    </div>
+                                <div className="min-w-0">
+                                  <div className="text-[11px] text-zinc-400">
+                                    Utility Bills
+                                  </div>
+                                  <div className="truncate font-mono text-base font-bold tabular-nums text-amber-300">
+                                    {pendingBillsCount} Pending
                                   </div>
                                 </div>
-                              </div>
-                            </div>
-                          </div>
+                                <span className="shrink-0 font-mono text-[11px] text-zinc-300 tabular-nums">
+                                  {formatINR(
+                                    summary?.metrics?.pending_bills_amount_minor
+                                  )}
+                                </span>
+                              </button>
 
-                          {/* Bottom 4 Live Household Pulse KPI Strip inside Hero */}
-                          <div className="relative z-10 grid grid-cols-1 gap-4 border-t border-white/10 bg-black/40 px-6 py-5 sm:grid-cols-2 lg:grid-cols-4 lg:px-10">
-                            <div
-                              onClick={() =>
-                                handleSelectDomain("finance_expenses")
-                              }
-                              className="group cursor-pointer rounded-xl border border-white/10 bg-white/[0.03] p-4 transition-all duration-150 hover:-translate-y-0.5 hover:border-amber-400/50 hover:bg-white/[0.06]"
-                            >
-                              <div className="flex items-center justify-between text-xs text-zinc-400">
-                                <span>Monthly Spend</span>
-                                <ArrowRight className="h-3.5 w-3.5 text-zinc-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-400" />
-                              </div>
-                              <div className="mt-1 font-mono text-2xl font-bold tabular-nums text-white">
-                                {formatINR(spendMinor)}
-                              </div>
-                              <div className="mt-1 text-[11px] text-zinc-400">
-                                {budgetUtilizationPct}% of{" "}
-                                {formatINR(budgetMinor)} budget
-                              </div>
-                            </div>
+                              <button
+                                type="button"
+                                onClick={() => setActiveView("documents")}
+                                className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.04] px-3.5 py-2.5 text-left transition-colors hover:border-amber-400/50 hover:bg-white/[0.07]"
+                              >
+                                <div className="min-w-0">
+                                  <div className="text-[11px] text-zinc-400">
+                                    Document Vault
+                                  </div>
+                                  <div className="truncate font-mono text-base font-bold tabular-nums text-white">
+                                    {documents.length} Files
+                                  </div>
+                                </div>
+                                <span className="shrink-0 font-mono text-[11px] text-zinc-300 tabular-nums">
+                                  {(warrantiesData.items || []).length}W ·{" "}
+                                  {(warrantiesData.insurance_policies || []).length}P
+                                </span>
+                              </button>
 
-                            <div
-                              onClick={() =>
-                                handleSelectDomain("finance_expenses")
-                              }
-                              className="group cursor-pointer rounded-xl border border-white/10 bg-white/[0.03] p-4 transition-all duration-150 hover:-translate-y-0.5 hover:border-amber-400/50 hover:bg-white/[0.06]"
-                            >
-                              <div className="flex items-center justify-between text-xs text-zinc-400">
-                                <span>Pending Utility Bills</span>
-                                <ArrowRight className="h-3.5 w-3.5 text-zinc-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-400" />
-                              </div>
-                              <div className="mt-1 font-mono text-2xl font-bold tabular-nums text-amber-300">
-                                {pendingBillsCount} Pending
-                              </div>
-                              <div className="mt-1 text-[11px] text-zinc-400">
-                                {formatINR(
-                                  summary?.metrics?.pending_bills_amount_minor
-                                )}{" "}
-                                total due
-                              </div>
-                            </div>
-
-                            <div
-                              onClick={() => setActiveView("documents")}
-                              className="group cursor-pointer rounded-xl border border-white/10 bg-white/[0.03] p-4 transition-all duration-150 hover:-translate-y-0.5 hover:border-amber-400/50 hover:bg-white/[0.06]"
-                            >
-                              <div className="flex items-center justify-between text-xs text-zinc-400">
-                                <span>Indexed Documents</span>
-                                <ArrowRight className="h-3.5 w-3.5 text-zinc-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-400" />
-                              </div>
-                              <div className="mt-1 font-mono text-2xl font-bold tabular-nums text-white">
-                                {documents.length} Files
-                              </div>
-                              <div className="mt-1 text-[11px] text-zinc-400">
-                                {(warrantiesData.items || []).length} warranties ·{" "}
-                                {(warrantiesData.insurance_policies || []).length}{" "}
-                                policies
-                              </div>
+                              <button
+                                type="button"
+                                onClick={() => setActiveView("intelligence")}
+                                className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.04] px-3.5 py-2.5 text-left transition-colors hover:border-amber-400/50 hover:bg-white/[0.07]"
+                              >
+                                <div className="min-w-0">
+                                  <div className="text-[11px] text-zinc-400">
+                                    Approval Gate
+                                  </div>
+                                  <div className="truncate font-mono text-base font-bold tabular-nums text-emerald-400">
+                                    {pendingApprovalsCount} Queued
+                                  </div>
+                                </div>
+                                <span className="shrink-0 text-[11px] text-zinc-400">
+                                  Sign-off
+                                </span>
+                              </button>
                             </div>
 
-                            <div
-                              onClick={() => setActiveView("intelligence")}
-                              className="group cursor-pointer rounded-xl border border-white/10 bg-white/[0.03] p-4 transition-all duration-150 hover:-translate-y-0.5 hover:border-amber-400/50 hover:bg-white/[0.06]"
-                            >
-                              <div className="flex items-center justify-between text-xs text-zinc-400">
-                                <span>Approval Gate</span>
-                                <ArrowRight className="h-3.5 w-3.5 text-zinc-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-400" />
-                              </div>
-                              <div className="mt-1 font-mono text-2xl font-bold tabular-nums text-emerald-400">
-                                {pendingApprovalsCount} Queued
-                              </div>
-                              <div className="mt-1 text-[11px] text-zinc-400">
-                                Owner sign-off active
-                              </div>
+                            {/* Compact Summary Grid Across All 8 Household Domains */}
+                            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4 lg:grid-cols-8">
+                              {domainCards.map((dom) => {
+                                const navSpec = SEVEN_DOMAIN_NAV.find(
+                                  (d) => d.id === dom.id
+                                );
+                                const DomIcon = navSpec?.icon || Layers;
+                                return (
+                                  <button
+                                    key={`compact-summary-${dom.id}`}
+                                    type="button"
+                                    onClick={() => handleSelectDomain(dom.id)}
+                                    className="group flex flex-col justify-between rounded-xl border border-white/10 bg-white/[0.03] p-3 text-left transition-all duration-150 hover:-translate-y-0.5 hover:border-amber-400/50 hover:bg-white/[0.07]"
+                                  >
+                                    <div className="flex items-center justify-between gap-1.5">
+                                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-amber-400/15 text-amber-300">
+                                        <DomIcon className="h-4 w-4" />
+                                      </div>
+                                      <ArrowRight className="h-3 w-3 text-zinc-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-400" />
+                                    </div>
+                                    <div className="mt-2.5">
+                                      <div className="truncate text-xs font-semibold text-white">
+                                        {dom.title}
+                                      </div>
+                                      <div className="mt-0.5 truncate font-mono text-xs font-bold tabular-nums text-amber-300">
+                                        {dom.value}
+                                      </div>
+                                      <div className="mt-0.5 truncate text-[10px] text-zinc-400">
+                                        {dom.statusText.trim()}
+                                      </div>
+                                    </div>
+                                  </button>
+                                );
+                              })}
                             </div>
                           </div>
                         </div>
@@ -14755,6 +14998,7 @@ export function App() {
         </main>
       </div>
     </div>
+    </>
   );
 }
 

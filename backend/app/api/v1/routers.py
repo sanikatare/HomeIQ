@@ -49,6 +49,8 @@ from app.schemas.api_schemas import (
     ReminderResponse,
     SubscriptionCreateRequest,
     SubscriptionResponse,
+    TravelRecordCreateRequest,
+    TravelRecordResponse,
     UserContextResponse,
     UserCreateRequest,
     UserResponse,
@@ -736,6 +738,44 @@ async def create_parents_health_record(
     return ParentHealthRecordResponse.model_validate(record)
 
 
+# -----------------------------------------------------------------------------
+# 20. Travel & Leisure Planning Records
+# -----------------------------------------------------------------------------
+travel_records_router = APIRouter(
+    prefix="/travel-records",
+    tags=["20. Travel & Leisure Planning"],
+)
+
+
+@travel_records_router.get("", response_model=PaginatedResponse[TravelRecordResponse])
+async def list_travel_records(
+    offset: int = Query(0, ge=0),
+    limit: int = Query(50, ge=1, le=200),
+    svc: HouseholdPlatformService = Depends(get_platform_service),
+) -> PaginatedResponse[TravelRecordResponse]:
+    items, total = await svc.list_travel_records(offset=offset, limit=limit)
+    return PaginatedResponse(
+        items=[TravelRecordResponse.model_validate(r) for r in items],
+        total=total,
+        offset=offset,
+        limit=limit,
+    )
+
+
+@travel_records_router.post(
+    "",
+    response_model=TravelRecordResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+async def create_travel_record(
+    payload: TravelRecordCreateRequest,
+    svc: HouseholdPlatformService = Depends(get_platform_service),
+) -> TravelRecordResponse:
+    record = await svc.create_travel_record(payload)
+    await svc.session.commit()
+    return TravelRecordResponse.model_validate(record)
+
+
 # Register all routers onto api_v1_router
 for router in [
     auth_router,
@@ -757,5 +797,7 @@ for router in [
     reminders_router,
     notifications_router,
     parents_health_router,
+    travel_records_router,
 ]:
     api_v1_router.include_router(router)
+

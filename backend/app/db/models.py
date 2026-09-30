@@ -87,6 +87,9 @@ from app.db.enums import (
     StockStatus,
     StorageLocation,
     SubscriptionStatus,
+    TravelRecordCategory,
+    TravelRecordStatus,
+    TravelTransportMode,
     VehicleType,
     WarrantyStatus,
     WarrantyType,
@@ -235,6 +238,11 @@ class Household(UUIDPrimaryKeyMixin, AuditMixin, Base):
     )
     parent_health_records: Mapped[list[ParentHealthRecord]] = relationship(
         "ParentHealthRecord",
+        back_populates="household",
+        cascade="all, delete-orphan",
+    )
+    travel_records: Mapped[list[TravelRecord]] = relationship(
+        "TravelRecord",
         back_populates="household",
         cascade="all, delete-orphan",
     )
@@ -1246,3 +1254,76 @@ class ParentHealthRecord(HouseholdTenantMixin, Base):
     # Relationships
     household: Mapped[Household] = relationship("Household", back_populates="parent_health_records")
     document: Mapped[Document | None] = relationship("Document")
+
+
+# =============================================================================
+# 22. travel_records (Household Travel & Leisure Planning Registry)
+# =============================================================================
+class TravelRecord(HouseholdTenantMixin, Base):
+    """
+    Stores household travel & leisure planning records:
+    itineraries, tickets/vouchers, accommodation bookings, transport arrangements,
+    travelers, travel budgets/expenses, and document checklists.
+    """
+
+    __tablename__ = "travel_records"
+    __table_args__ = (
+        CheckConstraint("expense_amount_minor >= 0", name="non_negative_travel_expense"),
+        Index(
+            "ix_travel_records_household_status_departure",
+            "household_id",
+            "status",
+            "departure_date",
+        ),
+    )
+
+    document_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("documents.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
+    trip_name: Mapped[str] = mapped_column(String(200), nullable=False)
+    destination: Mapped[str] = mapped_column(String(160), nullable=False)
+    origin_city: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    record_category: Mapped[TravelRecordCategory] = mapped_column(
+        Enum(
+            TravelRecordCategory,
+            name="travel_record_category_enum",
+            native_enum=False,
+        ),
+        default=TravelRecordCategory.FAMILY_VACATION,
+        nullable=False,
+    )
+    transport_mode: Mapped[TravelTransportMode] = mapped_column(
+        Enum(
+            TravelTransportMode,
+            name="travel_transport_mode_enum",
+            native_enum=False,
+        ),
+        default=TravelTransportMode.FLIGHT,
+        nullable=False,
+    )
+    booking_reference: Mapped[str] = mapped_column(String(120), nullable=False)
+    provider_or_carrier: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    accommodation_name: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    departure_date: Mapped[date] = mapped_column(Date, nullable=False, index=True)
+    return_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    travelers: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    status: Mapped[TravelRecordStatus] = mapped_column(
+        Enum(
+            TravelRecordStatus,
+            name="travel_record_status_enum",
+            native_enum=False,
+        ),
+        default=TravelRecordStatus.UPCOMING,
+        nullable=False,
+    )
+    expense_amount_minor: Mapped[int] = mapped_column(BigInteger, default=0, nullable=False)
+    document_status: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    important_date_label: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    # Relationships
+    household: Mapped[Household] = relationship("Household", back_populates="travel_records")
+    document: Mapped[Document | None] = relationship("Document")
+

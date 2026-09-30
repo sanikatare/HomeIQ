@@ -33,6 +33,9 @@ from app.db.enums import (
     StockStatus,
     StorageLocation,
     SubscriptionStatus,
+    TravelRecordCategory,
+    TravelRecordStatus,
+    TravelTransportMode,
     VehicleType,
     WarrantyStatus,
     WarrantyType,
@@ -57,6 +60,7 @@ from app.db.models import (
     ParentHealthRecord,
     Reminder,
     Subscription,
+    TravelRecord,
     User,
     Vehicle,
     Warranty,
@@ -84,6 +88,7 @@ ALL_MODELS = [
     AgentRun,
     Notification,
     ParentHealthRecord,
+    TravelRecord,
 ]
 
 __all__ = [
@@ -110,6 +115,7 @@ __all__ = [
     "AgentRun",
     "Notification",
     "ParentHealthRecord",
+    "TravelRecord",
     "HouseholdRole",
     "AssetCategory",
     "AssetStatus",
@@ -144,4 +150,7 @@ __all__ = [
     "NotificationStatus",
     "ParentHealthRecordCategory",
     "ParentHealthRecordStatus",
+    "TravelRecordCategory",
+    "TravelRecordStatus",
+    "TravelTransportMode",
 ]

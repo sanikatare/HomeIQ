@@ -43,7 +43,14 @@ from app.db.enums import (
     InsuranceType,
     MaintenanceStatus,
     MaintenanceType,
+    ParentHealthRecordCategory,
+    ParentHealthRecordStatus,
     PaymentMethod,
+    ReminderPriority,
+    ReminderStatus,
+    TravelRecordCategory,
+    TravelRecordStatus,
+    TravelTransportMode,
     WarrantyStatus,
     WarrantyType,
 )
@@ -54,6 +61,9 @@ from app.db.models import (
     Expense,
     InsurancePolicy,
     MaintenanceRecord,
+    ParentHealthRecord,
+    Reminder,
+    TravelRecord,
     Warranty,
 )
 from app.repositories.household_repositories import RepositoryRegistry
@@ -75,6 +85,8 @@ CATEGORY_TO_DOCUMENT_TYPE: dict[SupportedExtractionCategory, DocumentType] = {
     SupportedExtractionCategory.WARRANTY_DOCUMENT: DocumentType.WARRANTY_CERTIFICATE,
     SupportedExtractionCategory.INSURANCE_DOCUMENT: DocumentType.INSURANCE_POLICY,
     SupportedExtractionCategory.SERVICE_INVOICE: DocumentType.INVOICE_RECEIPT,
+    SupportedExtractionCategory.MEDICAL_LAB_REPORT: DocumentType.MEDICAL_LAB_REPORT,
+    SupportedExtractionCategory.TRAVEL_BOOKING_VOUCHER: DocumentType.TRAVEL_BOOKING_VOUCHER,
 }
 
 
@@ -535,6 +547,8 @@ class DocumentIntelligencePipeline:
             SupportedExtractionCategory.WARRANTY_DOCUMENT: envelope.warranty_data,
             SupportedExtractionCategory.INSURANCE_DOCUMENT: envelope.insurance_data,
             SupportedExtractionCategory.SERVICE_INVOICE: envelope.service_invoice_data,
+            SupportedExtractionCategory.MEDICAL_LAB_REPORT: envelope.medical_lab_data,
+            SupportedExtractionCategory.TRAVEL_BOOKING_VOUCHER: envelope.travel_voucher_data,
         }
         sub_schema = category_map.get(envelope.detected_category)
         if sub_schema is None:
@@ -750,6 +764,129 @@ class DocumentIntelligencePipeline:
                 )
                 await self.repos.expenses.create(expense)
                 created.append({"table": "expenses", "id": str(expense.id)})
+
+        elif cat == SupportedExtractionCategory.MEDICAL_LAB_REPORT and envelope.medical_lab_data:
+            lab = envelope.medical_lab_data
+            health_rec = ParentHealthRecord(
+                household_id=doc_record.household_id,
+                document_id=doc_record.id,
+                parent_name=lab.patient_or_parent_name,
+                record_category=ParentHealthRecordCategory.LAB_TEST_REPORT,
+                title=lab.test_title,
+                provider_or_doctor=f"{lab.lab_or_provider_name} ({lab.referring_doctor or 'Lab Panel'})",
+                recorded_date=lab.report_date,
+                next_due_or_followup_date=lab.next_followup_date,
+                schedule_or_frequency="Periodic Lab Monitoring",
+                explicit_measurement_value=lab.explicit_measurement_summary,
+                status=ParentHealthRecordStatus.RECORDED,
+                notes=f"Extracted from report #{lab.report_number}",
+                created_by_id=user_id,
+            )
+            saved_hr = await self.repos.parent_health.create(health_rec)
+            created.append({"table": "parent_health_records", "id": str(saved_hr.id)})
+
+            if lab.total_amount_minor > 0:
+                expense = Expense(
+                    household_id=doc_record.household_id,
+                    receipt_document_id=doc_record.id,
+                    paid_by_user_id=user_id,
+                    category=ExpenseCategory.HEALTH_HOUSEHOLD,
+                    amount_minor=lab.total_amount_minor,
+                    currency_code=lab.currency_code,
+                    merchant_name=lab.lab_or_provider_name,
+                    description=f"{lab.test_title} ({lab.report_number})",
+                    incurred_on=lab.report_date,
+                    payment_method=PaymentMethod.UPI,
+                    reference_transaction_id=lab.report_number,
+                    created_by_id=user_id,
+                )
+                saved_exp = await self.repos.expenses.create(expense)
+                created.append({"table": "expenses", "id": str(saved_exp.id)})
+
+            if lab.next_followup_date:
+                due_dt = datetime.combine(
+                    lab.next_followup_date, datetime.min.time(), tzinfo=timezone.utc
+                )
+                reminder = Reminder(
+                    household_id=doc_record.household_id,
+                    assigned_user_id=user_id,
+                    title=f"Follow-up Lab Checkup: {lab.patient_or_parent_name}",
+                    description=f"Follow-up on {lab.test_title} ({lab.explicit_measurement_summary})",
+                    domain="parents_health",
+                    priority=ReminderPriority.HIGH,
+                    status=ReminderStatus.PENDING,
+                    due_at=due_dt,
+                    created_by_id=user_id,
+                )
+                saved_rem = await self.repos.reminders.create(reminder)
+                created.append({"table": "reminders", "id": str(saved_rem.id)})
+
+        elif cat == SupportedExtractionCategory.TRAVEL_BOOKING_VOUCHER and envelope.travel_voucher_data:
+            tv = envelope.travel_voucher_data
+            mode_val = tv.transport_mode.upper()
+            transport_enum = (
+                TravelTransportMode(mode_val)
+                if mode_val in TravelTransportMode.__members__
+                else TravelTransportMode.FLIGHT
+            )
+            travel_rec = TravelRecord(
+                household_id=doc_record.household_id,
+                document_id=doc_record.id,
+                trip_name=tv.trip_name,
+                destination=tv.destination,
+                origin_city=tv.origin_city,
+                record_category=TravelRecordCategory.FAMILY_VACATION,
+                transport_mode=transport_enum,
+                booking_reference=tv.booking_reference,
+                provider_or_carrier=tv.provider_or_carrier,
+                accommodation_name=tv.accommodation_name,
+                departure_date=tv.departure_date,
+                return_date=tv.return_date,
+                travelers=tv.travelers,
+                status=TravelRecordStatus.BOOKED,
+                expense_amount_minor=tv.total_amount_minor,
+                document_status=tv.document_status,
+                important_date_label=tv.important_date_label,
+                notes=f"Extracted from booking voucher #{tv.booking_reference}",
+                created_by_id=user_id,
+            )
+            saved_tr = await self.repos.travel_records.create(travel_rec)
+            created.append({"table": "travel_records", "id": str(saved_tr.id)})
+
+            if tv.total_amount_minor > 0:
+                expense = Expense(
+                    household_id=doc_record.household_id,
+                    receipt_document_id=doc_record.id,
+                    paid_by_user_id=user_id,
+                    category=ExpenseCategory.TRAVEL_VACATION,
+                    amount_minor=tv.total_amount_minor,
+                    currency_code=tv.currency_code,
+                    merchant_name=tv.provider_or_carrier,
+                    description=f"{tv.trip_name} ({tv.booking_reference})",
+                    incurred_on=tv.departure_date,
+                    payment_method=PaymentMethod.CREDIT_CARD,
+                    reference_transaction_id=tv.booking_reference,
+                    created_by_id=user_id,
+                )
+                saved_exp = await self.repos.expenses.create(expense)
+                created.append({"table": "expenses", "id": str(saved_exp.id)})
+
+            dep_dt = datetime.combine(
+                tv.departure_date, datetime.min.time(), tzinfo=timezone.utc
+            )
+            reminder = Reminder(
+                household_id=doc_record.household_id,
+                assigned_user_id=user_id,
+                title=f"Trip Departure: {tv.trip_name}",
+                description=f"Booking {tv.booking_reference} to {tv.destination}. {tv.important_date_label or ''}",
+                domain="travel_planning",
+                priority=ReminderPriority.HIGH,
+                status=ReminderStatus.PENDING,
+                due_at=dep_dt,
+                created_by_id=user_id,
+            )
+            saved_rem = await self.repos.reminders.create(reminder)
+            created.append({"table": "reminders", "id": str(saved_rem.id)})
 
         return created
 

@@ -42,6 +42,9 @@ from app.db.enums import (
     StockStatus,
     StorageLocation,
     SubscriptionStatus,
+    TravelRecordCategory,
+    TravelRecordStatus,
+    TravelTransportMode,
     VehicleType,
     WarrantyStatus,
     WarrantyType,
@@ -66,10 +69,20 @@ from app.db.models import (
     ParentHealthRecord,
     Reminder,
     Subscription,
+    TravelRecord,
     User,
     Vehicle,
     Warranty,
 )
+
+# Deterministic Seed UUIDs exported for evaluation and test suites
+USER_SANIKA_ID = uuid.UUID("11111111-1111-4111-8111-111111111101")
+USER_ROHAN_ID = uuid.UUID("11111111-1111-4111-8111-111111111102")
+USER_AARAV_ID = USER_ROHAN_ID
+HOUSEHOLD_ID = uuid.UUID("22222222-2222-4222-8222-222222222201")
+ASSET_DISHWASHER_ID = uuid.UUID("44444444-4444-4444-8444-444444444401")
+ASSET_CAR_ID = uuid.UUID("44444444-4444-4444-8444-444444444402")
+ASSET_AC_ID = uuid.UUID("44444444-4444-4444-8444-444444444403")
 
 
 async def seed_development_data(session: AsyncSession) -> dict[str, uuid.UUID]:
@@ -177,7 +190,24 @@ async def seed_development_data(session: AsyncSession) -> dict[str, uuid.UUID]:
         expected_lifespan_months=180,
         created_by_id=sanika.id,
     )
-    session.add_all([asset_dishwasher, asset_car])
+    asset_ac = Asset(
+        id=ASSET_AC_ID,
+        household_id=household.id,
+        asset_tag="AST-HVAC-AC01",
+        name="Daikin 1.5 Ton 5-Star Inverter Split AC",
+        category=AssetCategory.HVAC_CLIMATE,
+        status=AssetStatus.ACTIVE,
+        brand="Daikin",
+        model_number="FTKM50UV16V",
+        serial_number="DKN-IN-2025-11092",
+        location_in_home="Master Bedroom",
+        purchase_date=date(2025, 3, 20),
+        purchase_price_minor=4200000,  # ₹42,000.00
+        vendor_name="Vijay Sales Kothrud",
+        expected_lifespan_months=120,
+        created_by_id=sanika.id,
+    )
+    session.add_all([asset_dishwasher, asset_car, asset_ac])
     await session.flush()
 
     # 5. Appliances (1-to-1 specialization of asset_dishwasher)
@@ -603,6 +633,30 @@ async def seed_development_data(session: AsyncSession) -> dict[str, uuid.UUID]:
             health_measurement_father,
         ]
     )
+    await session.flush()
+
+    # 17b. Travel & Leisure Planning Records (Domain 7)
+    travel_udaipur = TravelRecord(
+        household_id=household.id,
+        trip_name="Diwali Family Heritage Retreat — Udaipur",
+        destination="Udaipur, Rajasthan (UDR)",
+        origin_city="Pune (PNQ)",
+        record_category=TravelRecordCategory.FAMILY_VACATION,
+        transport_mode=TravelTransportMode.FLIGHT,
+        booking_reference="PNR-6E-KQ92M",
+        provider_or_carrier="IndiGo Airlines / Taj Lake Palace",
+        accommodation_name="Taj Lake Palace, Pichola",
+        departure_date=date(2026, 11, 8),
+        return_date=date(2026, 11, 13),
+        travelers="Sanika, Rohan, Ramesh & Sunita (4 Adults)",
+        status=TravelRecordStatus.BOOKED,
+        expense_amount_minor=14850000,
+        document_status="E-Tickets + Hotel Voucher Verified · Senior Wheelchair Assist Confirmed",
+        important_date_label="Web Check-in Opens 2026-11-06 06:00 IST",
+        notes="Pre-booked airport wheelchair assistance for parents.",
+        created_by_id=sanika.id,
+    )
+    session.add(travel_udaipur)
     await session.flush()
 
     # 18. Agent Runs

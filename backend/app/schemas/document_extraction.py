@@ -38,6 +38,8 @@ class SupportedExtractionCategory(StrEnum):
     WARRANTY_DOCUMENT = "WARRANTY_DOCUMENT"
     INSURANCE_DOCUMENT = "INSURANCE_DOCUMENT"
     SERVICE_INVOICE = "SERVICE_INVOICE"
+    MEDICAL_LAB_REPORT = "MEDICAL_LAB_REPORT"
+    TRAVEL_BOOKING_VOUCHER = "TRAVEL_BOOKING_VOUCHER"
 
 
 class DocumentProcessingStatus(StrEnum):
@@ -250,6 +252,56 @@ class GeminiDocumentAnalysisEnvelope(BaseModel):
     warranty_data: WarrantyExtractionSchema | None = None
     insurance_data: InsuranceExtractionSchema | None = None
     service_invoice_data: ServiceInvoiceExtractionSchema | None = None
+    medical_lab_data: MedicalLabReportExtractionSchema | None = None
+    travel_voucher_data: TravelBookingVoucherExtractionSchema | None = None
+
+
+class MedicalLabPanelItemExtraction(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    biomarker: str = Field(min_length=1, max_length=120)
+    value: str = Field(min_length=1, max_length=80)
+    reference_range: str | None = Field(default=None, max_length=120)
+
+
+class MedicalLabReportExtractionSchema(BaseModel):
+    """Structured extraction schema for Parents' Health Monitoring lab reports (Domain 6)."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    lab_or_provider_name: str = Field(min_length=2, max_length=180)
+    report_number: str = Field(min_length=2, max_length=100)
+    patient_or_parent_name: str = Field(min_length=2, max_length=160)
+    referring_doctor: str | None = Field(default=None, max_length=160)
+    report_date: date
+    next_followup_date: date | None = None
+    test_title: str = Field(min_length=2, max_length=200)
+    explicit_measurement_summary: str = Field(min_length=2, max_length=300)
+    currency_code: str = Field(default="INR", min_length=3, max_length=3)
+    total_amount_minor: int = Field(default=0, ge=0)
+    panel_measurements: list[MedicalLabPanelItemExtraction] = Field(default_factory=list)
+
+
+class TravelBookingVoucherExtractionSchema(BaseModel):
+    """Structured extraction schema for Travel & Leisure booking vouchers (Domain 7)."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    provider_or_carrier: str = Field(min_length=2, max_length=180)
+    booking_reference: str = Field(min_length=2, max_length=120)
+    trip_name: str = Field(min_length=2, max_length=200)
+    origin_city: str | None = Field(default=None, max_length=120)
+    destination: str = Field(min_length=2, max_length=160)
+    transport_mode: str = Field(default="FLIGHT", max_length=64)
+    departure_date: date
+    return_date: date | None = None
+    accommodation_name: str | None = Field(default=None, max_length=200)
+    travelers: str | None = Field(default=None, max_length=255)
+    currency_code: str = Field(default="INR", min_length=3, max_length=3)
+    total_amount_minor: int = Field(default=0, ge=0)
+    document_status: str | None = Field(default=None, max_length=160)
+    important_date_label: str | None = Field(default=None, max_length=160)
+
 
 
 class SourceDocumentReference(BaseModel):

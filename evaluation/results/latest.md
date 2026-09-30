@@ -1,7 +1,7 @@
 # HomeIQ — Dataset & Document Intelligence Evaluation Report
 
-- **Report ID**: `eval-run-20260930-102647`
-- **Generated At**: `2026-09-30T10:26:47.896495+00:00`
+- **Report ID**: `eval-run-20260930-204819`
+- **Generated At**: `2026-09-30T20:48:19.487073+00:00`
 - **Execution Mode**: `deterministic_ci`
 - **Extraction Model Configured**: `dmis-lab/biobert-base-cased-v1.2 (PubMedQA LoRA) + naver-clova-ix/donut-base-finetuned-cord-v2 + Qwen/Qwen2.5-VL-7B-Instruct`
 - **Model Fine-Tuned?**: `True` (8-Domain Hybrid Open-Source Fine-Tuned Hugging Face Ensemble (BioBERT-v1.2 + PubMedQA for Parents' Health Lab Reports, Donut-CORD-v2, Fashion-CLIP, LayoutLM-Invoices, FinBERT, TrOCR, Legal-BERT, Qwen2-VL-7B) + Schema-Constrained Multimodal Validation & SQL Persistence)

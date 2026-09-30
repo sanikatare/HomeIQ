@@ -124,10 +124,10 @@ async def test_complete_evaluation_runner_and_artifacts(
     runner = HomeIQEvaluationRunner(session=db_session, use_live_gemini=False)
     report = await runner.run_complete_evaluation()
 
-    assert report.total_documents == 10
-    assert report.positive_documents_count == 8
+    assert report.total_documents == 12
+    assert report.positive_documents_count == 10
     assert report.adversarial_documents_count == 2
-    assert report.documents_passed == 10
+    assert report.documents_passed == 12
     assert report.documents_failed == 0
     assert report.document_classification_accuracy == 1.0
     assert report.overall_normalized_match_rate == 1.0
@@ -160,11 +160,11 @@ async def test_complete_evaluation_runner_and_artifacts(
 async def test_evaluation_api_endpoints(api_client: AsyncClient) -> None:
     ds_resp = await api_client.get("/api/v1/intelligence/evaluation/datasets")
     assert ds_resp.status_code == 200
-    assert len(ds_resp.json()["documents"]) == 10
+    assert len(ds_resp.json()["documents"]) == 12
 
     run_resp = await api_client.post("/api/v1/intelligence/evaluation/run")
     assert run_resp.status_code == 200
     body = run_resp.json()
-    assert body["total_documents"] == 10
-    assert body["documents_passed"] == 10
+    assert body["total_documents"] == 12
+    assert body["documents_passed"] == 12
     assert body["overall_f1"] == 1.0

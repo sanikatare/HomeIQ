@@ -40,6 +40,7 @@ from app.db.models import (
     ParentHealthRecord,
     Reminder,
     Subscription,
+    TravelRecord,
     User,
     Vehicle,
     Warranty,
@@ -62,6 +63,7 @@ from app.schemas.api_schemas import (
     ParentHealthRecordCreateRequest,
     ReminderCreateRequest,
     SubscriptionCreateRequest,
+    TravelRecordCreateRequest,
     UserCreateRequest,
     VehicleCreateRequest,
     WarrantyCreateRequest,
@@ -557,3 +559,61 @@ class HouseholdPlatformService:
             )
             await self.repos.reminders.create(reminder)
         return created
+
+    # -------------------------------------------------------------------------
+    # 20. Travel & Leisure Planning Records
+    # -------------------------------------------------------------------------
+    async def list_travel_records(
+        self, offset: int = 0, limit: int = 50
+    ) -> tuple[Sequence[TravelRecord], int]:
+        return await self.repos.travel_records.list_for_household(
+            self.ctx.household_id, offset=offset, limit=limit
+        )
+
+    async def create_travel_record(
+        self, payload: TravelRecordCreateRequest
+    ) -> TravelRecord:
+        record = TravelRecord(
+            household_id=self.ctx.household_id,
+            created_by_id=self.ctx.user_id,
+            **payload.model_dump(),
+        )
+        created = await self.repos.travel_records.create(record)
+        await self._record_audit_event(
+            event_type="travel.record.created",
+            domain="travel_planning",
+            summary=f"Created travel itinerary '{created.trip_name}' to {created.destination}",
+            payload={
+                "record_id": str(created.id),
+                "trip_name": created.trip_name,
+                "destination": created.destination,
+                "booking_reference": created.booking_reference,
+                "departure_date": created.departure_date.isoformat(),
+                "expense_amount_minor": created.expense_amount_minor,
+            },
+        )
+        due_dt = datetime(
+            created.departure_date.year,
+            created.departure_date.month,
+            created.departure_date.day,
+            6,
+            0,
+            tzinfo=timezone.utc,
+        )
+        reminder = Reminder(
+            household_id=self.ctx.household_id,
+            assigned_user_id=self.ctx.user_id,
+            title=f"Departure: {created.trip_name} ({created.destination})",
+            description=(
+                f"Booking Ref: {created.booking_reference}. "
+                f"{created.important_date_label or 'Verify travel documents and check-in window.'}"
+            ),
+            domain="travel_planning",
+            priority=ReminderPriority.HIGH,
+            status=ReminderStatus.PENDING,
+            due_at=due_dt,
+            created_by_id=self.ctx.user_id,
+        )
+        await self.repos.reminders.create(reminder)
+        return created
+
