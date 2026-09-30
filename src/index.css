@@ -202,3 +202,109 @@
   border-radius: 38px 6px 38px 6px;
 }
 
+@keyframes thinkMarquee {
+  0% {
+    transform: translate3d(0%, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes thinkMarqueeReverse {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0%, 0, 0);
+  }
+}
+
+@keyframes thinkKenBurns {
+  0% {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: scale(1.07) translate3d(-1.5%, -1%, 0);
+  }
+  100% {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+}
+
+@keyframes thinkFloatDelayed {
+  0%,
+  100% {
+    transform: translate3d(0, 0px, 0);
+  }
+  50% {
+    transform: translate3d(0, -8px, 0);
+  }
+}
+
+@keyframes thinkAuraPulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.06);
+  }
+}
+
+.animate-think-marquee {
+  display: flex;
+  width: max-content;
+  animation: thinkMarquee 42s linear infinite;
+  will-change: transform;
+}
+
+.animate-think-marquee:hover {
+  animation-play-state: paused;
+}
+
+.animate-think-marquee-reverse {
+  display: flex;
+  width: max-content;
+  animation: thinkMarqueeReverse 46s linear infinite;
+  will-change: transform;
+}
+
+.animate-think-marquee-reverse:hover {
+  animation-play-state: paused;
+}
+
+.animate-think-kenburns {
+  animation: thinkKenBurns 18s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-think-float-delayed {
+  animation: thinkFloatDelayed 6s ease-in-out 1.5s infinite;
+  will-change: transform;
+}
+
+.animate-think-aura {
+  animation: thinkAuraPulse 7s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-think-marquee,
+  .animate-think-marquee-reverse,
+  .animate-think-kenburns,
+  .animate-think-float-delayed,
+  .animate-think-aura,
+  .animate-un-float,
+  .animate-un-orbit-slow,
+  .animate-un-orbit-reverse,
+  .animate-un-line-sweep,
+  .animate-un-vertical-pulse {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+

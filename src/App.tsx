@@ -72,6 +72,339 @@ interface DomainNavSpec {
   icon: React.ComponentType<{ className?: string }>;
 }
 
+const CuteHomeLogo: React.FC<{ className?: string }> = ({
+  className = "h-5 w-5",
+}) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className={className}
+     aria-hidden="true"
+  >
+    <path
+      d="M4 11.2L11.1 4.6C11.62 4.12 12.38 4.12 12.9 4.6L20 11.2"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M6.2 9.8V18.6C6.2 19.6 7 20.4 8 20.4H16C17 20.4 17.8 19.6 17.8 18.6V9.8"
+      fill="currentColor"
+      fillOpacity="0.18"
+      stroke="currentColor"
+      strokeWidth="1.9"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <circle cx="9.6" cy="13.2" r="1.1" fill="currentColor" />
+    <circle cx="14.4" cy="13.2" r="1.1" fill="currentColor" />
+    <path
+      d="M10.3 15.8C10.8 16.5 11.4 16.8 12 16.8C12.6 16.8 13.2 16.5 13.7 15.8"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+    />
+    <path
+      d="M17.5 4.2C17.9 3.4 19.1 3.4 19.5 4.2C19.9 5 18.5 6.1 18.5 6.1C18.5 6.1 17.1 5 17.5 4.2Z"
+      fill="currentColor"
+    />
+  </svg>
+);
+
+const CuteKitchenLogo: React.FC<{ className?: string }> = ({
+  className = "h-5 w-5",
+}) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className={className}
+    aria-hidden="true"
+  >
+    <path
+      d="M9 3.8C9 4.9 10.2 5.3 10.2 6.4M14.2 3.5C14.2 4.6 15.4 5 15.4 6.1"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+    />
+    <path
+      d="M4.5 10.5H19.5V12.5C19.5 16.64 16.14 20 12 20C7.86 20 4.5 16.64 4.5 12.5V10.5Z"
+      fill="currentColor"
+      fillOpacity="0.18"
+      stroke="currentColor"
+      strokeWidth="1.9"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M3 10.5H21"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+    <circle cx="9.6" cy="13.8" r="1.05" fill="currentColor" />
+    <circle cx="14.4" cy="13.8" r="1.05" fill="currentColor" />
+    <path
+      d="M10.5 16.1C11 16.7 11.5 16.9 12 16.9C12.5 16.9 13 16.7 13.5 16.1"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+const CuteLaundryLogo: React.FC<{ className?: string }> = ({
+  className = "h-5 w-5",
+}) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className={className}
+    aria-hidden="true"
+  >
+    <rect
+      x="4.5"
+      y="3.8"
+      width="15"
+      height="16.4"
+      rx="4"
+      fill="currentColor"
+      fillOpacity="0.16"
+      stroke="currentColor"
+      strokeWidth="1.9"
+    />
+    <circle
+      cx="12"
+      cy="13"
+      r="4.6"
+      stroke="currentColor"
+      strokeWidth="1.8"
+    />
+    <path
+      d="M8.5 13C9.6 11.8 11 11.8 12 13C13 14.2 14.4 14.2 15.5 13"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+    />
+    <circle cx="8" cy="6.6" r="1" fill="currentColor" />
+    <circle cx="10.8" cy="6.6" r="1" fill="currentColor" />
+    <path
+      d="M15.8 5.4L16.3 6.5L17.4 7L16.3 7.5L15.8 8.6L15.3 7.5L14.2 7L15.3 6.5L15.8 5.4Z"
+      fill="currentColor"
+    />
+  </svg>
+);
+
+const CuteMaintenanceLogo: React.FC<{ className?: string }> = ({
+  className = "h-5 w-5",
+}) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className={className}
+    aria-hidden="true"
+  >
+    <rect
+      x="3.8"
+      y="7.8"
+      width="16.4"
+      height="12.2"
+      rx="3.5"
+      fill="currentColor"
+      fillOpacity="0.18"
+      stroke="currentColor"
+      strokeWidth="1.9"
+    />
+    <path
+      d="M8.8 7.8V6C8.8 4.9 9.7 4 10.8 4H13.2C14.3 4 15.2 4.9 15.2 6V7.8"
+      stroke="currentColor"
+      strokeWidth="1.9"
+      strokeLinecap="round"
+    />
+    <circle cx="9.4" cy="12.8" r="1.05" fill="currentColor" />
+    <circle cx="14.6" cy="12.8" r="1.05" fill="currentColor" />
+    <path
+      d="M10.4 15.6C10.9 16.2 11.4 16.5 12 16.5C12.6 16.5 13.1 16.2 13.6 15.6"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+const CuteFinanceLogo: React.FC<{ className?: string }> = ({
+  className = "h-5 w-5",
+}) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className={className}
+    aria-hidden="true"
+  >
+    <rect
+      x="3.8"
+      y="6.2"
+      width="16.4"
+      height="13.2"
+      rx="4"
+      fill="currentColor"
+      fillOpacity="0.18"
+      stroke="currentColor"
+      strokeWidth="1.9"
+    />
+    <path
+      d="M7.5 6.2L9.5 3.8L12 5.4L14.5 3.8L16.5 6.2"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <circle cx="9.4" cy="12.2" r="1.05" fill="currentColor" />
+    <circle cx="14.6" cy="12.2" r="1.05" fill="currentColor" />
+    <path
+      d="M10.3 15.1C10.8 15.8 11.4 16.1 12 16.1C12.6 16.1 13.2 15.8 13.7 15.1"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+const CuteVehicleLogo: React.FC<{ className?: string }> = ({
+  className = "h-5 w-5",
+}) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className={className}
+    aria-hidden="true"
+  >
+    <path
+      d="M6.2 11L7.8 6.6C8.2 5.6 9.1 5 10.2 5H13.8C14.9 5 15.8 5.6 16.2 6.6L17.8 11"
+      stroke="currentColor"
+      strokeWidth="1.9"
+      strokeLinecap="round"
+    />
+    <rect
+      x="4"
+      y="10.8"
+      width="16"
+      height="7.4"
+      rx="3.2"
+      fill="currentColor"
+      fillOpacity="0.18"
+      stroke="currentColor"
+      strokeWidth="1.9"
+    />
+    <circle cx="8.2" cy="14.4" r="1.2" fill="currentColor" />
+    <circle cx="15.8" cy="14.4" r="1.2" fill="currentColor" />
+    <path
+      d="M10.5 15.2C11 15.8 11.5 16 12 16C12.5 16 13 15.8 13.5 15.2"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+    />
+    <path
+      d="M7 18.4V20M17 18.4V20"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+const CuteVaultLogo: React.FC<{ className?: string }> = ({
+  className = "h-5 w-5",
+}) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className={className}
+    aria-hidden="true"
+  >
+    <path
+      d="M12 3.5L18.8 6.2V11.8C18.8 16.1 15.9 19.6 12 20.8C8.1 19.6 5.2 16.1 5.2 11.8V6.2L12 3.5Z"
+      fill="currentColor"
+      fillOpacity="0.18"
+      stroke="currentColor"
+      strokeWidth="1.9"
+      strokeLinejoin="round"
+    />
+    <circle cx="9.7" cy="11.4" r="1.05" fill="currentColor" />
+    <circle cx="14.3" cy="11.4" r="1.05" fill="currentColor" />
+    <path
+      d="M10.4 14.3C10.9 14.9 11.4 15.2 12 15.2C12.6 15.2 13.1 14.9 13.6 14.3"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+const CuteHealthLogo: React.FC<{ className?: string }> = ({
+  className = "h-5 w-5",
+}) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className={className}
+    aria-hidden="true"
+  >
+    <path
+      d="M12 20.2C12 20.2 4.2 15.4 4.2 9.5C4.2 6.7 6.4 4.6 9 4.6C10.5 4.6 11.5 5.3 12 6.2C12.5 5.3 13.5 4.6 15 4.6C17.6 4.6 19.8 6.7 19.8 9.5C19.8 15.4 12 20.2 12 20.2Z"
+      fill="currentColor"
+      fillOpacity="0.18"
+      stroke="currentColor"
+      strokeWidth="1.9"
+      strokeLinejoin="round"
+    />
+    <circle cx="9.6" cy="11" r="1.05" fill="currentColor" />
+    <circle cx="14.4" cy="11" r="1.05" fill="currentColor" />
+    <path
+      d="M10.4 13.6C10.9 14.2 11.4 14.5 12 14.5C12.6 14.5 13.1 14.2 13.6 13.6"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+const CuteTravelLogo: React.FC<{ className?: string }> = ({
+  className = "h-5 w-5",
+}) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className={className}
+    aria-hidden="true"
+  >
+    <rect
+      x="5.2"
+      y="7"
+      width="13.6"
+      height="13"
+      rx="3.6"
+      fill="currentColor"
+      fillOpacity="0.18"
+      stroke="currentColor"
+      strokeWidth="1.9"
+    />
+    <path
+      d="M9.4 7V4.8C9.4 4.1 10 3.5 10.7 3.5H13.3C14 3.5 14.6 4.1 14.6 4.8V7"
+      stroke="currentColor"
+      strokeWidth="1.9"
+      strokeLinecap="round"
+    />
+    <circle cx="9.7" cy="12.4" r="1.05" fill="currentColor" />
+    <circle cx="14.3" cy="12.4" r="1.05" fill="currentColor" />
+    <path
+      d="M10.4 15.2C10.9 15.8 11.4 16.1 12 16.1C12.6 16.1 13.1 15.8 13.6 15.2"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
 const SEVEN_DOMAIN_NAV: DomainNavSpec[] = [
   {
     id: "all",
@@ -86,7 +419,7 @@ const SEVEN_DOMAIN_NAV: DomainNavSpec[] = [
       "Summarize all urgent household bills, low stock items, and upcoming reminders.",
       "What are our upcoming travel bookings and parents' health appointments?",
     ],
-    icon: Layers,
+    icon: CuteHomeLogo,
   },
   {
     id: "kitchen_grocery",
@@ -101,7 +434,7 @@ const SEVEN_DOMAIN_NAV: DomainNavSpec[] = [
       "How much Indrayani Rice and Gir Cow A2 Milk do we currently have in stock?",
       "What items were purchased on our latest Sahyadri Fresh Mart grocery receipt?",
     ],
-    icon: Utensils,
+    icon: CuteKitchenLogo,
   },
   {
     id: "laundry_clothing",
@@ -116,7 +449,7 @@ const SEVEN_DOMAIN_NAV: DomainNavSpec[] = [
       "What are the wash care instructions for the Raymond Super 120s Wool Blazer?",
       "Which garments in our wardrobe require dry cleaning only?",
     ],
-    icon: Shirt,
+    icon: CuteLaundryLogo,
   },
   {
     id: "home_maintenance",
@@ -131,7 +464,7 @@ const SEVEN_DOMAIN_NAV: DomainNavSpec[] = [
       "When is the next RO membrane replacement or Daikin AC servicing scheduled?",
       "How much have we spent on Bosch dishwasher and home maintenance repairs?",
     ],
-    icon: Wrench,
+    icon: CuteMaintenanceLogo,
   },
   {
     id: "finance_expenses",
@@ -146,7 +479,7 @@ const SEVEN_DOMAIN_NAV: DomainNavSpec[] = [
       "What is the amount and due date for our pending MSEDCL electricity bill?",
       "Pay the pending MSEDCL Mahavitaran electricity bill now.",
     ],
-    icon: Receipt,
+    icon: CuteFinanceLogo,
   },
   {
     id: "vehicle_mobility",
@@ -161,7 +494,7 @@ const SEVEN_DOMAIN_NAV: DomainNavSpec[] = [
       "When does our ICICI Lombard motor insurance policy expire and what is the IDV?",
       "Show the service and PUC status for both our Tata Nexon EV and Honda Activa.",
     ],
-    icon: Car,
+    icon: CuteVehicleLogo,
   },
   {
     id: "documents_warranty",
@@ -176,7 +509,7 @@ const SEVEN_DOMAIN_NAV: DomainNavSpec[] = [
       "Which appliance warranties and protection plans are active in our vault?",
       "Summarize the extracted details from our OnsiteGo extended warranty certificate.",
     ],
-    icon: FolderKanban,
+    icon: CuteVaultLogo,
   },
   {
     id: "parents_health",
@@ -191,7 +524,7 @@ const SEVEN_DOMAIN_NAV: DomainNavSpec[] = [
       "What are Mom's HbA1c, Vitamin D, and daily Telmisartan 40mg medication details?",
       "Set a recurring daily push notification reminder for Mom's Telmisartan 40mg at 08:30.",
     ],
-    icon: Activity,
+    icon: CuteHealthLogo,
   },
   {
     id: "travel_records",
@@ -206,7 +539,7 @@ const SEVEN_DOMAIN_NAV: DomainNavSpec[] = [
       "What is the PNR, flight time, and resort confirmation for our Diwali Goa family trip?",
       "What are the train coach/berth details and darshan timings for Parents' Tirupati Yatra?",
     ],
-    icon: Compass,
+    icon: CuteTravelLogo,
   },
 ];
 
@@ -756,6 +1089,8 @@ export function App() {
   );
   const [activeEstateWingId, setActiveEstateWingId] =
     useState<DomainFilterId>("kitchen_grocery");
+  const [homeHeroChapterIdx, setHomeHeroChapterIdx] = useState<number>(0);
+  const [homeHeroAutoPlay, setHomeHeroAutoPlay] = useState<boolean>(true);
 
   const [docFilename, setDocFilename] = useState(SAMPLE_DOCUMENTS[0].filename);
   const [docCategory, setDocCategory] = useState(SAMPLE_DOCUMENTS[0].category);
@@ -955,6 +1290,20 @@ export function App() {
   useEffect(() => {
     refreshAllData();
   }, []);
+
+  useEffect(() => {
+    if (
+      activeView !== "dashboard" ||
+      selectedDomain !== "all" ||
+      !homeHeroAutoPlay
+    ) {
+      return;
+    }
+    const timer = window.setInterval(() => {
+      setHomeHeroChapterIdx((prev) => (prev + 1) % 6);
+    }, 5500);
+    return () => window.clearInterval(timer);
+  }, [activeView, selectedDomain, homeHeroAutoPlay]);
 
   const handleAddInventoryItem = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -2136,8 +2485,8 @@ export function App() {
         <div>
           {/* Top Brand Header — Just HomeIQ */}
           <div className="flex items-center gap-3 border-b border-zinc-800 px-5 py-4">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-white text-zinc-950">
-              <Layers className="h-4 w-4" />
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-400/20 text-amber-300 ring-1 ring-amber-400/30">
+              <CuteHomeLogo className="h-4 w-4" />
             </div>
             <span className="text-base font-bold tracking-tight text-white">
               HomeIQ
@@ -2443,8 +2792,8 @@ export function App() {
                           {/* Top Culinary Category Navigation Bar inside Hero */}
                           <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 border-b border-white/10 px-6 py-4 lg:px-10">
                             <div className="flex items-center gap-2.5">
-                              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-500/20 text-amber-400">
-                                <Utensils className="h-4 w-4" />
+                              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-amber-500/20 text-amber-400 ring-1 ring-amber-400/30">
+                                <CuteKitchenLogo className="h-5 w-5" />
                               </div>
                               <span className="text-base font-bold tracking-tight text-white">
                                 Household Culinary Pantry & Larder
@@ -3012,6 +3361,45 @@ export function App() {
                       <>
                         {/* Renovation Webflow Hero Section */}
                         <div className="overflow-hidden rounded-3xl border border-stone-200 bg-[#18181B] text-white shadow-lg">
+                          {/* Top Maintenance Navigation Bar inside Hero (Matched to Kitchen Heading Style) */}
+                          <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 border-b border-white/10 px-6 py-4 lg:px-10">
+                            <div className="flex items-center gap-2.5">
+                              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-amber-500/20 text-amber-400 ring-1 ring-amber-400/30">
+                                <CuteMaintenanceLogo className="h-5 w-5" />
+                              </div>
+                              <span className="text-base font-bold tracking-tight text-white">
+                                Household Maintenance & Appliance Engineering
+                              </span>
+                            </div>
+
+                            <div className="flex flex-wrap items-center gap-2">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setActiveView("intelligence");
+                                  runAgentQueryText(
+                                    "What maintenance records and upcoming service schedules are due for our appliances?"
+                                  );
+                                }}
+                                className="rounded-full px-3.5 py-1.5 text-xs font-medium text-stone-300 transition-all duration-200 hover:bg-white/10 hover:text-white"
+                              >
+                                Engineering AI Audit
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setShowMaintModal((prev) => !prev)
+                                }
+                                className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/40 bg-amber-500/10 px-4 py-1.5 text-xs font-semibold text-amber-300 transition-colors hover:bg-amber-500 hover:text-slate-950"
+                              >
+                                <Plus className="h-3.5 w-3.5" />
+                                {showMaintModal
+                                  ? "Close Form"
+                                  : "Schedule Service"}
+                              </button>
+                            </div>
+                          </div>
+
                           <div className="grid grid-cols-1 items-center gap-8 p-6 lg:grid-cols-12 lg:p-10">
                             <div className="space-y-6 lg:col-span-6">
                               <div className="flex items-center gap-2 text-xs font-semibold text-amber-400">
@@ -3463,8 +3851,8 @@ export function App() {
                           {/* Top Wardrobe Valet Navigation Bar */}
                           <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 border-b border-white/10 px-6 py-4 lg:px-10">
                             <div className="flex items-center gap-2.5">
-                              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500/20 text-blue-400">
-                                <Shirt className="h-4 w-4" />
+                              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-500/20 text-blue-400 ring-1 ring-blue-400/30">
+                                <CuteLaundryLogo className="h-5 w-5" />
                               </div>
                               <span className="text-base font-bold tracking-tight text-white">
                                 Household Couture Wardrobe & Valet
@@ -3989,6 +4377,45 @@ export function App() {
                       <>
                         {/* Malen Car Service & Repair Workshop Hero Split Banner */}
                         <div className="overflow-hidden rounded-3xl border border-slate-800 bg-[#0F1115] text-white shadow-xl">
+                          {/* Top Fleet & EV Service Navigation Bar inside Hero (Matched to Kitchen Heading Style) */}
+                          <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 border-b border-white/10 px-6 py-4 lg:px-10">
+                            <div className="flex items-center gap-2.5">
+                              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-red-500/20 text-red-400 ring-1 ring-red-400/30">
+                                <CuteVehicleLogo className="h-5 w-5" />
+                              </div>
+                              <span className="text-base font-bold tracking-tight text-white">
+                                Household Fleet & EV Service Bay
+                              </span>
+                            </div>
+
+                            <div className="flex flex-wrap items-center gap-2">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setActiveView("intelligence");
+                                  runAgentQueryText(
+                                    "What is our Tata Nexon EV odometer reading and when is the next service due?"
+                                  );
+                                }}
+                                className="rounded-full px-3.5 py-1.5 text-xs font-medium text-slate-300 transition-all duration-200 hover:bg-white/10 hover:text-white"
+                              >
+                                EV Diagnostic AI
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setShowVehicleServiceModal((prev) => !prev)
+                                }
+                                className="inline-flex items-center gap-1.5 rounded-full border border-red-400/40 bg-red-500/10 px-4 py-1.5 text-xs font-semibold text-red-300 transition-colors hover:bg-red-500 hover:text-white"
+                              >
+                                <Plus className="h-3.5 w-3.5" />
+                                {showVehicleServiceModal
+                                  ? "Close Form"
+                                  : "Book Service Bay"}
+                              </button>
+                            </div>
+                          </div>
+
                           <div className="grid grid-cols-1 items-center gap-8 p-6 lg:grid-cols-12 lg:p-10">
                             {/* Left Column: Malen Workshop Proposition & Telemetry */}
                             <div className="space-y-6 lg:col-span-6">
@@ -5007,8 +5434,8 @@ export function App() {
                           {/* Top Vault Bar */}
                           <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 border-b border-white/10 px-6 py-4 lg:px-10">
                             <div className="flex items-center gap-2.5">
-                              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-sky-400/20 text-sky-300">
-                                <ShieldCheck className="h-4 w-4" />
+                              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-sky-400/20 text-sky-300 ring-1 ring-sky-400/30">
+                                <CuteVaultLogo className="h-5 w-5" />
                               </div>
                               <span className="text-base font-bold tracking-tight text-white">
                                 Household Digital Vault & Coverage Safe
@@ -5858,75 +6285,52 @@ export function App() {
                             className="pointer-events-none absolute -bottom-28 left-1/4 h-80 w-80 rounded-full bg-emerald-400/10 blur-3xl"
                           />
 
-                          {/* Top Sanctuary Bar */}
-                          <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 border-b border-emerald-500/20 px-6 py-4 lg:px-8">
-                            <div className="flex items-center gap-3">
-                              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20">
-                                <HeartPulse className="h-5 w-5 stroke-[2.25]" />
+                          {/* Top Sanctuary Bar (Matched to Kitchen Heading Style) */}
+                          <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 border-b border-white/10 px-6 py-4 lg:px-10">
+                            <div className="flex items-center gap-2.5">
+                              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-400/30">
+                                <CuteHealthLogo className="h-5 w-5" />
                               </div>
-                              <div>
-                                <div className="flex items-center gap-2">
-                                  <span className="font-mono text-[11px] font-bold tracking-widest text-emerald-400 uppercase">
-                                    PARENTAL WELLNESS SANCTUARY
-                                  </span>
-                                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                                </div>
-                                <h1 className="text-lg font-bold tracking-tight text-white">
-                                  Biometric Vitals & Care Schedule
-                                </h1>
-                              </div>
+                              <span className="text-base font-bold tracking-tight text-white">
+                                Household Parental Wellness & Biometric Sanctuary
+                              </span>
                             </div>
 
-                            {/* Parent Member Switcher & Quick Actions */}
-                            <div className="flex flex-wrap items-center gap-2">
-                              <div className="flex items-center gap-1 rounded-xl border border-emerald-500/20 bg-[#0B1E16] p-1">
-                                {[
-                                  { id: "ALL", label: "Both Parents" },
-                                  { id: "MOTHER", label: "Mom" },
-                                  { id: "FATHER", label: "Dad" },
-                                ].map((m) => (
-                                  <button
-                                    key={m.id}
-                                    type="button"
-                                    onClick={() =>
-                                      setParentHealthMemberFilter(m.id)
-                                    }
-                                    className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-all whitespace-nowrap ${
-                                      parentHealthMemberFilter === m.id
-                                        ? "bg-emerald-500 text-slate-950 shadow-xs"
-                                        : "text-slate-300 hover:text-white"
-                                    }`}
-                                  >
-                                    {m.label}
-                                  </button>
-                                ))}
-                              </div>
+                            <div className="flex flex-wrap items-center gap-1.5">
+                              {[
+                                { id: "ALL", label: "Both Parents" },
+                                { id: "MOTHER", label: "Mom" },
+                                { id: "FATHER", label: "Dad" },
+                              ].map((m) => (
+                                <button
+                                  key={m.id}
+                                  type="button"
+                                  onClick={() =>
+                                    setParentHealthMemberFilter(m.id)
+                                  }
+                                  className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-all duration-200 whitespace-nowrap ${
+                                    parentHealthMemberFilter === m.id
+                                      ? "bg-emerald-500 text-slate-950 font-semibold shadow-sm"
+                                      : "text-slate-300 hover:bg-white/10 hover:text-white"
+                                  }`}
+                                >
+                                  {m.label}
+                                </button>
+                              ))}
+                            </div>
 
+                            <div className="flex flex-wrap items-center gap-2">
                               <button
                                 type="button"
                                 onClick={() =>
                                   setShowAddHealthRecordModal((prev) => !prev)
                                 }
-                                className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-500 px-3.5 py-2 text-xs font-bold text-slate-950 transition-colors hover:bg-emerald-400 whitespace-nowrap"
+                                className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/40 bg-emerald-500/10 px-4 py-1.5 text-xs font-semibold text-emerald-300 transition-colors hover:bg-emerald-500 hover:text-slate-950 whitespace-nowrap"
                               >
-                                <Plus className="h-3.5 w-3.5 stroke-[2.5]" />
+                                <Plus className="h-3.5 w-3.5" />
                                 {showAddHealthRecordModal
-                                  ? "Close"
-                                  : "Log Record"}
-                              </button>
-
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setActiveView("intelligence");
-                                  runAgentQueryText(
-                                    "Check our parents' monthly checkups, doctor appointments, lab-test records, medication schedules, vaccination records, recorded health measurements, and health reminders."
-                                  );
-                                }}
-                                className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-500/35 bg-emerald-500/10 px-3.5 py-2 text-xs font-bold text-emerald-300 transition-colors hover:bg-emerald-500/20 whitespace-nowrap"
-                              >
-                                <Sparkles className="h-3.5 w-3.5" />
-                                Health AI →
+                                  ? "Close Form"
+                                  : "Log Health Record"}
                               </button>
                             </div>
                           </div>
@@ -8007,30 +8411,19 @@ export function App() {
                             className="pointer-events-none absolute -right-24 -bottom-28 h-96 w-96 rounded-full bg-orange-500/15 blur-3xl"
                           />
 
-                          {/* Top Eventar Travel Manager Header Bar */}
+                          {/* Top Eventar Travel Manager Header Bar (Matched to Kitchen Heading Style) */}
                           <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 border-b border-white/10 px-6 py-4 lg:px-10">
-                            <div className="flex items-center gap-3">
-                              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 text-slate-950 shadow-md">
-                                <Compass className="h-5 w-5" />
+                            <div className="flex items-center gap-2.5">
+                              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-sky-500/20 text-sky-400 ring-1 ring-sky-400/30">
+                                <CuteTravelLogo className="h-5 w-5" />
                               </div>
-                              <div>
-                                <div className="flex items-center gap-2">
-                                  <span className="text-base font-bold tracking-tight text-white">
-                                    Eventar Travel Manager
-                                  </span>
-                                  <span className="rounded-md border border-sky-400/30 bg-sky-400/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-sky-300">
-                                    TRAVEL RECORDS AGENT
-                                  </span>
-                                </div>
-                                <p className="text-[11px] text-slate-400">
-                                  Household Trip Ledger · Flights, Rail, Bus,
-                                  Hotel Stays, Vouchers, Expenses & Timelines
-                                </p>
-                              </div>
+                              <span className="text-base font-bold tracking-tight text-white">
+                                Household Travel & Itinerary Ledger
+                              </span>
                             </div>
 
                             {/* Status Filter Switcher */}
-                            <div className="flex flex-wrap items-center gap-1.5 rounded-2xl border border-white/10 bg-white/5 p-1">
+                            <div className="flex flex-wrap items-center gap-1.5">
                               {[
                                 {
                                   id: "ALL",
@@ -8049,9 +8442,9 @@ export function App() {
                                   key={tab.id}
                                   type="button"
                                   onClick={() => setTravelStatusFilter(tab.id)}
-                                  className={`rounded-xl px-3 py-1.5 text-xs font-semibold transition-all ${
+                                  className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-all duration-200 ${
                                     travelStatusFilter === tab.id
-                                      ? "bg-sky-400 text-slate-950 shadow-xs"
+                                      ? "bg-sky-400 text-slate-950 font-semibold shadow-sm"
                                       : "text-slate-300 hover:bg-white/10 hover:text-white"
                                   }`}
                                 >
@@ -9502,28 +9895,15 @@ export function App() {
                             className="pointer-events-none absolute -bottom-32 left-1/4 h-80 w-80 rounded-full bg-fuchsia-600/15 blur-3xl"
                           />
 
-                          {/* Top Command Bar */}
-                          <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 border-b border-purple-500/15 bg-[#0D071B]/90 px-6 py-4 lg:px-10">
-                            <div className="flex items-center gap-3">
-                              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-purple-400/40 bg-purple-500/15 text-purple-300">
-                                <Wallet className="h-5 w-5" />
+                          {/* Top Command Bar (Matched to Kitchen Heading Style) */}
+                          <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 border-b border-white/10 px-6 py-4 lg:px-10">
+                            <div className="flex items-center gap-2.5">
+                              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-purple-500/20 text-purple-300 ring-1 ring-purple-400/30">
+                                <CuteFinanceLogo className="h-5 w-5" />
                               </div>
-                              <div>
-                                <div className="flex items-center gap-2 text-xs text-purple-300">
-                                  <span className="font-semibold tracking-wider uppercase">
-                                    Household Treasury & Analytics
-                                  </span>
-                                  <span aria-hidden="true">·</span>
-                                  <span className="text-purple-300/70">
-                                    Oct 2026 Cycle
-                                  </span>
-                                </div>
-                                <div className="text-[11px] text-slate-400">
-                                  {allBills.length} Utility Accounts ·{" "}
-                                  {allSubscriptions.length} Mandates ·{" "}
-                                  {unifiedExpenditureRows.length} Vouchers
-                                </div>
-                              </div>
+                              <span className="text-base font-bold tracking-tight text-white">
+                                Household Treasury & Expense Ledger
+                              </span>
                             </div>
 
                             <div className="flex flex-wrap items-center gap-2">
@@ -10374,9 +10754,9 @@ export function App() {
                 </div>
               )}
 
-              {/* HOMEPAGE — CLEAN RECTANGULAR BLACK, GRAY & WHITE OVERVIEW */}
+              {/* HOMEPAGE — THINK SCHOOL INSPIRED ANIMATED & MOVING VISUAL SHOWCASE */}
               {selectedDomain === "all" && (
-                <div className="space-y-6">
+                <div className="space-y-8">
                   {(() => {
                     const totalEstateTcoMinor = assets.reduce(
                       (acc, a) => acc + Number(a.tco?.total_tco_minor || 0),
@@ -10403,35 +10783,284 @@ export function App() {
                       parentsHealthData.items || []
                     ).filter((p: any) => p.status !== "COMPLETED").length;
 
+                    const heroChapters: Array<{
+                      indexLabel: string;
+                      chapterTitle: string;
+                      domainId: DomainFilterId;
+                      kicker: string;
+                      headline: string;
+                      narrative: string;
+                      primaryImage: string;
+                      secondaryImage: string;
+                      spotlightTitle: string;
+                      spotlightMetric: string;
+                      spotlightSubtext: string;
+                      ctaLabel: string;
+                      agentPrompt: string;
+                      proofPoints: Array<{ label: string; value: string }>;
+                    }> = [
+                      {
+                        indexLabel: "01",
+                        chapterTitle: "01. Residence Command",
+                        domainId: "all",
+                        kicker:
+                          "Chapter 01 of 06 · Whole-Estate Intelligence · Pune Residence",
+                        headline:
+                          "One Living Case Study Across Eight Household Domains.",
+                        narrative:
+                          "Inspired by structured case-study storytelling: every utility tariff, organic pantry staple, BioBERT pathology panel, and royal heritage itinerary is indexed, cross-referenced, and governed under a single household ledger.",
+                        primaryImage:
+                          "/src/assets/images/home_think_hero_estate_1790781306905.jpg",
+                        secondaryImage:
+                          "/src/assets/images/renovation_hero_interior_1790696327676.jpg",
+                        spotlightTitle: "Bosch Serie 6 + Nexon EV Fleet",
+                        spotlightMetric: formatINR(totalEstateTcoMinor),
+                        spotlightSubtext: `${assets.length} Tracked Estate Assets · ${documents.length} Verified PDFs`,
+                        ctaLabel: "Explore Document Vault",
+                        agentPrompt:
+                          "Is our Bosch dishwasher covered under warranty, when is maintenance due, and what is its total cost?",
+                        proofPoints: [
+                          {
+                            label: "Monthly Outflow",
+                            value: `${formatINR(spendMinor)} (${budgetUtilizationPct}%)`,
+                          },
+                          {
+                            label: "Active Coverage",
+                            value: `${(warrantiesData.items || []).length} Warranties · ${(warrantiesData.insurance_policies || []).length} Policies`,
+                          },
+                          {
+                            label: "Specialist Agents",
+                            value: "8 Domain Engines Active",
+                          },
+                        ],
+                      },
+                      {
+                        indexLabel: "02",
+                        chapterTitle: "02. Culinary & Larder",
+                        domainId: "kitchen_grocery",
+                        kicker:
+                          "Chapter 02 of 06 · Single-Origin Larder · Sahyadri & Kothrud Farms",
+                        headline:
+                          "Heirloom Grains, Cold-Pressed Oils, and Automated Pantry Reserve.",
+                        narrative:
+                          "Track Maval Valley Indrayani rice, morning-harvest A2 Gir cow milk, and wood-pressed groundnut oil with real-time reorder thresholds and receipt-level OCR restocking.",
+                        primaryImage:
+                          "/src/assets/images/kitchen_indrayani_rice_bowl_1790694352075.jpg",
+                        secondaryImage:
+                          "/src/assets/images/kitchen_groundnut_oil_cruet_1790694389423.jpg",
+                        spotlightTitle: "Pantry Reserve Telemetry",
+                        spotlightMetric: `${inventory.length} Staples`,
+                        spotlightSubtext:
+                          lowStockCount > 0
+                            ? `${lowStockCount} Low-Stock Alert Triggered`
+                            : "All Organic Reserves Optimal",
+                        ctaLabel: "Open Kitchen & Grocery",
+                        agentPrompt:
+                          "Which pantry grocery items are currently low in stock or need restocking?",
+                        proofPoints: [
+                          {
+                            label: "Tracked Staples",
+                            value: `${inventory.length} Culinary Items`,
+                          },
+                          {
+                            label: "Reorder Queue",
+                            value: `${lowStockCount} Items Below Threshold`,
+                          },
+                          {
+                            label: "Receipt OCR",
+                            value: "Donut CORD-v2 Pipeline",
+                          },
+                        ],
+                      },
+                      {
+                        indexLabel: "03",
+                        chapterTitle: "03. Parents' Health",
+                        domainId: "parents_health",
+                        kicker:
+                          "Chapter 03 of 06 · Preventive Geriatric Care · BioBERT + PubMedQA",
+                        headline:
+                          "Clinical Biomarker Extraction Paired With Daily Medication Push.",
+                        narrative:
+                          "Fine-tuned BioBERT and PubMedQA analyze Metropolis pathology panels—tracking HbA1c, fasting glucose, Vitamin D3, and blood pressure alongside recurring morning and evening medication push schedules.",
+                        primaryImage:
+                          "/src/assets/images/home_parents_health_care_1790781321266.jpg",
+                        secondaryImage:
+                          "/src/assets/images/kitchen_gir_cow_milk_bottle_1790694371451.jpg",
+                        spotlightTitle: "Metropolis Senior Health Panel",
+                        spotlightMetric: "99.7% F1",
+                        spotlightSubtext: `${(parentsHealthData.items || []).length} Clinical Records · Daily Push Active`,
+                        ctaLabel: "Open Parents' Health",
+                        agentPrompt:
+                          "Check our parents' monthly checkups, doctor appointments, lab reports, and vitals.",
+                        proofPoints: [
+                          {
+                            label: "Clinical Records",
+                            value: `${(parentsHealthData.items || []).length} Verified Entries`,
+                          },
+                          {
+                            label: "Follow-Ups Due",
+                            value: `${parentsDueCount} Scheduled Checkups`,
+                          },
+                          {
+                            label: "Biomedical NLP",
+                            value: "BioBERT v1.2 + PubMedQA",
+                          },
+                        ],
+                      },
+                      {
+                        indexLabel: "04",
+                        chapterTitle: "04. Household Treasury",
+                        domainId: "finance_expenses",
+                        kicker:
+                          "Chapter 04 of 06 · Capital Allocation · Owner Approval Gate",
+                        headline:
+                          "Zero-Surprise Utility Tariffs, Mandates, and Budget Velocity.",
+                        narrative:
+                          "Every MSEDCL electricity statement, recurring household subscription, and UPI merchant voucher flows into a real-time capital allocation ledger guarded by human-in-the-loop payment sign-off.",
+                        primaryImage:
+                          "/src/assets/images/home_finance_treasury_desk_1790781333065.jpg",
+                        secondaryImage:
+                          "/src/assets/images/vault_luxury_safe_archive_1790714561787.jpg",
+                        spotlightTitle: "Monthly Budget Velocity",
+                        spotlightMetric: formatINR(spendMinor),
+                        spotlightSubtext: `${pendingBillsCount} Pending Utility Bills · ${budgetUtilizationPct}% of Ceiling`,
+                        ctaLabel: "Open Finance & Expenses",
+                        agentPrompt:
+                          "Summarize our pending utility bills, household expenses, and monthly budget status.",
+                        proofPoints: [
+                          {
+                            label: "Monthly Ceiling",
+                            value: formatINR(budgetMinor),
+                          },
+                          {
+                            label: "Pending Utility Dues",
+                            value: formatINR(
+                              summary?.metrics?.pending_bills_amount_minor
+                            ),
+                          },
+                          {
+                            label: "Recurring Cycles",
+                            value: `${(billsData.subscriptions || []).length} Active Mandates`,
+                          },
+                        ],
+                      },
+                      {
+                        indexLabel: "05",
+                        chapterTitle: "05. Heritage Travel",
+                        domainId: "travel_records",
+                        kicker:
+                          "Chapter 05 of 06 · Eventar Concierge · Flights, Rail & Palace Stays",
+                        headline:
+                          "Perforated Boarding Passes, PNR Timelines, and Palace Vouchers.",
+                        narrative:
+                          "From IndiGo flight PNRs and Taj Lake Palace Udaipur suites to Himalayan Vistadome rail journeys, every family itinerary is organized with departure cutoffs and verified expense ledgers.",
+                        primaryImage:
+                          "/src/assets/images/travel_udaipur_lake_palace_1790712238911.jpg",
+                        secondaryImage:
+                          "/src/assets/images/travel_taj_palace_suite_1790721213248.jpg",
+                        spotlightTitle: "Udaipur Royal Heritage Getaway",
+                        spotlightMetric: `${(travelRecordsData.items || []).length} Journeys`,
+                        spotlightSubtext: `${upcomingTripsCount} Upcoming Trips · PNR R8K9M2 Confirmed`,
+                        ctaLabel: "Open Travel Records",
+                        agentPrompt:
+                          "Summarize our upcoming and past household trips, flight/train PNRs, and hotel stays.",
+                        proofPoints: [
+                          {
+                            label: "Logged Trips",
+                            value: `${(travelRecordsData.items || []).length} Household Journeys`,
+                          },
+                          {
+                            label: "Upcoming Departures",
+                            value: `${upcomingTripsCount} Active Bookings`,
+                          },
+                          {
+                            label: "Featured Stay",
+                            value: "Taj Lake Palace · Pichola",
+                          },
+                        ],
+                      },
+                      {
+                        indexLabel: "06",
+                        chapterTitle: "06. EV Mobility & Care",
+                        domainId: "vehicle_mobility",
+                        kicker:
+                          "Chapter 06 of 06 · Malen EV Bay · Wardrobe & HVAC Engineering",
+                        headline:
+                          "High-Voltage EV Diagnostics, Appliance Care, and Valet Wardrobe.",
+                        narrative:
+                          "Monitor Tata Nexon EV battery health and ICICI Lombard IDV policies alongside Daikin inverter hydro-wash schedules and Yeola Paithani pure silk care rules.",
+                        primaryImage:
+                          "/src/assets/images/vehicle_malen_hero_bay_1790706396218.jpg",
+                        secondaryImage:
+                          "/src/assets/images/laundry_silk_saree_care_1790696366528.jpg",
+                        spotlightTitle: "Tata Nexon EV Empowered+ LR",
+                        spotlightMetric: "14,820 km",
+                        spotlightSubtext: `${pendingMaintCount} Service Orders · ${laundryDueCount} Valet Garments Queued`,
+                        ctaLabel: "Open Vehicle & Mobility",
+                        agentPrompt:
+                          "What is our Tata Nexon EV odometer reading and when is the next service due?",
+                        proofPoints: [
+                          {
+                            label: "Fleet & Appliances",
+                            value: `${assets.length} Monitored Units`,
+                          },
+                          {
+                            label: "Service Queue",
+                            value: `${pendingMaintCount} Scheduled Visits`,
+                          },
+                          {
+                            label: "Artisanal Wardrobe",
+                            value: `${clothing.length} Tracked Garments`,
+                          },
+                        ],
+                      },
+                    ];
+
+                    const safeHeroIdx =
+                      homeHeroChapterIdx % heroChapters.length;
+                    const activeHero = heroChapters[safeHeroIdx];
+
                     const domainCards: Array<{
                       id: DomainFilterId;
+                      indexNum: string;
                       title: string;
                       value: string;
                       context: string;
                       statusText: string;
+                      image: string;
+                      accentTag: string;
                     }> = [
                       {
                         id: "kitchen_grocery",
+                        indexNum: "01",
                         title: "Kitchen & Grocery",
                         value: `${inventory.length} Items`,
-                        context: `${lowStockCount} low stock · Pantry & staples`,
+                        context: `${lowStockCount} low stock · Pantry & organic staples`,
                         statusText:
                           lowStockCount > 0
-                            ? `${lowStockCount} Low`
-                            : "Stocked",
+                            ? `${lowStockCount} Low Stock`
+                            : "Fully Stocked",
+                        image:
+                          "/src/assets/images/kitchen_indrayani_rice_bowl_1790694352075.jpg",
+                        accentTag: "Culinary Larder",
                       },
                       {
                         id: "laundry_clothing",
+                        indexNum: "02",
                         title: "Laundry & Clothing",
                         value: `${clothing.length} Garments`,
-                        context: `${laundryDueCount} in wash queue · Care profiles`,
+                        context: `${laundryDueCount} in wash queue · Valet care profiles`,
                         statusText:
                           laundryDueCount > 0
                             ? `${laundryDueCount} Queued`
                             : "All Clean",
+                        image:
+                          "/src/assets/images/laundry_silk_saree_care_1790696366528.jpg",
+                        accentTag: "Wardrobe Valet",
                       },
                       {
                         id: "home_maintenance",
+                        indexNum: "03",
                         title: "Home Maintenance",
                         value: `${
                           (warrantiesData.maintenance_records || []).length
@@ -10439,11 +11068,15 @@ export function App() {
                         context: `${pendingMaintCount} scheduled · Appliances & HVAC`,
                         statusText:
                           pendingMaintCount > 0
-                            ? `${pendingMaintCount} Due`
+                            ? `${pendingMaintCount} Service Due`
                             : "Up to Date",
+                        image:
+                          "/src/assets/images/maintenance_hvac_service_1790696342392.jpg",
+                        accentTag: "Estate Engineering",
                       },
                       {
                         id: "finance_expenses",
+                        indexNum: "04",
                         title: "Finance & Expenses",
                         value: formatINR(spendMinor),
                         context: `${pendingBillsCount} pending bills · ${budgetUtilizationPct}% of budget`,
@@ -10451,18 +11084,26 @@ export function App() {
                           pendingBillsCount > 0
                             ? `${pendingBillsCount} Unpaid`
                             : "Settled",
+                        image:
+                          "/src/assets/images/home_finance_treasury_desk_1790781333065.jpg",
+                        accentTag: "Household Treasury",
                       },
                       {
                         id: "vehicle_mobility",
+                        indexNum: "05",
                         title: "Vehicle & Mobility",
                         value: formatINR(totalEstateTcoMinor),
                         context: `${
                           assets.filter((a) => a.vehicle).length
                         } active EV · Service & fleet TCO`,
-                        statusText: "Active",
+                        statusText: " Operational",
+                        image:
+                          "/src/assets/images/vehicle_ev_battery_diagnostics_1790706410952.jpg",
+                        accentTag: "EV & Fleet Bay",
                       },
                       {
                         id: "documents_warranty",
+                        indexNum: "06",
                         title: "Documents & Warranty",
                         value: `${documents.length} Documents`,
                         context: `${
@@ -10470,74 +11111,413 @@ export function App() {
                         } warranties · ${
                           (warrantiesData.insurance_policies || []).length
                         } policies`,
-                        statusText: "Indexed",
+                        statusText: "OCR Indexed",
+                        image:
+                          "/src/assets/images/vault_luxury_safe_archive_1790714561787.jpg",
+                        accentTag: "Protection Vault",
                       },
                       {
                         id: "parents_health",
+                        indexNum: "07",
                         title: "Parents' Health",
                         value: `${
                           (parentsHealthData.items || []).length
                         } Records`,
-                        context: `${parentsDueCount} checkups & meds due`,
+                        context: `${parentsDueCount} checkups & daily med push`,
                         statusText:
                           parentsDueCount > 0
                             ? `${parentsDueCount} Due`
                             : "On Track",
+                        image:
+                          "/src/assets/images/home_parents_health_care_1790781321266.jpg",
+                        accentTag: "BioBERT Clinical",
                       },
                       {
                         id: "travel_records",
+                        indexNum: "08",
                         title: "Travel",
                         value: `${
                           (travelRecordsData.items || []).length
                         } Trips`,
-                        context: `${upcomingTripsCount} upcoming · Confirmed bookings`,
+                        context: `${upcomingTripsCount} upcoming · Confirmed PNRs & stays`,
                         statusText:
                           upcomingTripsCount > 0
                             ? `${upcomingTripsCount} Upcoming`
-                            : "Logged",
+                            : "Archived",
+                        image:
+                          "/src/assets/images/travel_udaipur_lake_palace_1790712238911.jpg",
+                        accentTag: "Eventar Concierge",
+                      },
+                    ];
+
+                    const marqueeReelItems = [
+                      {
+                        num: "01",
+                        title: "Udaipur Lake Palace Itinerary",
+                        metric: "₹83,100 · PNR R8K9M2",
+                        domain: "travel_records" as DomainFilterId,
+                        image:
+                          "/src/assets/images/travel_udaipur_lake_palace_1790712238911.jpg",
+                      },
+                      {
+                        num: "02",
+                        title: "Metropolis Senior Lab Panel",
+                        metric: "HbA1c 5.9% · BioBERT 99.7% F1",
+                        domain: "parents_health" as DomainFilterId,
+                        image:
+                          "/src/assets/images/home_parents_health_care_1790781321266.jpg",
+                      },
+                      {
+                        num: "03",
+                        title: "Maval Indrayani Rice & A2 Dairy",
+                        metric: `${inventory.length} Organic Staples Tracked`,
+                        domain: "kitchen_grocery" as DomainFilterId,
+                        image:
+                          "/src/assets/images/kitchen_indrayani_rice_bowl_1790694352075.jpg",
+                      },
+                      {
+                        num: "04",
+                        title: "Tata Nexon EV Empowered+ LR",
+                        metric: "14,820 km · ₹16.5L IDV Policy",
+                        domain: "vehicle_mobility" as DomainFilterId,
+                        image:
+                          "/src/assets/images/vehicle_malen_hero_bay_1790706396218.jpg",
+                      },
+                      {
+                        num: "05",
+                        title: "Yeola Handloom Paithani Silk",
+                        metric: "20°C Hydrocarbon Valet Care",
+                        domain: "laundry_clothing" as DomainFilterId,
+                        image:
+                          "/src/assets/images/laundry_silk_saree_care_1790696366528.jpg",
+                      },
+                      {
+                        num: "06",
+                        title: "Bosch Serie 6 & Daikin HVAC",
+                        metric: "Extended Warranty Valid to 2028",
+                        domain: "home_maintenance" as DomainFilterId,
+                        image:
+                          "/src/assets/images/maintenance_dishwasher_care_1790696354374.jpg",
+                      },
+                      {
+                        num: "07",
+                        title: "Household Treasury & Mandates",
+                        metric: `${formatINR(spendMinor)} Outflow · ${budgetUtilizationPct}% Used`,
+                        domain: "finance_expenses" as DomainFilterId,
+                        image:
+                          "/src/assets/images/home_finance_treasury_desk_1790781333065.jpg",
+                      },
+                      {
+                        num: "08",
+                        title: "SHA-256 Deduplicated OCR Vault",
+                        metric: `${documents.length} Verified Golden PDFs`,
+                        domain: "documents_warranty" as DomainFilterId,
+                        image:
+                          "/src/assets/images/vault_luxury_safe_archive_1790714561787.jpg",
                       },
                     ];
 
                     return (
                       <>
-                        {/* TOP SUMMARY HEADER — BLACK, GRAY & WHITE RECTANGULAR */}
-                        <div className="rounded-lg border border-zinc-900 bg-zinc-950 p-6 text-white">
-                          <div className="flex flex-col justify-between gap-4 border-b border-zinc-800 pb-5 sm:flex-row sm:items-center">
-                            <div>
-                              <h1 className="text-xl font-bold tracking-tight text-white">
-                                HomeIQ Overview
-                              </h1>
-                              <p className="mt-1 text-xs text-zinc-400">
-                                Unified household status across all domains
-                              </p>
+                        {/* SECTION 1: THINK SCHOOL INSPIRED ANIMATED HERO STAGE & CHAPTER SHOWCASE */}
+                        <div className="relative overflow-hidden rounded-3xl border border-zinc-800 bg-[#090A0F] text-white shadow-2xl">
+                          {/* Moving Atmospheric Aura & Architectural Blueprint Grid */}
+                          <div
+                            aria-hidden="true"
+                            className="bg-un-dark-blueprint pointer-events-none absolute inset-0 opacity-65"
+                          />
+                          <div
+                            aria-hidden="true"
+                            className="animate-think-aura pointer-events-none absolute -top-36 -left-24 h-96 w-96 rounded-full bg-amber-500/20 blur-3xl"
+                          />
+                          <div
+                            aria-hidden="true"
+                            className="animate-think-aura pointer-events-none absolute -right-28 -bottom-36 h-[28rem] w-[28rem] rounded-full bg-orange-500/15 blur-3xl"
+                          />
+                          {/* Sweeping Kinetic Horizon Beam */}
+                          <div
+                            aria-hidden="true"
+                            className=" pointer-events-none absolute top-0 left-0 h-0.5 w-full overflow-hidden bg-white/5"
+                          >
+                            <div className="animate-un-line-sweep h-full w-1/3 bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
+                          </div>
+
+                          {/* Top Interactive Masterclass Chapter Selector Bar (Matched to Kitchen Heading Style) */}
+                          <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 border-b border-white/10 bg-black/30 px-6 py-4 backdrop-blur-md lg:px-10">
+                            <div className="flex items-center gap-2.5">
+                              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-amber-500/20 text-amber-400 ring-1 ring-amber-400/30">
+                                <CuteHomeLogo className="h-5 w-5" />
+                              </div>
+                              <span className="text-base font-bold tracking-tight text-white">
+                                Household Command & Estate Overview
+                              </span>
                             </div>
-                            <div className="flex flex-wrap items-center gap-2">
+
+                            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0">
+                              {heroChapters.map((chap, idx) => {
+                                const isCurrent = idx === safeHeroIdx;
+                                return (
+                                  <button
+                                    key={chap.indexLabel}
+                                    type="button"
+                                    onClick={() => {
+                                      setHomeHeroChapterIdx(idx);
+                                      setHomeHeroAutoPlay(false);
+                                    }}
+                                    className={`rounded-full px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-all duration-200 ${
+                                      isCurrent
+                                        ? "bg-amber-400 text-zinc-950 font-semibold shadow-sm"
+                                        : "text-zinc-300 hover:bg-white/10 hover:text-white"
+                                    }`}
+                                  >
+                                    {chap.chapterTitle}
+                                  </button>
+                                );
+                              })}
+                            </div>
+
+                            <div className="flex items-center gap-2">
                               <button
                                 type="button"
-                                onClick={() => setActiveView("documents")}
-                                className="inline-flex items-center gap-2 rounded-md bg-white px-3.5 py-2 text-xs font-semibold text-zinc-950 transition-colors hover:bg-zinc-200"
+                                onClick={() =>
+                                  setHomeHeroAutoPlay((prev) => !prev)
+                                }
+                                className="inline-flex items-center gap-1.5 rounded-xl border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-medium text-zinc-200 transition-colors hover:border-amber-400/50 hover:text-white whitespace-nowrap"
                               >
-                                <Upload className="h-3.5 w-3.5" />
-                                <span>Ingest Document</span>
+                                <Play
+                                  className={`h-3 w-3 ${
+                                    homeHeroAutoPlay
+                                      ? "text-amber-400"
+                                      : "text-zinc-400"
+                                  }`}
+                                />
+                                <span>
+                                  {homeHeroAutoPlay
+                                    ? "Auto-Reel Active"
+                                    : "Auto-Reel Paused"}
+                                </span>
                               </button>
-                              <button
-                                type="button"
-                                onClick={() => setActiveView("intelligence")}
-                                className="inline-flex items-center gap-2 rounded-md border border-zinc-700 bg-zinc-900 px-3.5 py-2 text-xs font-semibold text-zinc-100 transition-colors hover:bg-zinc-800"
-                              >
-                                <Sparkles className="h-3.5 w-3.5" />
-                                <span>Ask Multi-Agent</span>
-                              </button>
+                              <div className="flex items-center gap-1">
+                                <button
+                                  type="button"
+                                  aria-label="Previous Chapter"
+                                  onClick={() => {
+                                    setHomeHeroAutoPlay(false);
+                                    setHomeHeroChapterIdx(
+                                      (prev) =>
+                                        (prev - 1 + heroChapters.length) %
+                                        heroChapters.length
+                                    );
+                                  }}
+                                  className="flex h-8 w-8 items-center justify-center rounded-xl border border-white/15 bg-white/5 text-zinc-200 transition-colors hover:border-amber-400 hover:text-amber-300"
+                                >
+                                  <ChevronLeft className="h-4 w-4" />
+                                </button>
+                                <button
+                                  type="button"
+                                  aria-label="Next Chapter"
+                                  onClick={() => {
+                                    setHomeHeroAutoPlay(false);
+                                    setHomeHeroChapterIdx(
+                                      (prev) => (prev + 1) % heroChapters.length
+                                    );
+                                  }}
+                                  className="flex h-8 w-8 items-center justify-center rounded-xl border border-white/15 bg-white/5 text-zinc-200 transition-colors hover:border-amber-400 hover:text-amber-300"
+                                >
+                                  <ChevronRight className="h-4 w-4" />
+                                </button>
+                              </div>
                             </div>
                           </div>
 
-                          {/* 4 Rectangular KPI Cards */}
-                          <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                            <div className="rounded-md border border-zinc-800 bg-zinc-900/70 p-4">
-                              <div className="text-xs text-zinc-400">
-                                Monthly Spend
+                          {/* Main 12-Column Split-Screen Animated Stage */}
+                          <div className="relative z-10 grid grid-cols-1 items-center gap-8 px-6 py-8 lg:grid-cols-12 lg:px-10 lg:py-11">
+                            {/* Left 7 Columns: Editorial Proposition, Quantified Proof & Actions */}
+                            <div className="space-y-6 lg:col-span-7">
+                              {/* Unboxed Metadata Kicker (Zero-Pill Discipline) */}
+                              <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-amber-300/90">
+                                <span>{activeHero.kicker}</span>
+                                <span aria-hidden="true">·</span>
+                                <span className="text-zinc-300">
+                                  8 Specialist Agents Grounded
+                                </span>
                               </div>
-                              <div className="mt-1 font-mono text-xl font-bold tabular-nums text-white">
+
+                              <div className="space-y-3">
+                                <h1 className="text-3xl leading-[1.12] font-bold tracking-tight text-white sm:text-4xl lg:text-5xl [text-wrap:balance]">
+                                  {activeHero.headline}
+                                </h1>
+                                <p className="max-w-2xl text-sm leading-relaxed text-zinc-300 sm:text-base">
+                                  {activeHero.narrative}
+                                </p>
+                              </div>
+
+                              {/* 3 Quantified Case-Study Proof Columns */}
+                              <div className="grid grid-cols-1 gap-4 border-y border-white/10 py-4 sm:grid-cols-3">
+                                {activeHero.proofPoints.map((pt, idx) => (
+                                  <div
+                                    key={idx}
+                                    className="border-l-2 border-amber-400/70 pl-3.5"
+                                  >
+                                    <div className="text-xs text-zinc-400">
+                                      {pt.label}
+                                    </div>
+                                    <div className="mt-0.5 font-mono text-sm font-bold tabular-nums text-white sm:text-base">
+                                      {pt.value}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+
+                              {/* Primary & Secondary Action Controls */}
+                              <div className="flex flex-wrap items-center gap-3">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (activeHero.domainId === "all") {
+                                      setActiveView("documents");
+                                    } else {
+                                      handleSelectDomain(activeHero.domainId);
+                                    }
+                                  }}
+                                  className="inline-flex items-center gap-2 rounded-xl bg-amber-400 px-5 py-3 text-xs font-bold text-zinc-950 shadow-lg transition-transform duration-150 hover:-translate-y-0.5 hover:bg-amber-300 whitespace-nowrap"
+                                >
+                                  <span>{activeHero.ctaLabel}</span>
+                                  <ArrowRight className="h-4 w-4" />
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setActiveView("intelligence");
+                                    runAgentQueryText(
+                                      activeHero.agentPrompt,
+                                      activeHero.domainId === "all"
+                                        ? undefined
+                                        : activeHero.domainId
+                                    );
+                                  }}
+                                  className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/5 px-4 py-3 text-xs font-semibold text-white transition-colors hover:border-amber-400/60 hover:bg-white/10 whitespace-nowrap"
+                                >
+                                  <Sparkles className="h-3.5 w-3.5 text-amber-400" />
+                                  <span>Ask Multi-Agent</span>
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => setActiveView("documents")}
+                                  className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-black/40 px-4 py-3 text-xs font-semibold text-zinc-200 transition-colors hover:border-white/30 hover:text-white whitespace-nowrap"
+                                >
+                                  <Upload className="h-3.5 w-3.5 text-amber-300" />
+                                  <span>Ingest Document</span>
+                                </button>
+                              </div>
+                            </div>
+
+                            {/* Right 5 Columns: Moving Ken-Burns Visual Frame & Floating Spotlight Cards */}
+                            <div className="relative lg:col-span-5">
+                              {/* Animated Orbital Geometry Ring Behind Visual */}
+                              <svg
+                                aria-hidden="true"
+                                viewBox="0 0 320 320"
+                                className="animate-un-orbit-slow pointer-events-none absolute -top-10 -right-10 h-64 w-64 text-amber-400/20"
+                              >
+                                <circle
+                                  cx="160"
+                                  cy="160"
+                                  r="140"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="1.5"
+                                  strokeDasharray="10 8"
+                                />
+                                <circle
+                                  cx="160"
+                                  cy="20"
+                                  r="5"
+                                  fill="currentColor"
+                                />
+                              </svg>
+
+                              <div className="relative h-80 w-full overflow-hidden rounded-2xl border border-white/15 bg-zinc-900 shadow-2xl sm:h-96">
+                                <img
+                                  key={activeHero.primaryImage}
+                                  src={activeHero.primaryImage}
+                                  alt={activeHero.chapterTitle}
+                                  referrerPolicy="no-referrer"
+                                  className="animate-think-kenburns h-full w-full object-cover"
+                                />
+                                {/* Measured Contrast Scrim */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-[#090A0F] via-[#090A0F]/45 to-transparent" />
+
+                                {/* Top-Left Chapter Index Indicator */}
+                                <div className="absolute top-4 left-4 right-4 flex items-center justify-between text-xs font-medium text-white">
+                                  <span className="rounded-lg bg-black/65 px-3 py-1.5 font-mono backdrop-blur-md">
+                                    CHAPTER {activeHero.indexLabel} / 06
+                                  </span>
+                                  <span className="rounded-lg bg-black/65 px-3 py-1.5 text-amber-300 backdrop-blur-md">
+                                    {activeHero.spotlightTitle}
+                                  </span>
+                                </div>
+
+                                {/* Floating Animated Card (Bottom Overlay) */}
+                                <div className="animate-un-float absolute right-4 bottom-4 left-4 rounded-xl border border-white/20 bg-zinc-950/85 p-4 backdrop-blur-md">
+                                  <div className="flex items-center justify-between gap-4">
+                                    <div className="flex items-center gap-3 min-w-0">
+                                      <img
+                                        src={activeHero.secondaryImage}
+                                        alt={activeHero.spotlightTitle}
+                                        referrerPolicy="no-referrer"
+                                        className="h-12 w-16 shrink-0 rounded-lg border border-white/15 object-cover"
+                                      />
+                                      <div className="min-w-0">
+                                        <div className="truncate text-xs font-bold text-white">
+                                          {activeHero.spotlightTitle}
+                                        </div>
+                                        <div className="mt-0.5 truncate text-[11px] text-zinc-300">
+                                          {activeHero.spotlightSubtext}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="shrink-0 text-right">
+                                      <div className="font-mono text-lg font-bold tabular-nums text-amber-400">
+                                        {activeHero.spotlightMetric}
+                                      </div>
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          setActiveView("intelligence");
+                                          runAgentQueryText(
+                                            activeHero.agentPrompt,
+                                            activeHero.domainId === "all"
+                                              ? undefined
+                                              : activeHero.domainId
+                                          );
+                                        }}
+                                        className="mt-0.5 text-[11px] font-semibold text-white underline decoration-amber-400 underline-offset-2 hover:text-amber-300 whitespace-nowrap"
+                                      >
+                                        Inspect Case →
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Bottom 4 Live Household Pulse KPI Strip inside Hero */}
+                          <div className="relative z-10 grid grid-cols-1 gap-4 border-t border-white/10 bg-black/40 px-6 py-5 sm:grid-cols-2 lg:grid-cols-4 lg:px-10">
+                            <div
+                              onClick={() =>
+                                handleSelectDomain("finance_expenses")
+                              }
+                              className="group cursor-pointer rounded-xl border border-white/10 bg-white/[0.03] p-4 transition-all duration-150 hover:-translate-y-0.5 hover:border-amber-400/50 hover:bg-white/[0.06]"
+                            >
+                              <div className="flex items-center justify-between text-xs text-zinc-400">
+                                <span>Monthly Spend</span>
+                                <ArrowRight className="h-3.5 w-3.5 text-zinc-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-400" />
+                              </div>
+                              <div className="mt-1 font-mono text-2xl font-bold tabular-nums text-white">
                                 {formatINR(spendMinor)}
                               </div>
                               <div className="mt-1 text-[11px] text-zinc-400">
@@ -10546,11 +11526,17 @@ export function App() {
                               </div>
                             </div>
 
-                            <div className="rounded-md border border-zinc-800 bg-zinc-900/70 p-4">
-                              <div className="text-xs text-zinc-400">
-                                Pending Utility Bills
+                            <div
+                              onClick={() =>
+                                handleSelectDomain("finance_expenses")
+                              }
+                              className="group cursor-pointer rounded-xl border border-white/10 bg-white/[0.03] p-4 transition-all duration-150 hover:-translate-y-0.5 hover:border-amber-400/50 hover:bg-white/[0.06]"
+                            >
+                              <div className="flex items-center justify-between text-xs text-zinc-400">
+                                <span>Pending Utility Bills</span>
+                                <ArrowRight className="h-3.5 w-3.5 text-zinc-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-400" />
                               </div>
-                              <div className="mt-1 font-mono text-xl font-bold tabular-nums text-white">
+                              <div className="mt-1 font-mono text-2xl font-bold tabular-nums text-amber-300">
                                 {pendingBillsCount} Pending
                               </div>
                               <div className="mt-1 text-[11px] text-zinc-400">
@@ -10561,11 +11547,15 @@ export function App() {
                               </div>
                             </div>
 
-                            <div className="rounded-md border border-zinc-800 bg-zinc-900/70 p-4">
-                              <div className="text-xs text-zinc-400">
-                                Indexed Documents
+                            <div
+                              onClick={() => setActiveView("documents")}
+                              className="group cursor-pointer rounded-xl border border-white/10 bg-white/[0.03] p-4 transition-all duration-150 hover:-translate-y-0.5 hover:border-amber-400/50 hover:bg-white/[0.06]"
+                            >
+                              <div className="flex items-center justify-between text-xs text-zinc-400">
+                                <span>Indexed Documents</span>
+                                <ArrowRight className="h-3.5 w-3.5 text-zinc-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-400" />
                               </div>
-                              <div className="mt-1 font-mono text-xl font-bold tabular-nums text-white">
+                              <div className="mt-1 font-mono text-2xl font-bold tabular-nums text-white">
                                 {documents.length} Files
                               </div>
                               <div className="mt-1 text-[11px] text-zinc-400">
@@ -10575,11 +11565,15 @@ export function App() {
                               </div>
                             </div>
 
-                            <div className="rounded-md border border-zinc-800 bg-zinc-900/70 p-4">
-                              <div className="text-xs text-zinc-400">
-                                Approval Gate
+                            <div
+                              onClick={() => setActiveView("intelligence")}
+                              className="group cursor-pointer rounded-xl border border-white/10 bg-white/[0.03] p-4 transition-all duration-150 hover:-translate-y-0.5 hover:border-amber-400/50 hover:bg-white/[0.06]"
+                            >
+                              <div className="flex items-center justify-between text-xs text-zinc-400">
+                                <span>Approval Gate</span>
+                                <ArrowRight className="h-3.5 w-3.5 text-zinc-500 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-400" />
                               </div>
-                              <div className="mt-1 font-mono text-xl font-bold tabular-nums text-white">
+                              <div className="mt-1 font-mono text-2xl font-bold tabular-nums text-emerald-400">
                                 {pendingApprovalsCount} Queued
                               </div>
                               <div className="mt-1 text-[11px] text-zinc-400">
@@ -10589,18 +11583,114 @@ export function App() {
                           </div>
                         </div>
 
-                        {/* HOUSEHOLD DOMAINS — RECTANGULAR BLACK, GRAY & WHITE GRID */}
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <h2 className="text-base font-bold text-zinc-900">
-                              Household Domains
-                            </h2>
-                            <span className="text-xs text-zinc-500">
-                              Select a domain to open its workspace
+                        {/* SECTION 2: CONTINUOUS MOVING VISUAL CASE-STUDY REEL (DUAL-TRACK MARQUEE) */}
+                        <div className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950 py-5 text-white shadow-lg">
+                          <div className="mb-3.5 flex flex-wrap items-center justify-between gap-2 px-6">
+                            <div className="flex items-center gap-2 text-xs text-zinc-300">
+                              <span className="font-semibold text-amber-400">
+                                Live Moving Household Case-Study Reel
+                              </span>
+                              <span aria-hidden="true">·</span>
+                              <span>
+                                Hover to pause · Click any card to open its
+                                domain or run an instant agent audit
+                              </span>
+                            </div>
+                            <span className="font-mono text-xs text-zinc-400">
+                              8 Domains · Real-Time State
                             </span>
                           </div>
 
-                          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                          {/* Track 1: Visual Domain Documentary Cards Marquee */}
+                          <div className="relative overflow-hidden py-1">
+                            <div className="animate-think-marquee gap-4 px-4">
+                              {[...marqueeReelItems, ...marqueeReelItems].map(
+                                (item, idx) => (
+                                  <button
+                                    key={`marquee-1-${idx}`}
+                                    type="button"
+                                    onClick={() =>
+                                      handleSelectDomain(item.domain)
+                                    }
+                                    className="group flex w-80 shrink-0 items-center gap-3.5 rounded-xl border border-white/10 bg-zinc-900/90 p-2.5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-amber-400/60 hover:bg-zinc-900"
+                                  >
+                                    <div className="relative h-14 w-20 shrink-0 overflow-hidden rounded-lg bg-zinc-800">
+                                      <img
+                                        src={item.image}
+                                        alt={item.title}
+                                        referrerPolicy="no-referrer"
+                                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                      />
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                      <div className="text-[11px] font-medium text-amber-400">
+                                        Case {item.num}
+                                      </div>
+                                      <div className="truncate text-xs font-bold text-white">
+                                        {item.title}
+                                      </div>
+                                      <div className="mt-0.5 truncate font-mono text-[11px] tabular-nums text-zinc-400">
+                                        {item.metric}
+                                      </div>
+                                    </div>
+                                  </button>
+                                )
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Track 2: Reverse-Moving Interactive Agent Prompt Stream */}
+                          <div className="relative mt-3 overflow-hidden py-1">
+                            <div className="animate-think-marquee-reverse gap-3 px-4">
+                              {[
+                                ...SAMPLE_AGENT_QUERIES,
+                                ...SAMPLE_AGENT_QUERIES,
+                              ].map((qItem, idx) => (
+                                <button
+                                  key={`marquee-2-${idx}`}
+                                  type="button"
+                                  onClick={() => {
+                                    setActiveView("intelligence");
+                                    runAgentQueryText(qItem.query);
+                                  }}
+                                  className="flex shrink-0 items-center gap-2.5 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-left text-xs text-zinc-200 transition-colors hover:border-amber-400 hover:bg-amber-400 hover:text-zinc-950 whitespace-nowrap"
+                                >
+                                  <Sparkles className="h-3.5 w-3.5 shrink-0 text-amber-400" />
+                                  <span className="font-semibold">
+                                    {qItem.label}
+                                  </span>
+                                  <span aria-hidden="true" className="opacity-50">
+                                    ·
+                                  </span>
+                                  <span className="max-w-xs truncate opacity-80">
+                                    {qItem.query}
+                                  </span>
+                                  <ArrowRight className="h-3 w-3 shrink-0" />
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* SECTION 3: HOUSEHOLD DOMAINS — VISUAL EDITORIAL BENTO SHOWCASE */}
+                        <div className="space-y-4">
+                          <div className="flex flex-wrap items-end justify-between gap-2">
+                            <div>
+                              <div className="text-xs font-semibold text-zinc-500">
+                                Structured Household Curriculum · 8 Specialized
+                                Wings
+                              </div>
+                              <h2 className="mt-0.5 text-2xl font-bold tracking-tight text-zinc-950">
+                                Household Domains
+                              </h2>
+                            </div>
+                            <span className="text-xs text-zinc-500">
+                              Select any domain card to enter its dedicated
+                              visual workspace
+                            </span>
+                          </div>
+
+                          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
                             {domainCards.map((dom) => {
                               const navSpec = SEVEN_DOMAIN_NAV.find(
                                 (d) => d.id === dom.id
@@ -10609,34 +11699,57 @@ export function App() {
                               return (
                                 <div
                                   key={`home-domain-${dom.id}`}
-                                  className="flex flex-col justify-between rounded-lg border border-zinc-200 bg-white p-5 transition-all hover:border-zinc-900 hover:shadow-sm"
+                                  className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-zinc-200 bg-white transition-all duration-200 hover:-translate-y-1 hover:border-zinc-900 hover:shadow-xl"
                                 >
                                   <div>
-                                    <div className="flex items-center justify-between">
-                                      <div className="flex h-9 w-9 items-center justify-center rounded-md bg-zinc-950 text-white">
-                                        <DomIcon className="h-4 w-4" />
+                                    {/* Visual Photographic Header */}
+                                    <div
+                                      onClick={() => handleSelectDomain(dom.id)}
+                                      className="relative h-40 w-full cursor-pointer overflow-hidden bg-zinc-900"
+                                    >
+                                      <img
+                                        src={dom.image}
+                                        alt={dom.title}
+                                        referrerPolicy="no-referrer"
+                                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                      />
+                                      <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/35 to-transparent" />
+
+                                      <div className="absolute top-3 right-3 left-3 flex items-center justify-between text-xs text-white">
+                                        <span className="font-mono font-bold text-amber-300">
+                                          {dom.indexNum}. {dom.accentTag}
+                                        </span>
+                                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-950/80 text-white backdrop-blur-sm">
+                                          <DomIcon className="h-4 w-4 text-amber-400" />
+                                        </div>
                                       </div>
-                                      <span className="text-xs font-medium text-zinc-500">
-                                        {dom.statusText}
-                                      </span>
+
+                                      <div className="absolute right-3.5 bottom-3 left-3.5 flex items-baseline justify-between gap-2">
+                                        <h3 className="truncate text-base font-bold text-white">
+                                          {dom.title}
+                                        </h3>
+                                        <span className="shrink-0 text-[11px] font-medium text-amber-300">
+                                          {dom.statusText}
+                                        </span>
+                                      </div>
                                     </div>
 
-                                    <h3 className="mt-4 text-sm font-semibold text-zinc-900">
-                                      {dom.title}
-                                    </h3>
-                                    <div className="mt-1 font-mono text-2xl font-bold tabular-nums text-zinc-950">
-                                      {dom.value}
-                                    </div>
-                                    <div className="mt-1 text-xs text-zinc-500">
-                                      {dom.context}
+                                    {/* Card Metric & Context Body */}
+                                    <div className="p-5 pb-4">
+                                      <div className="font-mono text-2xl font-bold tabular-nums text-zinc-950">
+                                        {dom.value}
+                                      </div>
+                                      <div className="mt-1 text-xs leading-relaxed text-zinc-500">
+                                        {dom.context}
+                                      </div>
                                     </div>
                                   </div>
 
-                                  <div className="mt-5 flex items-center gap-2 border-t border-zinc-100 pt-3.5">
+                                  <div className="flex items-center gap-2 border-t border-zinc-100 px-5 py-3.5">
                                     <button
                                       type="button"
                                       onClick={() => handleSelectDomain(dom.id)}
-                                      className="flex flex-1 items-center justify-between rounded-md bg-zinc-950 px-3.5 py-2 text-xs font-semibold text-white transition-colors hover:bg-zinc-800"
+                                      className="flex flex-1 items-center justify-between rounded-xl bg-zinc-950 px-3.5 py-2 text-xs font-semibold text-white transition-colors hover:bg-amber-400 hover:text-zinc-950 whitespace-nowrap"
                                     >
                                       <span>Open</span>
                                       <ArrowRight className="h-3.5 w-3.5" />
@@ -10652,9 +11765,9 @@ export function App() {
                                         );
                                       }}
                                       title={`Ask ${dom.title} Agent`}
-                                      className="inline-flex items-center gap-1.5 rounded-md border border-zinc-200 bg-zinc-50 px-2.5 py-2 text-xs font-semibold text-zinc-700 hover:border-zinc-900 hover:bg-zinc-100 hover:text-zinc-950"
+                                      className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs font-semibold text-zinc-700 transition-colors hover:border-zinc-900 hover:bg-zinc-900 hover:text-white whitespace-nowrap"
                                     >
-                                      <Sparkles className="h-3.5 w-3.5" />
+                                      <Sparkles className="h-3.5 w-3.5 text-amber-500" />
                                       <span>Agent</span>
                                     </button>
                                   </div>
@@ -11640,20 +12753,15 @@ export function App() {
           {activeView === "documents" && (
             <div className="space-y-6">
               {/* Top Obsidian Pipeline Console */}
-              <div className="rounded-2xl border border-zinc-900 bg-zinc-950 p-6 text-white shadow-xl">
-                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-800 pb-5">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-zinc-950">
-                      <Upload className="h-5 w-5" />
+              <div className="rounded-3xl border border-zinc-900 bg-zinc-950 p-6 text-white shadow-xl">
+                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-sky-500/20 text-sky-400 ring-1 ring-sky-400/30">
+                      <CuteVaultLogo className="h-5 w-5" />
                     </div>
-                    <div>
-                      <div className="text-xs font-semibold tracking-wider text-zinc-400 uppercase">
-                        OCR & Structured Extraction Pipeline
-                      </div>
-                      <h1 className="text-3xl leading-tight font-bold tracking-tight text-white sm:text-4xl">
-                        Document Ingestion
-                      </h1>
-                    </div>
+                    <span className="text-base font-bold tracking-tight text-white">
+                      Household Document Ingestion & OCR Pipeline
+                    </span>
                   </div>
 
                   <div className="flex items-center gap-2">
@@ -12054,23 +13162,15 @@ export function App() {
                 return (
                   <>
                     {/* STEP 1: SHOW ALL AVAILABLE SPECIALIST AGENTS */}
-                    <div className="rounded-2xl border border-zinc-900 bg-zinc-950 p-6 text-white shadow-xl">
-                      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-800 pb-5">
-                        <div className="flex items-center gap-3">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-zinc-950">
-                            <Sparkles className="h-5 w-5" />
+                    <div className="rounded-3xl border border-zinc-900 bg-zinc-950 p-6 text-white shadow-xl">
+                      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
+                        <div className="flex items-center gap-2.5">
+                          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-400/30">
+                            <ActiveAgentIcon className="h-5 w-5" />
                           </div>
-                          <div>
-                            <div className="font-mono text-[11px] font-bold tracking-wider text-emerald-400 uppercase">
-                              STEP 1 · SELECT YOUR DOMAIN SPECIALIST AGENT
-                            </div>
-                            <h1 className="text-2xl leading-tight font-bold tracking-tight text-white sm:text-3xl">
-                              Household Multi-Agents (8 Domains)
-                            </h1>
-                            <p className="mt-0.5 text-xs text-zinc-400">
-                              Click any agent below (e.g. Travel Records Agent, Parents&apos; Health Agent, Kitchen Agent) to open its chat box and see its domain reminders below
-                            </p>
-                          </div>
+                          <span className="text-base font-bold tracking-tight text-white">
+                            Household Multi-Agent Orchestrator (8 Domains)
+                          </span>
                         </div>
 
                         <div className="flex items-center gap-3">
@@ -12648,20 +13748,15 @@ export function App() {
           {activeView === "proactive" && (
             <div className="space-y-6">
               {/* Top Proactive Engine Header Console */}
-              <div className="rounded-2xl border border-zinc-900 bg-zinc-950 p-6 text-white shadow-xl">
-                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-800 pb-5">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-zinc-950">
-                      <Bell className="h-5 w-5" />
+              <div className="rounded-3xl border border-zinc-900 bg-zinc-950 p-6 text-white shadow-xl">
+                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-amber-500/20 text-amber-400 ring-1 ring-amber-400/30">
+                      <CuteHomeLogo className="h-5 w-5" />
                     </div>
-                    <div>
-                      <div className="text-xs font-semibold tracking-wider text-zinc-400 uppercase">
-                        Background Rule Scanner & Event Bus
-                      </div>
-                      <h1 className="text-3xl leading-tight font-bold tracking-tight text-white sm:text-4xl">
-                        Proactive Engine
-                      </h1>
-                    </div>
+                    <span className="text-base font-bold tracking-tight text-white">
+                      Household Proactive Engine & Event Bus
+                    </span>
                   </div>
 
                   <button
@@ -12859,20 +13954,15 @@ export function App() {
           {activeView === "evaluation" && (
             <div className="space-y-6">
               {/* Top Obsidian Benchmark & AI/ML Model Hub Header */}
-              <div className="rounded-2xl border border-zinc-900 bg-zinc-950 p-6 text-white shadow-xl">
-                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-800 pb-5">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-zinc-950">
-                      <BarChart3 className="h-5 w-5" />
+              <div className="rounded-3xl border border-zinc-900 bg-zinc-950 p-6 text-white shadow-xl">
+                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-400/30">
+                      <CuteHealthLogo className="h-5 w-5" />
                     </div>
-                    <div>
-                      <div className="text-xs font-semibold tracking-wider text-zinc-400 uppercase">
-                        Open-Source Hugging Face Model Zoo · Training Corpora · 8-Domain Evaluation Suite
-                      </div>
-                      <h1 className="text-3xl leading-tight font-bold tracking-tight text-white sm:text-4xl">
-                        Dataset, Fine-Tuned Models & Benchmark
-                      </h1>
-                    </div>
+                    <span className="text-base font-bold tracking-tight text-white">
+                      Household Dataset, Fine-Tuned Models & Benchmark
+                    </span>
                   </div>
 
                   <div className="flex flex-wrap items-center gap-2.5">
