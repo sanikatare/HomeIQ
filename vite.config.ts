@@ -3,7 +3,9 @@ import react from "@vitejs/plugin-react";
 import fs from "node:fs";
 import path from "path";
 import { defineConfig, loadEnv } from "vite";
-import { handleApiRequest } from "./src/server/apiMiddleware";
+import { handleApiRequest } from "./src/server/apiMiddleware.ts";
+
+const rootDir = import.meta.dirname;
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, ".", "");
@@ -41,8 +43,8 @@ export default defineConfig(({ mode }) => {
           });
         },
         closeBundle() {
-          const srcAssets = path.resolve(__dirname, "src", "assets");
-          const distAssets = path.resolve(__dirname, "dist", "src", "assets");
+          const srcAssets = path.resolve(rootDir, "src", "assets");
+          const distAssets = path.resolve(rootDir, "dist", "src", "assets");
           if (fs.existsSync(srcAssets)) {
             fs.mkdirSync(path.dirname(distAssets), { recursive: true });
             fs.cpSync(srcAssets, distAssets, { recursive: true });
@@ -50,9 +52,12 @@ export default defineConfig(({ mode }) => {
         },
       },
     ],
+    build: {
+      chunkSizeWarningLimit: 1500,
+    },
     resolve: {
       alias: {
-        "@": path.resolve(__dirname, "."),
+        "@": path.resolve(rootDir, "."),
       },
     },
     server: {
