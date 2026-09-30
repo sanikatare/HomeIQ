@@ -2,33 +2,9 @@
 
 **HomeIQ** is a full-stack, policy-governed household operating system that unifies **eight core household domains** under a deterministic relational core (**22 normalized tables**) and a multi-agent intelligence plane powered by schema-constrained LLM extraction, open-source biomedical/document models (**BioBERT + PubMedQA**, **LayoutLMv3**, **Donut**), grounded RAG citations, and mandatory **Human-in-the-Loop (HITL)** approval gates.
 
----
 
-## Table of Contents
 
-1. [Project Vision & Experience](#1-project-vision--experience)
-2. [Eight Specialized Household Domains](#2-eight-specialized-household-domains)
-3. [Architectural Invariants & Safety Boundaries](#3-architectural-invariants--safety-boundaries)
-4. [System Stack & Open-Source Model Zoo](#4-system-stack--open-source-model-zoo)
-5. [Repository Structure](#5-repository-structure)
-6. [Local Development & Verification](#6-local-development--verification)
-7. [Deploying on Render (Step-by-Step Guide)](#7-deploying-on-render-step-by-step-guide)
-8. [Evaluation Benchmark & Test Suite](#8-evaluation-benchmark--test-suite)
-
----
-
-## 1. Project Vision & Experience
-
-Most consumer home apps fragment household life into disconnected silos—separate apps for grocery lists, utility bills, appliance warranties, vehicle servicing, parents' medical lab reports, and family travel bookings—or rely on unconstrained chat assistants that hallucinate balances and dates.
-
-**HomeIQ** solves this by combining:
-- **84-Piece Self-Pinning Architectural Landing Portal**: Opens with a photorealistic modern farmhouse divided into a `12 × 7` grid (`84` interlocking cubic-Bezier pin-and-socket pieces) that glide into rotational alignment, seat into recessed sockets with 3D rim compression and a golden lock flash, and transition into the live dashboard via a 680ms camera portal zoom on double-click.
-- **Deterministic Relational Ledger (`22 Tables`)**: Every inventory quantity, utility tariff, warranty expiration, odometer reading, clinical biomarker, and PNR booking is stored with strict `household_id` tenant isolation.
-- **Grounded Multi-Agent Orchestrator**: Domain-specialized agents (`KitchenAgent`, `LaundryAgent`, `MaintenanceAgent`, `FinanceAgent`, `VehicleAgent`, `DocumentVaultAgent`, `ParentsHealthAgent`, `TravelConciergeAgent`) retrieve verified database records with primary-key citations and pause at an explicit **Owner Approval Gate** before executing any financial or external action.
-
----
-
-## 2. Eight Specialized Household Domains
+##  Eight Specialized Household Domains
 
 | # | Domain | Key Capabilities |
 | :- | :--- | :--- |
@@ -43,7 +19,7 @@ Most consumer home apps fragment household life into disconnected silos—separa
 
 ---
 
-## 3. Architectural Invariants & Safety Boundaries
+## Architectural Invariants & Safety Boundaries
 
 1. **Relational Database is the Single Source of Truth**: Every household record, ledger entry, maintenance schedule, inventory quantity, warranty, clinical measurement, travel PNR, and audit event is persisted across **22 normalized tables** with strict `household_id` tenant isolation.
 2. **LLMs Never Invent Database Facts**: Language models are prohibited from estimating balances, fabricating inventory counts, or hallucinating warranty/clinical dates. Every `RecordedHouseholdFact` must cite an authorized `source_table` and primary-key `record_id`, while advisory items are explicitly separated with `is_estimate_or_suggestion=True`.
@@ -53,7 +29,7 @@ Most consumer home apps fragment household life into disconnected silos—separa
 
 ---
 
-## 4. System Stack & Open-Source Model Zoo
+## System Stack & Open-Source Model Zoo
 
 ### Core Platform Stack
 | Layer | Technology | Role in HomeIQ |
@@ -76,7 +52,7 @@ Most consumer home apps fragment household life into disconnected silos—separa
 
 ---
 
-## 5. Repository Structure
+## Repository Structure
 
 ```text
 .
@@ -109,7 +85,7 @@ Most consumer home apps fragment household life into disconnected silos—separa
 
 ---
 
-## 6. Local Development & Verification
+## Local Development & Verification
 
 ### Prerequisites
 - **Node.js** `>= 22.6.0` (supports native TypeScript execution for `node server.ts`)
@@ -145,43 +121,3 @@ python3 -m unittest discover -s evaluation -v
 
 ---
 
-## 7. Deploying on Render (Step-by-Step Guide)
-
-This repository is pre-configured for **Render** using either **Method A (1-Click Render Blueprint via `render.yaml`)** or **Method B (Standard Render Web Service)**.
-
-### Method A: 1-Click Deployment via Render Blueprint (`render.yaml`)
-1. Push this repository to your **GitHub** account.
-2. Log in to the [Render Dashboard](https://dashboard.render.com/).
-3. Click **New +** → **Blueprint**.
-4. Connect your GitHub repository containing this project.
-5. Render will automatically detect `render.yaml` and configure the **`homeiq-platform`** web service.
-6. *(Optional)* Enter your `GEMINI_API_KEY` when prompted (if left blank, HomeIQ automatically operates in deterministic fallback mode with 100% feature availability).
-7. Click **Apply** — Render will build `dist/`, launch `npm start` (`node server.ts`), verify `/health/live`, and publish your live URL.
-
-### Method B: Manual Render Web Service Setup
-If you create a **New Web Service** manually in Render:
-
-| Setting | Value |
-| :--- | :--- |
-| **Runtime** | `Node` |
-| **Build Command** | `npm install && npm run build` |
-| **Start Command** | `npm start` |
-| **Health Check Path** | `/health/live` |
-
-#### Recommended Environment Variables on Render
-| Variable | Value / Description |
-| :--- | :--- |
-| `NODE_VERSION` | `22.14.0` (or any Node `>= 22.6.0`) |
-| `NODE_ENV` | `production` |
-| `JWT_SECRET_KEY` | Any 32+ character random secret string for HMAC-SHA256 token signing |
-| `GEMINI_API_KEY` | *(Optional)* Google Gemini API key for live LLM extraction & synthesis |
-
----
-
-## 8. Evaluation Benchmark & Test Suite
-
-HomeIQ ships with a reproducible golden evaluation suite (`evaluation/run.py`) verified on every build:
-- **12 / 12 Golden Documents (`eval_0001` – `eval_0012`)**: `100.0%` category classification accuracy, `100.0%` normalized field accuracy, and `100.0%` extraction F1 across utility bills, grocery receipts, appliance warranties, EV service invoices, insurance policies, pathology lab panels, and heritage travel vouchers.
-- **BioBERT + PubMedQA Clinical Benchmark**: `99.7%` F1 across 8 geriatric biomarkers (`HbA1c`, `Fasting Glucose`, `LDL`, `Vitamin D3`, `TSH`, `Creatinine`, `eGFR`, `Systolic/Diastolic BP`) with `100%` PubMedQA clinical verdict accuracy.
-- **6 / 6 Grounded RAG Citation Tests**: `100%` primary-key citation precision and zero hallucinated facts.
-- **8 / 8 Multi-Agent Routing & Policy Gate Tests**: Verifies read-only sandboxing, internal mutation logging, and mandatory `AWAITING_HUMAN_APPROVAL` suspension on external utility bill payments.
