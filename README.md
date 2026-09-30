@@ -1,4 +1,4 @@
-# HomeIQ — Autonomous Household Intelligence & Estate Management Platform
+# HomeIQ — Autonomous Household Intelligence Management Platform
 
 **HomeIQ** is a full-stack, policy-governed household operating system that unifies **eight core household domains** under a deterministic relational core (**22 normalized tables**) and a multi-agent intelligence plane powered by schema-constrained LLM extraction, open-source biomedical/document models (**BioBERT + PubMedQA**, **LayoutLMv3**, **Donut**), grounded RAG citations, and mandatory **Human-in-the-Loop (HITL)** approval gates.
 
