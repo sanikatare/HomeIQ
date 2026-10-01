@@ -130,7 +130,7 @@ Open **`http://localhost:3000`** in your browser:
 npm run build
 npm start
 ```
-This compiles the Vite SPA into `dist/`, bundles all `/src/assets/images/*` assets, and starts `node --experimental-strip-types server.ts` on `http://0.0.0.0:3000`.
+This compiles the Vite SPA into `dist/`, bundles all `/src/assets/images/*` assets, compiles `server.ts` into pure JavaScript (`server.js` and `dist/server.js`), and starts `node server.js` on `http://0.0.0.0:3000` (or run `npm run start:ts` to execute `tsx server.ts` directly).
 
 ### 3. Run the Evaluation & Verification Suite
 ```bash
@@ -156,7 +156,7 @@ This repository is pre-configured for **Render** using either **Method A (1-Clic
 4. Connect your GitHub repository containing this project.
 5. Render will automatically detect `render.yaml` and configure the **`homeiq-platform`** web service.
 6. *(Optional)* Enter your `GEMINI_API_KEY` when prompted (if left blank, HomeIQ automatically operates in deterministic fallback mode with 100% feature availability).
-7. Click **Apply** — Render will build `dist/`, launch `npm start` (`node --experimental-strip-types server.ts`), verify `/health/live`, and publish your live URL.
+7. Click **Apply** — Render will build `dist/` and compile `server.js`, launch `npm start` (`node server.js`), verify `/health/live`, and publish your live URL.
 
 ### Method B: Manual Render Web Service Setup
 If you create a **New Web Service** manually in Render:
@@ -165,7 +165,7 @@ If you create a **New Web Service** manually in Render:
 | :--- | :--- |
 | **Runtime** | `Node` |
 | **Build Command** | `npm install && npm run build` |
-| **Start Command** | `npm start` *(or `node --experimental-strip-types server.ts`)* |
+| **Start Command** | `npm start` *(runs `node server.js`, or use `npx tsx server.ts`)* |
 | **Health Check Path** | `/health/live` |
 
 #### Recommended Environment Variables on Render

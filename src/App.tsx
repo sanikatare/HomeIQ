@@ -976,193 +976,350 @@ const HomeBlocksLandingPage: React.FC<{
   isEntering: boolean;
   onStartEnterDashboard: () => void;
 }> = ({ isEntering, onStartEnterDashboard }) => {
-  const [puzzlePhase, setPuzzlePhase] = useState<
-    "assembling" | "locked" | "unpinning"
-  >("assembling");
+  const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
+  const pointerRef = React.useRef<{
+    x: number;
+    y: number;
+    targetX: number;
+    targetY: number;
+    hoverBoost: number;
+    targetHoverBoost: number;
+  }>({
+    x: 0.5,
+    y: 0.5,
+    targetX: 0.5,
+    targetY: 0.5,
+    hoverBoost: 0,
+    targetHoverBoost: 0,
+  });
+  const enteringRef = React.useRef<boolean>(isEntering);
 
-  // Smooth, synchronized 3-phase cycle: Assemble (3.5s) -> Hold Locked (6.0s) -> Smooth Reverse Un-Pin (1.8s)
   useEffect(() => {
-    if (isEntering) return;
+    enteringRef.current = isEntering;
+  }, [isEntering]);
 
-    let timer: number;
-    if (puzzlePhase === "assembling") {
-      timer = window.setTimeout(() => {
-        setPuzzlePhase("locked");
-      }, 3450);
-    } else if (puzzlePhase === "locked") {
-      timer = window.setTimeout(() => {
-        setPuzzlePhase("unpinning");
-      }, 6200);
-    } else {
-      timer = window.setTimeout(() => {
-        setPuzzlePhase("assembling");
-      }, 1850);
-    }
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-    return () => window.clearTimeout(timer);
-  }, [puzzlePhase, isEntering]);
+    let animationFrameId = 0;
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    let dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-  const handleDoubleClick = () => {
+    const resize = () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
+
+    const startTime = performance.now();
+    let enterProgress = 0;
+
+    const NUM_HORIZONTAL_LINES = 34;
+    const NUM_X_SEGMENTS = 140;
+    const NUM_VERTICAL_BARS = 108;
+
+    const render = (now: number) => {
+      const elapsed = (now - startTime) * 0.001;
+
+      const p = pointerRef.current;
+      p.x += (p.targetX - p.x) * 0.07;
+      p.y += (p.targetY - p.y) * 0.07;
+      p.hoverBoost += (p.targetHoverBoost - p.hoverBoost) * 0.08;
+
+      if (enteringRef.current) {
+        enterProgress = Math.min(1, enterProgress + 0.04);
+      } else {
+        enterProgress = Math.max(0, enterProgress - 0.04);
+      }
+
+      // 1. Pure pitch-black background (#000000)
+      ctx.globalCompositeOperation = "source-over";
+      ctx.fillStyle = "#000000";
+      ctx.fillRect(0, 0, width, height);
+
+      const centerY = height * 0.5;
+      const maxAmplitude =
+        Math.min(height * 0.24, 185) *
+        (1 + p.hoverBoost * 0.28 + enterProgress * 1.35);
+      const lineSpread =
+        Math.min(height * 0.28, 220) * (1 + enterProgress * 1.6);
+
+      ctx.save();
+      ctx.globalCompositeOperation = "lighter";
+
+      // 2. Subtle horizon linear glow on pure black
+      const horizonGlow = ctx.createLinearGradient(
+        0,
+        centerY - maxAmplitude * 1.3,
+        0,
+        centerY + maxAmplitude * 1.3
+      );
+      horizonGlow.addColorStop(0, "rgba(0, 0, 0, 0)");
+      horizonGlow.addColorStop(0.38, "rgba(245, 158, 11, 0.028)");
+      horizonGlow.addColorStop(0.5, "rgba(255, 251, 235, 0.055)");
+      horizonGlow.addColorStop(0.62, "rgba(186, 230, 253, 0.025)");
+      horizonGlow.addColorStop(1, "rgba(0, 0, 0, 0)");
+      ctx.fillStyle = horizonGlow;
+      ctx.fillRect(
+        0,
+        centerY - maxAmplitude * 1.3,
+        width,
+        maxAmplitude * 2.6
+      );
+
+      // 3. Precision Vertical Straight-Line Wave Array (Linear Interferometer Wave)
+      const barStartX = width * 0.06;
+      const barEndX = width * 0.94;
+      for (let b = 0; b < NUM_VERTICAL_BARS; b++) {
+        const u = b / (NUM_VERTICAL_BARS - 1);
+        const x = barStartX + u * (barEndX - barStartX);
+
+        // Tapered straight-line envelope so edges anchor cleanly to a flat straight horizon line
+        const edgeEnvelope = Math.pow(Math.sin(u * Math.PI), 1.35);
+
+        // Pointer proximity wave boost
+        const distToPointer = Math.abs(u - p.x);
+        const pointerInfluence =
+          Math.exp(-distToPointer * distToPointer * 28) *
+          (p.y - 0.5) *
+          95;
+
+        const wave1 = Math.sin(u * 10.5 - elapsed * 2.35);
+        const wave2 = Math.cos(u * 18.0 + elapsed * 1.65);
+        const wave3 = Math.sin(u * 5.2 - elapsed * 1.1);
+
+        const centerOffset =
+          (wave1 * 0.5 + wave3 * 0.5) *
+            maxAmplitude *
+            0.38 *
+            edgeEnvelope +
+          pointerInfluence * edgeEnvelope;
+
+        const barHalfHeight =
+          Math.max(
+            2,
+            Math.abs(wave1 * 0.65 + wave2 * 0.35) *
+              maxAmplitude *
+              0.78 *
+              edgeEnvelope *
+              (1 + p.hoverBoost * 0.25)
+          );
+
+        const yTop = centerY + centerOffset - barHalfHeight;
+        const yBottom = centerY + centerOffset + barHalfHeight;
+
+        const crestIntensity =
+          0.35 + 0.65 * Math.abs(Math.sin(u * 8.0 - elapsed * 2.1));
+        const barAlpha =
+          edgeEnvelope *
+          (0.09 + crestIntensity * 0.22 + p.hoverBoost * 0.08);
+
+        // Crisp straight vertical wave line
+        ctx.beginPath();
+        ctx.moveTo(x, yTop);
+        ctx.lineTo(x, yBottom);
+        ctx.strokeStyle =
+          b % 3 === 0
+            ? `rgba(254, 243, 199, ${barAlpha.toFixed(3)})`
+            : b % 3 === 1
+            ? `rgba(245, 158, 11, ${(barAlpha * 0.85).toFixed(3)})`
+            : `rgba(224, 242, 254, ${(barAlpha * 0.8).toFixed(3)})`;
+        ctx.lineWidth = 1.05;
+        ctx.stroke();
+
+        // Luminous terminal nodes on the tips of each straight vertical wave line
+        const tipRadius = 1.15 + crestIntensity * 1.1;
+        ctx.fillStyle = `rgba(255, 255, 255, ${Math.min(
+          0.92,
+          barAlpha * 2.4
+        ).toFixed(3)})`;
+        ctx.beginPath();
+        ctx.arc(x, yTop, tipRadius, 0, Math.PI * 2);
+        ctx.arc(x, yBottom, tipRadius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // 4. 34 Parallel Horizontal Line-Wave Ribbons (Straight-edge anchored harmonic wave lines)
+      for (let i = 0; i < NUM_HORIZONTAL_LINES; i++) {
+        const v = i / (NUM_HORIZONTAL_LINES - 1) - 0.5; // -0.5 to +0.5
+        const baseLineY = centerY + v * lineSpread;
+        const linePhase = i * 0.21;
+
+        ctx.beginPath();
+        for (let s = 0; s <= NUM_X_SEGMENTS; s++) {
+          const u = s / NUM_X_SEGMENTS;
+          const x = u * width;
+
+          // Smooth window that keeps lines perfectly straight at the left/right edges and undulating in the middle
+          const windowEnv = Math.pow(Math.sin(u * Math.PI), 1.6);
+
+          const distToPointer = u - p.x;
+          const pointerRipple =
+            Math.exp(-distToPointer * distToPointer * 32) *
+            Math.cos(distToPointer * 24 - elapsed * 4) *
+            42 *
+            windowEnv;
+
+          const harmonicA = Math.sin(
+            u * 7.5 - elapsed * 2.15 + linePhase
+          );
+          const harmonicB = Math.cos(
+            u * 13.0 + elapsed * 1.45 - linePhase * 1.3
+          );
+          const harmonicC = Math.sin(
+            u * 3.8 - elapsed * 0.95 + v * 3.2
+          );
+
+          const displacement =
+            (harmonicA * 0.52 + harmonicB * 0.28 + harmonicC * 0.2) *
+              maxAmplitude *
+              windowEnv +
+            pointerRipple;
+
+          // Compress the baselines slightly toward the center wave nodes for a 3D ribbon fold
+          const ribbonPinch =
+            0.35 +
+            0.65 *
+              Math.abs(
+                Math.cos(u * 4.5 - elapsed * 1.2 + v * 1.4)
+              );
+          const y =
+            centerY +
+            v * lineSpread * (1 - windowEnv * (1 - ribbonPinch)) +
+            displacement;
+
+          if (s === 0) {
+            ctx.moveTo(x, y);
+          } else {
+            ctx.lineTo(x, y);
+          }
+        }
+
+        const centerProximity = 1 - Math.abs(v) * 1.75;
+        const pulse = 0.5 + 0.5 * Math.sin(elapsed * 1.8 - i * 0.26);
+        const alpha = Math.max(
+          0.04,
+          (0.06 + Math.max(0, centerProximity) * 0.22 + pulse * 0.08) *
+            (1 + p.hoverBoost * 0.3)
+        );
+
+        ctx.strokeStyle =
+          i % 4 === 0
+            ? `rgba(255, 255, 255, ${alpha.toFixed(3)})`
+            : i % 4 === 1
+            ? `rgba(254, 243, 199, ${(alpha * 0.9).toFixed(3)})`
+            : i % 4 === 2
+            ? `rgba(245, 158, 11, ${(alpha * 0.75).toFixed(3)})`
+            : `rgba(186, 230, 253, ${(alpha * 0.7).toFixed(3)})`;
+        ctx.lineWidth = i === Math.floor(NUM_HORIZONTAL_LINES / 2) ? 1.5 : 0.9;
+        ctx.stroke();
+      }
+
+      // 5. Crisp Center Reference Straight Horizon Line
+      ctx.beginPath();
+      ctx.moveTo(0, centerY);
+      ctx.lineTo(width, centerY);
+      ctx.strokeStyle = `rgba(255, 251, 235, ${(
+        0.12 +
+        p.hoverBoost * 0.1
+      ).toFixed(3)})`;
+      ctx.lineWidth = 0.75;
+      ctx.stroke();
+
+      ctx.restore();
+
+      // 6. Subtle dark center vignette directly behind "HOME IQ" so the typography is razor-sharp on pure black
+      const textBackdrop = ctx.createRadialGradient(
+        width * 0.5,
+        centerY,
+        0,
+        width * 0.5,
+        centerY,
+        Math.min(width, height) * 0.26
+      );
+      textBackdrop.addColorStop(0, "rgba(0, 0, 0, 0.78)");
+      textBackdrop.addColorStop(0.55, "rgba(0, 0, 0, 0.36)");
+      textBackdrop.addColorStop(1, "rgba(0, 0, 0, 0)");
+      ctx.fillStyle = textBackdrop;
+      ctx.fillRect(0, 0, width, height);
+
+      animationFrameId = window.requestAnimationFrame(render);
+    };
+
+    animationFrameId = window.requestAnimationFrame(render);
+
+    return () => {
+      window.cancelAnimationFrame(animationFrameId);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
+  const handleEnterPortal = () => {
     if (isEntering) return;
     onStartEnterDashboard();
   };
 
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    pointerRef.current.targetX =
+      e.clientX / Math.max(1, window.innerWidth);
+    pointerRef.current.targetY =
+      e.clientY / Math.max(1, window.innerHeight);
+  };
+
   return (
     <div
-      onDoubleClick={handleDoubleClick}
+      onClick={handleEnterPortal}
+      onDoubleClick={handleEnterPortal}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={() => {
+        pointerRef.current.targetX = 0.5;
+        pointerRef.current.targetY = 0.5;
+        pointerRef.current.targetHoverBoost = 0;
+      }}
       role="button"
       tabIndex={0}
       aria-label="HOME IQ"
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
-          handleDoubleClick();
+          handleEnterPortal();
         }
       }}
-      className={`fixed inset-0 z-50 flex h-screen w-screen cursor-pointer flex-col items-center justify-between overflow-hidden bg-[#0B1018] select-none transition-opacity duration-700 ease-out ${
+      className={`fixed inset-0 z-50 flex h-screen w-screen cursor-pointer items-center justify-center overflow-hidden bg-black select-none transition-opacity duration-700 ease-out ${
         isEntering
           ? "landing-portal-entering pointer-events-none opacity-0"
           : "opacity-100"
       }`}
     >
-      {/* Stationary Full-Viewport Self-Pinning Jigsaw Canvas */}
-      <div className="landing-portal-canvas pointer-events-none relative flex h-full w-full items-center justify-center">
-        <svg
-          viewBox={`0 0 ${PUZZLE_VIEW_W} ${PUZZLE_VIEW_H}`}
-          preserveAspectRatio="xMidYMid slice"
-          className="h-full w-full"
-          aria-hidden="true"
-        >
-          <defs>
-            {JIGSAW_PUZZLE_PIECES.map((piece) => (
-              <clipPath key={piece.id} id={`clip-${piece.id}`}>
-                <path d={piece.path} />
-              </clipPath>
-            ))}
-          </defs>
+      {/* Full-Viewport Straight-Line Wave Animation Canvas on Pure Black */}
+      <canvas
+        ref={canvasRef}
+        aria-hidden="true"
+        className="landing-portal-canvas pointer-events-none absolute inset-0 h-full w-full"
+      />
 
-          {/* Dimmed Recessed Socket Board Underneath so Pin Cavities Are Visible Before Lock */}
-          <image
-            href={REALISTIC_FARMHOUSE_PHOTO}
-            x="0"
-            y="0"
-            width={PUZZLE_VIEW_W}
-            height={PUZZLE_VIEW_H}
-            preserveAspectRatio="xMidYMid slice"
-            opacity="0.16"
-          />
-          {JIGSAW_PUZZLE_PIECES.map((piece) => (
-            <path
-              key={`socket-${piece.id}`}
-              d={piece.path}
-              fill="rgba(7, 11, 18, 0.52)"
-              stroke="rgba(255, 248, 231, 0.16)"
-              strokeWidth="1.2"
-            />
-          ))}
-
-          {/* 84 Self-Pinning Interlocking Puzzle Pieces */}
-          {JIGSAW_PUZZLE_PIECES.map((piece) => {
-            const pieceClass =
-              puzzlePhase === "assembling"
-                ? "animate-puzzle-piece"
-                : puzzlePhase === "locked"
-                ? "animate-puzzle-piece-locked"
-                : "animate-puzzle-piece-unpin";
-
-            const thicknessClass =
-              puzzlePhase === "assembling"
-                ? "animate-puzzle-thickness"
-                : puzzlePhase === "unpinning"
-                ? "animate-puzzle-thickness-unpin"
-                : "opacity-0";
-
-            const seamClass =
-              puzzlePhase === "assembling"
-                ? "animate-puzzle-seam"
-                : puzzlePhase === "unpinning"
-                ? "animate-puzzle-seam-unpin"
-                : "opacity-0";
-
-            return (
-              <g
-                key={piece.id}
-                className={pieceClass}
-                style={
-                  {
-                    "--delay": `${piece.delay}s`,
-                    "--rdelay": `${piece.reverseDelay}s`,
-                    "--tx": `${piece.tx}px`,
-                    "--ty": `${piece.ty}px`,
-                    "--px": `${piece.px}px`,
-                    "--py": `${piece.py}px`,
-                    "--rot": `${piece.rot}deg`,
-                    "--ox": `${piece.cx}px`,
-                    "--oy": `${piece.cy}px`,
-                  } as React.CSSProperties
-                }
-              >
-                {/* 3D Extruded Pin-Block Thickness Rim that compresses to 0 as the pin seats into its socket */}
-                <path
-                  d={piece.path}
-                  fill="#1C1917"
-                  stroke="#44403C"
-                  strokeWidth="1.5"
-                  className={thicknessClass}
-                  style={
-                    {
-                      "--delay": `${piece.delay}s`,
-                      "--rdelay": `${piece.reverseDelay}s`,
-                    } as React.CSSProperties
-                  }
-                />
-
-                {/* Clipped Realistic Photograph Piece */}
-                <g clipPath={`url(#clip-${piece.id})`}>
-                  <image
-                    href={REALISTIC_FARMHOUSE_PHOTO}
-                    x="0"
-                    y="0"
-                    width={PUZZLE_VIEW_W}
-                    height={PUZZLE_VIEW_H}
-                    preserveAspectRatio="xMidYMid slice"
-                  />
-                </g>
-
-                {/* Precision Pin-Joint Seam that Flashes Warm Gold on Mechanical Seat & Lock */}
-                <path
-                  d={piece.path}
-                  fill="none"
-                  strokeLinejoin="round"
-                  className={seamClass}
-                  style={
-                    {
-                      "--delay": `${piece.delay}s`,
-                      "--rdelay": `${piece.reverseDelay}s`,
-                    } as React.CSSProperties
-                  }
-                />
-              </g>
-            );
-          })}
-
-          {/* Seamless Full-Resolution Photo Lock Layer once all 84 pins are seated */}
-          <image
-            href={REALISTIC_FARMHOUSE_PHOTO}
-            x="0"
-            y="0"
-            width={PUZZLE_VIEW_W}
-            height={PUZZLE_VIEW_H}
-            preserveAspectRatio="xMidYMid slice"
-            className={`transition-opacity duration-500 ease-out ${
-              puzzlePhase === "locked" || isEntering ? "opacity-100" : "opacity-0"
-            }`}
-          />
-        </svg>
-      </div>
-
-      {/* ONLY Text Written On This Page: HOME IQ (with subtle scale + soft glow hover animation) */}
-      <div className="landing-portal-title absolute inset-x-0 bottom-8 z-20 flex justify-center sm:bottom-12">
-        <h1 className="home-iq-title-hover pointer-events-auto cursor-pointer px-6 py-2 font-serif text-5xl font-black tracking-[0.28em] text-[#F5EFE6] sm:text-7xl md:text-8xl">
+      {/* ONLY Text Written On This Black Page: HOME IQ */}
+      <div
+        onMouseEnter={() => {
+          pointerRef.current.targetHoverBoost = 1;
+        }}
+        onMouseLeave={() => {
+          pointerRef.current.targetHoverBoost = 0;
+        }}
+        className="landing-portal-title relative z-20 flex items-center justify-center"
+      >
+        <h1 className="home-iq-title-hover cursor-pointer px-8 py-4 text-center font-serif text-5xl font-light tracking-[0.42em] text-white sm:text-7xl md:text-8xl">
           HOME IQ
         </h1>
       </div>

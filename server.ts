@@ -1,11 +1,9 @@
 import fs from "node:fs";
 import http from "node:http";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { handleApiRequest } from "./src/server/apiMiddleware.ts";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const rootDir = process.cwd();
 
 const PORT = Number(process.env.PORT || 3000);
 const HOST = process.env.HOST || "0.0.0.0";
@@ -58,7 +56,7 @@ function serveStaticFile(
 }
 
 async function startServer() {
-  const distDir = path.resolve(__dirname, "dist");
+  const distDir = path.resolve(rootDir, "dist");
   const hasBuiltDist = fs.existsSync(path.join(distDir, "index.html"));
   const isDevMode = process.env.NODE_ENV === "development" && !hasBuiltDist;
 
@@ -104,9 +102,9 @@ async function startServer() {
       // 1. Serve direct /src/assets/* requests from workspace src/assets or dist/src/assets
       if (pathname.startsWith("/src/assets/")) {
         const relativeAsset = pathname.replace(/^\/+/, "");
-        const workspaceAssetPath = path.resolve(__dirname, relativeAsset);
+        const workspaceAssetPath = path.resolve(rootDir, relativeAsset);
         if (
-          workspaceAssetPath.startsWith(path.resolve(__dirname, "src", "assets")) &&
+          workspaceAssetPath.startsWith(path.resolve(rootDir, "src", "assets")) &&
           serveStaticFile(res, workspaceAssetPath, true)
         ) {
           return;
